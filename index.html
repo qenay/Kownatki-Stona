@@ -2091,11 +2091,14 @@
           </div>
         </div>
 
-        <div class="events-image reveal">
-          <div class="events-image-text">
-            <h3>Unforgettable<br/>moments</h3>
-            <p>Skontaktuj się z nami i razem zaplanujemy Twój wymarzony event nad jeziorem.</p>
-            <a href="tel:604104405" class="btn btn-outline-white">📞 Zadzwoń do nas</a>
+        <div class="events-image reveal" id="videoWrapper" onclick="toggleVideo()" style="cursor:pointer;">
+          <video id="eventsVideo" playsinline style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:24px;z-index:0;">
+            <source src="video-hero.mp4" type="video/mp4">
+          </video>
+          <div id="videoPlayBtn" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:2;">
+            <div style="width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,0.2);backdrop-filter:blur(8px);border:2px solid rgba(255,255,255,0.6);display:flex;align-items:center;justify-content:center;transition:transform 0.2s,background 0.2s;">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
+            </div>
           </div>
         </div>
       </div>
@@ -2541,6 +2544,26 @@
           btn.disabled = false;
         }, 3000);
       }
+    });
+  </script>
+
+  <!-- ─── VIDEO PLAYER ────────────────────────────────────────────────── -->
+  <script>
+    const eventsVideo = document.getElementById('eventsVideo');
+    const videoPlayBtn = document.getElementById('videoPlayBtn');
+
+    function toggleVideo() {
+      if (eventsVideo.paused) {
+        eventsVideo.play();
+        videoPlayBtn.style.display = 'none';
+      } else {
+        eventsVideo.pause();
+        videoPlayBtn.style.display = 'flex';
+      }
+    }
+
+    eventsVideo.addEventListener('ended', () => {
+      videoPlayBtn.style.display = 'flex';
     });
   </script>
 
