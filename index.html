@@ -1730,19 +1730,19 @@
     <div class="container">
       <div class="stats-grid">
         <div class="stat-item reveal">
-          <div class="stat-number">2</div>
-          <div class="stat-label">Jeziora</div>
+          <div class="stat-number" data-target="2" data-suffix="">0</div>
+          <div class="stat-label">Domki</div>
         </div>
         <div class="stat-item reveal reveal-delay-1">
-          <div class="stat-number">140m²</div>
+          <div class="stat-number" data-target="140" data-suffix=" m²">0</div>
           <div class="stat-label">Największy domek</div>
         </div>
         <div class="stat-item reveal reveal-delay-2">
-          <div class="stat-number">12</div>
-          <div class="stat-label">Osób w domku VIP</div>
+          <div class="stat-number" data-target="8" data-suffix="">0</div>
+          <div class="stat-label">Domów</div>
         </div>
         <div class="stat-item reveal reveal-delay-3">
-          <div class="stat-number">365</div>
+          <div class="stat-number" data-target="365" data-suffix="">0</div>
           <div class="stat-label">Dni w roku</div>
         </div>
       </div>
@@ -2416,11 +2416,33 @@
     });
 
     // --- Animated stat counters ---
-    const statNumbers = document.querySelectorAll('.stat-number');
+    function animateCounter(el) {
+      const target = parseInt(el.dataset.target, 10);
+      const suffix = el.dataset.suffix || '';
+      const duration = target <= 10 ? 2200 : target <= 150 ? 2400 : 2600;
+      const startTime = performance.now();
+
+      // easeOutExpo for natural deceleration
+      function easeOutExpo(t) {
+        return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+      }
+
+      function tick(now) {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = easeOutExpo(progress);
+        const current = Math.round(eased * target);
+        el.textContent = current + suffix;
+        if (progress < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    const statNumbers = document.querySelectorAll('.stat-number[data-target]');
     const statObserver = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.style.opacity = '1';
+          animateCounter(entry.target);
           statObserver.unobserve(entry.target);
         }
       });
