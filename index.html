@@ -2557,8 +2557,11 @@
 
     function toggleVideo() {
       if (eventsVideo.paused) {
-        if (eventsVideo.ended) eventsVideo.currentTime = 0;
-        eventsVideo.play();
+        if (eventsVideo.ended) {
+          eventsVideo.load();
+        }
+        const p = eventsVideo.play();
+        if (p !== undefined) p.catch(() => eventsVideo.play());
         videoPlayBtn.style.display = 'none';
         videoPoster.style.display = 'none';
       } else {
