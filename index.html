@@ -2095,6 +2095,7 @@
           <video id="eventsVideo" playsinline preload="auto" poster="video-poster.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:24px;z-index:0;">
             <source src="video-hero.mp4" type="video/mp4">
           </video>
+          <img id="videoPoster" src="video-poster.png" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:24px;z-index:1;" />
           <div id="videoPlayBtn" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;z-index:2;">
             <div style="width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,0.2);backdrop-filter:blur(8px);border:2px solid rgba(255,255,255,0.6);display:flex;align-items:center;justify-content:center;transition:transform 0.2s,background 0.2s;">
               <svg width="28" height="28" viewBox="0 0 24 24" fill="white"><polygon points="5,3 19,12 5,21"/></svg>
@@ -2552,18 +2553,23 @@
     const eventsVideo = document.getElementById('eventsVideo');
     const videoPlayBtn = document.getElementById('videoPlayBtn');
 
+    const videoPoster = document.getElementById('videoPoster');
+
     function toggleVideo() {
       if (eventsVideo.paused) {
         eventsVideo.play();
         videoPlayBtn.style.display = 'none';
+        videoPoster.style.display = 'none';
       } else {
         eventsVideo.pause();
         videoPlayBtn.style.display = 'flex';
+        videoPoster.style.display = 'block';
       }
     }
 
     eventsVideo.addEventListener('ended', () => {
       videoPlayBtn.style.display = 'flex';
+      videoPoster.style.display = 'block';
     });
 
     eventsVideo.addEventListener('loadedmetadata', () => {
