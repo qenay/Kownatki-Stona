@@ -1729,19 +1729,19 @@
   <section class="stats-bar">
     <div class="container">
       <div class="stats-grid">
-        <div class="stat-item reveal">
+        <div class="stat-item">
           <div class="stat-number" data-target="2" data-suffix="">0</div>
-          <div class="stat-label">Domki</div>
+          <div class="stat-label">Jeziora</div>
         </div>
-        <div class="stat-item reveal reveal-delay-1">
+        <div class="stat-item">
           <div class="stat-number" data-target="140" data-suffix=" m²">0</div>
           <div class="stat-label">Największy domek</div>
         </div>
-        <div class="stat-item reveal reveal-delay-2">
+        <div class="stat-item">
           <div class="stat-number" data-target="8" data-suffix="">0</div>
           <div class="stat-label">Domów</div>
         </div>
-        <div class="stat-item reveal reveal-delay-3">
+        <div class="stat-item">
           <div class="stat-number" data-target="365" data-suffix="">0</div>
           <div class="stat-label">Dni w roku</div>
         </div>
@@ -2419,7 +2419,9 @@
     function animateCounter(el) {
       const target = parseInt(el.dataset.target, 10);
       const suffix = el.dataset.suffix || '';
-      const duration = target <= 10 ? 2200 : target <= 150 ? 2400 : 2600;
+      const isSmall = target <= 10;
+      const duration = isSmall ? 3000 : target <= 150 ? 2400 : 2600;
+      const startVal = 1;
       const startTime = performance.now();
 
       // easeOutExpo for natural deceleration
@@ -2431,10 +2433,11 @@
         const elapsed = now - startTime;
         const progress = Math.min(elapsed / duration, 1);
         const eased = easeOutExpo(progress);
-        const current = Math.round(eased * target);
+        const current = Math.round(startVal + eased * (target - startVal));
         el.textContent = current + suffix;
         if (progress < 1) requestAnimationFrame(tick);
       }
+      el.textContent = startVal + suffix;
       requestAnimationFrame(tick);
     }
 
