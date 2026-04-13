@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="60%" r="55%">
+      <stop offset="0%" stop-color="#1b3a4b"/>
+      <stop offset="100%" stop-color="#0d2230"/>
+    </radialGradient>
+    <radialGradient id="watershine" cx="50%" cy="100%" r="50%">
+      <stop offset="0%" stop-color="#2d6e8a" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#0d2230" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="32" height="32" rx="6" fill="url(#bg)"/>
+  <rect width="32" height="32" rx="6" fill="url(#watershine)"/>
+
+  <!-- Maszt -->
+  <line x1="15.5" y1="5" x2="15.5" y2="21" stroke="#e8dfc8" stroke-width="1.1" stroke-linecap="round"/>
+
+  <!-- Żagiel główny -->
+  <path d="M15.5 5.5 L25 19.5 L15.5 19.5 Z" fill="#e8dfc8" stroke="#c8b99a" stroke-width="0.4" stroke-linejoin="round"/>
+
+  <!-- Fok -->
+  <path d="M15.5 9 L9.5 18.5 L15.5 18.5 Z" fill="#c8b49a" stroke="#a89070" stroke-width="0.3" stroke-linejoin="round" opacity="0.9"/>
+
+  <!-- Kadłub -->
+  <path d="M9 21 Q15.5 24.5 22 21" stroke="#e8dfc8" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+
+  <!-- Fala 1 -->
+  <path d="M5.5 25 Q8 23.2 10.5 25 Q13 26.8 15.5 25 Q18 23.2 20.5 25 Q23 26.8 25.5 25" stroke="#4a9fba" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+
+  <!-- Fala 2 -->
+  <path d="M7 27.5 Q9.5 26 12 27.5 Q14.5 29 17 27.5 Q19.5 26 22 27.5" stroke="#3a8aaa" stroke-width="0.75" fill="none" stroke-linecap="round" opacity="0.65"/>
+</svg>
