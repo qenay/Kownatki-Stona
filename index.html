@@ -2557,6 +2557,7 @@
 
     function toggleVideo() {
       if (eventsVideo.paused) {
+        if (eventsVideo.ended) eventsVideo.currentTime = 0;
         eventsVideo.play();
         videoPlayBtn.style.display = 'none';
         videoPoster.style.display = 'none';
