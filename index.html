@@ -918,6 +918,38 @@
       box-shadow: 0 2px 8px rgba(14,36,68,0.1);
     }
 
+    /* ⚡ piorun — elektryzuje się */
+    @keyframes zap {
+      0%,100% { opacity:1; transform:scale(1) rotate(0deg); }
+      20%      { opacity:0.3; transform:scale(1.3) rotate(-15deg); filter:brightness(3); }
+      40%      { opacity:1; transform:scale(0.9) rotate(10deg); }
+      60%      { opacity:0.5; transform:scale(1.2) rotate(-8deg); filter:brightness(2); }
+      80%      { opacity:1; transform:scale(1) rotate(0deg); }
+    }
+    /* 🚿 prysznic — kap, kap */
+    @keyframes drip {
+      0%,100% { transform:translateY(0) scaleY(1); }
+      30%     { transform:translateY(3px) scaleY(1.1); }
+      60%     { transform:translateY(-2px) scaleY(0.95); }
+    }
+    /* 🚣 kajak — wiosłowanie */
+    @keyframes row {
+      0%,100% { transform:rotate(0deg); }
+      25%     { transform:rotate(-12deg) translateX(-3px); }
+      75%     { transform:rotate(12deg) translateX(3px); }
+    }
+    /* 🌲 drzewo — kołysze się od wiatru */
+    @keyframes sway {
+      0%,100% { transform:rotate(0deg); transform-origin:bottom center; }
+      25%     { transform:rotate(-6deg); transform-origin:bottom center; }
+      75%     { transform:rotate(6deg); transform-origin:bottom center; }
+    }
+
+    .camping-feature:nth-child(1) .camping-feature-icon span { animation: zap  1.8s ease-in-out infinite; display:inline-block; }
+    .camping-feature:nth-child(2) .camping-feature-icon span { animation: drip 1.4s ease-in-out infinite; display:inline-block; }
+    .camping-feature:nth-child(3) .camping-feature-icon span { animation: row  1.6s ease-in-out infinite; display:inline-block; }
+    .camping-feature:nth-child(4) .camping-feature-icon span { animation: sway 2.2s ease-in-out infinite; display:inline-block; }
+
     .camping-feature-text strong {
       display: block;
       font-size: 0.925rem;
@@ -1815,6 +1847,7 @@
               <li>Grill i miejsce na ognisko</li>
               <li>Taras z meblami ogrodowymi</li>
               <li>Pełne wyposażenie kuchni</li>
+              <li>Jacuzzi zewnętrzne (za dodatkową opłatą)</li>
             </ul>
             <div class="room-footer">
               <div class="room-price">
@@ -1847,6 +1880,7 @@
               <li>Prywatna ogrodzona działka</li>
               <li>Grill węglowy i gazowy</li>
               <li>Klimatyzacja</li>
+              <li>Jacuzzi zewnętrzne (za dodatkową opłatą)</li>
             </ul>
             <div class="room-footer">
               <div class="room-price">
@@ -1875,7 +1909,7 @@
           <div class="room-body">
             <span class="room-type">Domek</span>
             <h3 class="room-name">VIP</h3>
-            <p class="room-desc">Szczyt luksusu nad Mazurami. Cztery sypialnie, dwie łazienki i wanna z hydromasażem — dla tych, którzy wymagają najlepszego.</p>
+            <p class="room-desc">Przestronnie i rodzinnie. Cztery sypialnie, dwie łazienki i jacuzzi z hydromasażem, idealne dla rodzin i grup szukających prawdziwego wypoczynku nad Mazurami.</p>
             <div class="room-specs">
               <span class="room-spec">📐 140 m²</span>
               <span class="room-spec">🛏 4 sypialnie</span>
@@ -1921,28 +1955,28 @@
           </p>
           <div class="camping-features reveal reveal-delay-2">
             <div class="camping-feature">
-              <div class="camping-feature-icon">⚡</div>
+              <div class="camping-feature-icon"><span>⚡</span></div>
               <div class="camping-feature-text">
                 <strong>Podłączenia elektryczne</strong>
                 <span>Przyłącza 230V dla przyczep i camperów</span>
               </div>
             </div>
             <div class="camping-feature">
-              <div class="camping-feature-icon">🚿</div>
+              <div class="camping-feature-icon"><span>🚿</span></div>
               <div class="camping-feature-text">
                 <strong>Pełne zaplecze sanitarne</strong>
                 <span>Nowoczesne łazienki i sanitariaty</span>
               </div>
             </div>
             <div class="camping-feature">
-              <div class="camping-feature-icon">🚣</div>
+              <div class="camping-feature-icon"><span>🚣</span></div>
               <div class="camping-feature-text">
                 <strong>Sprzęt wodny gratis</strong>
                 <span>Kajaki, rowery wodne, SUP w cenie</span>
               </div>
             </div>
             <div class="camping-feature">
-              <div class="camping-feature-icon">🌲</div>
+              <div class="camping-feature-icon"><span>🌲</span></div>
               <div class="camping-feature-text">
                 <strong>Zaciszne miejsca</strong>
                 <span>Naturalne zacienienie pod drzewami</span>
