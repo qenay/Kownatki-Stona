@@ -226,6 +226,56 @@
     }
     .ticket-cta:hover { background: var(--gold-lt); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(188,150,117,0.4); }
 
+    /* ─── Logo slider ──────────────────────────────────────────────────── */
+    .logo-slider-section {
+      background: #f8f7f5;
+      padding: 32px 0;
+      overflow: hidden;
+      position: relative;
+    }
+    .logo-slider-track-wrap {
+      overflow: hidden;
+      position: relative;
+    }
+    .logo-slider-track {
+      display: flex;
+      align-items: center;
+      width: max-content;
+      animation: logoSlide 18s linear infinite;
+    }
+    .logo-slider-track .logo-item {
+      flex-shrink: 0;
+      padding: 0 48px;
+      display: flex;
+      align-items: center;
+    }
+    .logo-slider-track .logo-item img {
+      height: 36px;
+      width: auto;
+      mix-blend-mode: multiply;
+      filter: contrast(1.1);
+    }
+    @keyframes logoSlide {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    .logo-slider-fade-left,
+    .logo-slider-fade-right {
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 160px;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .logo-slider-fade-left {
+      left: 0;
+      background: linear-gradient(to right, #f8f7f5 0%, transparent 100%);
+    }
+    .logo-slider-fade-right {
+      right: 0;
+      background: linear-gradient(to left, #f8f7f5 0%, transparent 100%);
+    }
+
     /* ─── Info section ─────────────────────────────────────────────────── */
     .info-section { padding: 80px 0; }
     .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
@@ -447,6 +497,38 @@
         </div>
 
       </div>
+    </div>
+  </section>
+
+  <!-- ─── LOGO SLIDER ─────────────────────────────────────────────────── -->
+  <section class="logo-slider-section">
+    <div class="logo-slider-track-wrap">
+      <div class="logo-slider-track">
+        <!-- 10 kopii logo dla płynnej pętli -->
+        <div class="logo-item"><img src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img src="logo-biletomat.png" alt="Biletomat" /></div>
+        <!-- duplikat dla seamless loop -->
+        <div class="logo-item"><img src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img src="logo-biletomat.png" alt="Biletomat" /></div>
+      </div>
+      <div class="logo-slider-fade-left"></div>
+      <div class="logo-slider-fade-right"></div>
     </div>
   </section>
 
