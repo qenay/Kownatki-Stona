@@ -228,7 +228,7 @@
 
     /* ─── Logo slider ──────────────────────────────────────────────────── */
     .logo-slider-section {
-      background: #f8f7f5;
+      background: #000;
       padding: 28px 0;
       position: relative;
     }
@@ -262,8 +262,8 @@
       position: absolute; top: 0; bottom: 0; width: 140px;
       pointer-events: none; z-index: 2;
     }
-    .logo-fade-left  { left:  0; background: linear-gradient(to right, #f8f7f5, transparent); }
-    .logo-fade-right { right: 0; background: linear-gradient(to left,  #f8f7f5, transparent); }
+    .logo-fade-left  { left:  0; background: linear-gradient(to right, #000, transparent); }
+    .logo-fade-right { right: 0; background: linear-gradient(to left,  #000, transparent); }
 
     /* ─── Info section ─────────────────────────────────────────────────── */
     .info-section { padding: 80px 0; }
@@ -518,38 +518,6 @@
       <div class="logo-fade-right"></div>
     </div>
   </section>
-  <script>
-    (function() {
-      function removeDarkBg(img) {
-        const canvas = document.createElement('canvas');
-        canvas.width = img.naturalWidth;
-        canvas.height = img.naturalHeight;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0);
-        const d = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const px = d.data;
-        for (let i = 0; i < px.length; i += 4) {
-          const brightness = (px[i] + px[i+1] + px[i+2]) / 3;
-          if (brightness < 45) px[i+3] = 0;
-        }
-        ctx.putImageData(d, 0, 0);
-        img.src = canvas.toDataURL('image/png');
-      }
-      const imgs = document.querySelectorAll('img.logo-biletomat');
-      const first = imgs[0];
-      if (first.complete) {
-        removeDarkBg(first);
-        const dataUrl = first.src;
-        imgs.forEach(img => { img.src = dataUrl; });
-      } else {
-        first.addEventListener('load', function() {
-          removeDarkBg(first);
-          const dataUrl = first.src;
-          imgs.forEach(img => { img.src = dataUrl; });
-        });
-      }
-    })();
-  </script>
 
   <!-- ─── INFO ──────────────────────────────────────────────────────────── -->
   <section class="info-section">
