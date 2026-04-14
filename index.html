@@ -368,6 +368,8 @@
       animation: fadeDown 1s 0.8s both;
     }
 
+    .hero-bilety-btn { display: none; }
+
     .hero-scroll {
       position: absolute;
       bottom: 100px;
@@ -1366,7 +1368,7 @@
 
     /* ─── Responsive ───────────────────────────────────────────────────── */
     @media (max-width: 1024px) {
-      .hero-bilety-btn { display: none; }
+      .navbar-bilety-btn { display: none; }
       .rooms-grid { grid-template-columns: repeat(2, 1fr); }
       .footer-grid { grid-template-columns: 1fr 1fr; gap: 36px; }
       .attractions-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1377,7 +1379,7 @@
 
       .navbar-nav, .navbar-cta { display: none; }
       .hamburger { display: flex; }
-      .hero-bilety-btn { display: none; }
+      .hero-bilety-btn { display: inline-block; }
 
       .hero h1 { font-size: 2.5rem; }
 
@@ -1675,7 +1677,7 @@
 
         <div class="navbar-cta">
           <a href="#contact" class="btn btn-primary">Zarezerwuj pobyt</a>
-          <a href="/bilety/" class="btn btn-outline-white hero-bilety-btn" style="white-space:nowrap;">🎟 Kup bilety</a>
+          <a href="/bilety/" class="btn btn-outline-white navbar-bilety-btn" style="white-space:nowrap;">🎟 Kup bilety</a>
         </div>
 
         <button class="hamburger" id="hamburger" aria-label="Menu">
