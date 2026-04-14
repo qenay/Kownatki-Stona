@@ -226,6 +226,45 @@
     }
     .ticket-cta:hover { background: var(--gold-lt); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(188,150,117,0.4); }
 
+    /* ─── Logo slider ──────────────────────────────────────────────────── */
+    .logo-slider-section {
+      background: #f8f7f5;
+      padding: 28px 0;
+      position: relative;
+    }
+    .logo-slider-wrap {
+      overflow: hidden;
+      position: relative;
+    }
+    .logo-slider-track {
+      display: flex;
+      align-items: center;
+      width: max-content;
+      animation: logoSlide 22s linear infinite;
+      will-change: transform;
+    }
+    .logo-slider-track .logo-item {
+      flex-shrink: 0;
+      padding: 0 56px;
+      display: flex;
+      align-items: center;
+    }
+    .logo-slider-track .logo-item img {
+      height: 32px;
+      width: auto;
+      display: block;
+    }
+    @keyframes logoSlide {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    .logo-fade-left, .logo-fade-right {
+      position: absolute; top: 0; bottom: 0; width: 140px;
+      pointer-events: none; z-index: 2;
+    }
+    .logo-fade-left  { left:  0; background: linear-gradient(to right, #f8f7f5, transparent); }
+    .logo-fade-right { right: 0; background: linear-gradient(to left,  #f8f7f5, transparent); }
+
     /* ─── Info section ─────────────────────────────────────────────────── */
     .info-section { padding: 80px 0; }
     .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
@@ -449,6 +488,68 @@
       </div>
     </div>
   </section>
+
+  <!-- ─── LOGO SLIDER ─────────────────────────────────────────────────── -->
+  <section class="logo-slider-section">
+    <div class="logo-slider-wrap">
+      <div class="logo-slider-track" id="logoTrack">
+        <div class="logo-item"><img class="logo-biletomat" src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img class="logo-biletomat" src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img class="logo-biletomat" src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img class="logo-biletomat" src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img class="logo-biletomat" src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img class="logo-biletomat" src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img class="logo-biletomat" src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img class="logo-biletomat" src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img class="logo-biletomat" src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img class="logo-biletomat" src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img class="logo-biletomat" src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img class="logo-biletomat" src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img class="logo-biletomat" src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img class="logo-biletomat" src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img class="logo-biletomat" src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img class="logo-biletomat" src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img class="logo-biletomat" src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img class="logo-biletomat" src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img class="logo-biletomat" src="logo-biletomat.png" alt="Biletomat" /></div>
+        <div class="logo-item"><img class="logo-biletomat" src="logo-biletomat.png" alt="Biletomat" /></div>
+      </div>
+      <div class="logo-fade-left"></div>
+      <div class="logo-fade-right"></div>
+    </div>
+  </section>
+  <script>
+    (function() {
+      function removeDarkBg(img) {
+        const canvas = document.createElement('canvas');
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0);
+        const d = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const px = d.data;
+        for (let i = 0; i < px.length; i += 4) {
+          const brightness = (px[i] + px[i+1] + px[i+2]) / 3;
+          if (brightness < 45) px[i+3] = 0;
+        }
+        ctx.putImageData(d, 0, 0);
+        img.src = canvas.toDataURL('image/png');
+      }
+      const imgs = document.querySelectorAll('img.logo-biletomat');
+      const first = imgs[0];
+      if (first.complete) {
+        removeDarkBg(first);
+        const dataUrl = first.src;
+        imgs.forEach(img => { img.src = dataUrl; });
+      } else {
+        first.addEventListener('load', function() {
+          removeDarkBg(first);
+          const dataUrl = first.src;
+          imgs.forEach(img => { img.src = dataUrl; });
+        });
+      }
+    })();
+  </script>
 
   <!-- ─── INFO ──────────────────────────────────────────────────────────── -->
   <section class="info-section">
