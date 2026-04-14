@@ -61,12 +61,13 @@
       transition: background var(--transition), box-shadow var(--transition);
     }
     .navbar .container { max-width: none; padding: 0 32px; }
-    .navbar-inner { display: flex; align-items: center; justify-content: space-between; height: 100%; }
+    .navbar-inner { display: flex; align-items: center; justify-content: space-between; height: 100%; position: relative; }
     .navbar-logo { display: flex; flex-direction: column; }
     .navbar-logo .logo-main { font-family: 'Marcellus', serif; font-size: 1.35rem; color: var(--white); line-height: 1.1; }
     .navbar-logo .logo-sub { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); }
 
     .navbar-nav {
+      position: absolute; left: 50%; transform: translateX(-50%);
       display: flex; align-items: center; gap: 0; list-style: none;
       border: 2px solid rgba(255,255,255,0.38); border-radius: 9999px; padding: 4px;
     }
