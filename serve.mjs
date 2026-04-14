@@ -26,9 +26,14 @@ const MIME = {
 
 const server = http.createServer((req, res) => {
   let urlPath = req.url.split('?')[0];
-  if (urlPath === '/') urlPath = '/index.html';
+  if (urlPath === '/' || urlPath === '') urlPath = '/index.html';
 
-  const filePath = path.join(__dirname, urlPath);
+  let filePath = path.join(__dirname, urlPath);
+
+  // jeśli ścieżka to katalog, szukaj index.html w środku
+  if (!path.extname(filePath)) {
+    filePath = path.join(filePath, 'index.html');
+  }
   const ext = path.extname(filePath).toLowerCase();
   const contentType = MIME[ext] || 'application/octet-stream';
 

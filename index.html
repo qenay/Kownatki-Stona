@@ -1671,7 +1671,10 @@
           <li><a href="#contact">Kontakt</a></li>
         </ul>
 
-        <a href="#contact" class="btn btn-primary navbar-cta">Zarezerwuj pobyt</a>
+        <div class="navbar-cta" style="display:flex;gap:10px;align-items:center;">
+          <a href="#contact" class="btn btn-primary">Zarezerwuj pobyt</a>
+          <a href="/bilety/" class="btn btn-outline-white" style="white-space:nowrap;">🎟 Kup bilety</a>
+        </div>
 
         <button class="hamburger" id="hamburger" aria-label="Menu">
           <span></span><span></span><span></span>
@@ -1689,6 +1692,7 @@
     <a href="#map" class="nav-link-mobile">Mapa</a>
     <a href="#events" class="nav-link-mobile">Grupy &amp; Eventy</a>
     <a href="#contact" class="nav-link-mobile">Kontakt</a>
+    <a href="/bilety/" class="nav-link-mobile" style="color:var(--gold);font-weight:700;">🎟 Kup bilety</a>
     <a href="#contact" class="btn btn-primary">Zarezerwuj pobyt</a>
   </div>
 
@@ -1708,6 +1712,9 @@
         </a>
         <a href="#about" class="btn btn-outline-white" style="font-size:1rem; padding:16px 36px;">
           Poznaj ośrodek
+        </a>
+        <a href="/bilety/" class="btn btn-outline-white" style="font-size:1rem; padding:16px 36px;">
+          🎟 Kup bilety
         </a>
       </div>
     </div>
@@ -2445,11 +2452,13 @@
     statNumbers.forEach(el => statObserver.observe(el));
 
     // --- MapLibre GL map ---
+    let mainMap = null;
+    let mainStartMarker = null;
     (function initMap() {
       const LNG = 20.2706965;
       const LAT = 53.4178596;
 
-      const map = new maplibregl.Map({
+      mainMap = new maplibregl.Map({
         container: 'resort-map',
         style: 'https://basemaps.cartocdn.com/gl/positron-gl-style/style.json',
         center: [LNG, LAT],
@@ -2458,9 +2467,8 @@
         attributionControl: { compact: true },
       });
 
-      map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
-      map.scrollZoom.disable();
-      map.on('click', () => map.scrollZoom.enable());
+      mainMap.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'bottom-right');
+      mainMap.scrollZoom.enable();
 
       // Custom gold SVG pin
       const pinEl = document.createElement('div');
@@ -2491,9 +2499,7 @@
       const marker = new maplibregl.Marker({ element: pinEl, anchor: 'bottom' })
         .setLngLat([LNG, LAT])
         .setPopup(popup)
-        .addTo(map);
-
-
+        .addTo(mainMap);
 
       pinEl.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -2632,8 +2638,8 @@
         const lng  = parseFloat(geoData[0].lon);
         const name = geoData[0].display_name.split(',').slice(0, 2).join(',');
 
-        // 2. Get road distance via OSRM
-        const osrmRes  = await fetch(`https://router.project-osrm.org/route/v1/driving/${lng},${lat};${RESORT_LNG},${RESORT_LAT}?overview=false`);
+        // 2. Get road distance + geometry via OSRM
+        const osrmRes  = await fetch(`https://router.project-osrm.org/route/v1/driving/${lng},${lat};${RESORT_LNG},${RESORT_LAT}?overview=full&geometries=geojson`);
         const osrmData = await osrmRes.json();
         if (osrmData.code !== 'Ok') throw new Error('routing failed');
 
@@ -2647,6 +2653,34 @@
         document.getElementById('distKm').innerHTML = `${km} km`;
         document.getElementById('distTime').textContent = `Szacowany czas jazdy: ${timeStr}`;
         result.classList.add('visible');
+
+        // Rysuj trasę na mapie
+        if (mainMap) {
+          const coords = osrmData.routes[0].geometry.coordinates;
+          if (mainMap.getSource('route')) {
+            mainMap.getSource('route').setData({ type: 'Feature', geometry: { type: 'LineString', coordinates: coords } });
+          } else {
+            mainMap.addSource('route', { type: 'geojson', data: { type: 'Feature', geometry: { type: 'LineString', coordinates: coords } } });
+            mainMap.addLayer({ id: 'route-shadow', type: 'line', source: 'route', layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#000', 'line-width': 7, 'line-opacity': 0.1 } });
+            mainMap.addLayer({ id: 'route', type: 'line', source: 'route', layout: { 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': '#bc9675', 'line-width': 4, 'line-opacity': 0.95 } });
+          }
+          // Pinezka startowa
+          if (mainStartMarker) mainStartMarker.remove();
+          const startEl = document.createElement('div');
+          startEl.style.cssText = 'display:flex;flex-direction:column;align-items:center;';
+          const lbl = document.createElement('div');
+          lbl.style.cssText = 'background:white;border:1.5px solid #27ae60;color:#1a1a1a;font-family:DM Sans,sans-serif;font-size:0.72rem;font-weight:600;padding:3px 10px;border-radius:50px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.15);margin-bottom:4px;';
+          lbl.textContent = city;
+          const pin = document.createElement('div');
+          pin.style.cssText = 'width:32px;height:32px;';
+          pin.innerHTML = `<svg viewBox="0 0 48 64" fill="none"><path d="M24 2C13.5 2 5 10.5 5 21c0 14 19 39 19 39s19-25 19-39C43 10.5 34.5 2 24 2z" fill="#2ecc71" stroke="#27ae60" stroke-width="2"/><circle cx="24" cy="21" r="8" fill="white"/></svg>`;
+          startEl.appendChild(lbl);
+          startEl.appendChild(pin);
+          mainStartMarker = new maplibregl.Marker({ element: startEl, anchor: 'bottom' }).setLngLat([lng, lat]).addTo(mainMap);
+          // Dopasuj widok
+          const bounds = coords.reduce((b, c) => b.extend(c), new maplibregl.LngLatBounds(coords[0], coords[0]));
+          mainMap.fitBounds(bounds, { padding: 56 });
+        }
       } catch {
         error.classList.add('visible');
       } finally {
