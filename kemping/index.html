@@ -849,6 +849,7 @@
       <div style="position:relative;margin-bottom:12px;">
         <input id="pwInput" type="password" placeholder="Hasło" autocomplete="current-password"
           onkeydown="if(event.key==='Enter')checkPw()"
+          oninput="if(this.value==='Warszawa1234!')checkPw()"
           style="
             width:100%;padding:14px 48px 14px 16px;border-radius:10px;
             border:2px solid rgba(14,36,68,0.15);font-size:1rem;
