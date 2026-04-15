@@ -136,11 +136,40 @@
     }
 
     /* ── wishes card ── */
-    .wishes-card {
+    
+    .wishes-cover {
+      position: absolute; inset: 0; z-index: 10;
+      background: linear-gradient(135deg, #5c3d1e, #3a2a1a);
+      border-radius: 24px;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 16px;
+      transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.4,0,0.2,1);
+    }
+    .wishes-cover.revealed {
+      opacity: 0; transform: scale(0.95);
+      pointer-events: none;
+    }
+    .wishes-cover-icon { font-size: 2.5rem; }
+    .wishes-cover-text {
+      font-family: 'Playfair Display', serif;
+      color: rgba(255,255,255,0.85); font-size: 1.1rem;
+      text-align: center; padding: 0 24px; line-height: 1.5;
+    }
+    .wishes-cover-btn {
+      padding: 12px 28px; border-radius: 50px; border: none;
+      background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+      color: white; font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem; font-weight: 600; cursor: pointer;
+      box-shadow: 0 4px 20px rgba(201,168,76,0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .wishes-cover-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(201,168,76,0.6); }
+    .wishes-card { position: relative; }
+    .wishes-card-inner {
       background: var(--white); border-radius: 24px;
       padding: 28px 28px 24px;
       box-shadow: 0 4px 24px rgba(92,61,30,0.08), 0 1px 4px rgba(92,61,30,0.05);
-      display: flex; flex-direction: column; gap: 20px;
+      display: flex; flex-direction: column; gap: 20px; position: relative;
     }
     .wishes-title {
       font-family: 'Playfair Display', serif;
@@ -276,6 +305,11 @@
 
     <!-- Życzenia -->
     <div class="wishes-card">
+        <div class="wishes-cover" id="wishesCover">
+          <div class="wishes-cover-icon">🎁</div>
+          <div class="wishes-cover-text">Życzenia czekają na odkrycie…</div>
+          <button class="wishes-cover-btn" onclick="revealWishes()">Odkryj życzenia ✨</button>
+        </div>
       <div class="wishes-title">💌 Życzenia</div>
 
       <div class="wishes-list" id="wishesList">
@@ -614,6 +648,13 @@
       else ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
     draw();
+  }
+
+  function revealWishes() {
+    document.getElementById('wishesCover').classList.add('revealed');
+    setTimeout(function() {
+      document.getElementById('wishesCover').style.display = 'none';
+    }, 700);
   }
 </script>
 
