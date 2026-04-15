@@ -239,7 +239,7 @@
 <!-- hidden YouTube player -->
 <!-- hidden YouTube player 2 -->
 <iframe id="ytPlayer2"
-  src="https://www.youtube-nocookie.com/embed/ZTovImpnZcM?autoplay=0&controls=0&mute=0&enablejsapi=1"
+  src="https://www.youtube-nocookie.com/embed/ZTovImpnZcM?autoplay=0&controls=0&mute=0&enablejsapi=1&origin=https://plazakownatki.pl"
   allow="autoplay; encrypted-media"
   style="position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;top:-9999px;"
   frameborder="0">
@@ -615,6 +615,23 @@
     }
     draw();
   }
+
+  // Detect YouTube video end to reset play button
+  window.addEventListener('message', function(e) {
+    try {
+      var data = JSON.parse(e.data);
+      if (data.event === 'infoDelivery' && data.info && data.info.playerState === 0) {
+        // video ended
+        if (slideshowPlaying) {
+          stopSlideshow();
+          stopLyricsTracking();
+          document.getElementById('slideshowPlayBtn').textContent = '▶';
+          document.getElementById('slideshowPlayBtn').classList.remove('playing');
+          slideshowPlaying = false;
+        }
+      }
+    } catch(err) {}
+  });
 </script>
 
 
