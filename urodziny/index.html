@@ -491,7 +491,7 @@
 
     // CZAS (sekundy) kiedy pada "zyj nam 100 lat"
   const LYRICS_START    = 88;
-  const LYRICS_DURATION = 4;
+  const LYRICS_DURATION = 2;
   let lyricsTimer = null;
   let elapsedTimer = null;
   let elapsedSecs = 0;
@@ -502,7 +502,7 @@
     clearTimeout(lyricsTimer);
     elapsedTimer = setInterval(function() {
       elapsedSecs++;
-      if (elapsedSecs === LYRICS_START) show200lat();
+      if (elapsedSecs === LYRICS_START || elapsedSecs === 170) show200lat();
     }, 1000);
   }
 
