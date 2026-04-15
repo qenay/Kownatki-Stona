@@ -356,6 +356,36 @@
     }
     .co-checkbox input { width: 18px; height: 18px; accent-color: var(--gold); cursor: pointer; }
 
+    /* slider */
+    .co-slider-wrapper { overflow: hidden; padding: 0 !important; }
+    .co-slider-track {
+      display: flex;
+      width: 200%;
+      transition: transform 0.42s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .co-slider-track.slid { transform: translateX(-50%); }
+    .co-slide {
+      width: 50%;
+      padding: 28px 32px;
+      box-sizing: border-box;
+    }
+    .co-inv-header {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 12px;
+    }
+    .co-inv-back {
+      background: none; border: 2px solid rgba(14,36,68,0.15); border-radius: 8px;
+      padding: 8px 14px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
+      color: var(--navy); cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+      white-space: nowrap;
+    }
+    .co-inv-back:hover { background: rgba(14,36,68,0.06); border-color: var(--navy); }
+    @media (max-width: 600px) {
+      .co-slide { padding: 20px; }
+      .co-inv-header { flex-wrap: wrap; gap: 8px; }
+    }
+
     /* summary bar */
     .checkout-summary-bar {
       background: var(--white); border-radius: 16px;
@@ -558,21 +588,47 @@
     </div>
     <div class="checkout-body">
 
-      <!-- Zamawiający -->
-      <div class="checkout-section">
-        <div class="checkout-section-title">Zamawiający</div>
-        <div class="checkout-section-sub">Wypełnij pola swoimi danymi.</div>
-        <div class="co-form">
-          <input class="co-input" type="text" placeholder="Imię" id="coFirstName" required />
-          <input class="co-input" type="text" placeholder="Nazwisko" id="coLastName" required />
-          <input class="co-input full" type="email" placeholder="Adres e-mail" id="coEmail" required />
-          <input class="co-input full" type="tel" placeholder="Numer telefonu" id="coPhone" required />
-          <input class="co-input" type="text" placeholder="Kod pocztowy (XX-XXX)" id="coZip" />
-          <textarea class="co-input full" placeholder="Uwagi do zamówienia" id="coNotes"></textarea>
-          <label class="co-checkbox">
-            <input type="checkbox" id="coInvoice" />
-            Dodaj fakturę do zamówienia
-          </label>
+      <!-- Zamawiający / Faktura – slider -->
+      <div class="checkout-section co-slider-wrapper">
+        <div class="co-slider-track" id="coSliderTrack">
+
+          <!-- Panel 1: Zamawiający -->
+          <div class="co-slide">
+            <div class="checkout-section-title">Zamawiający</div>
+            <div class="checkout-section-sub">Wypełnij pola swoimi danymi.</div>
+            <div class="co-form">
+              <input class="co-input" type="text" placeholder="Imię" id="coFirstName" required />
+              <input class="co-input" type="text" placeholder="Nazwisko" id="coLastName" required />
+              <input class="co-input full" type="email" placeholder="Adres e-mail" id="coEmail" required />
+              <input class="co-input full" type="tel" placeholder="Numer telefonu" id="coPhone" required />
+              <input class="co-input" type="text" placeholder="Kod pocztowy (XX-XXX)" id="coZip" />
+              <textarea class="co-input full" placeholder="Uwagi do zamówienia" id="coNotes"></textarea>
+              <label class="co-checkbox">
+                <input type="checkbox" id="coInvoice" onchange="toggleInvoice(this)" />
+                Dodaj fakturę do zamówienia
+              </label>
+            </div>
+          </div>
+
+          <!-- Panel 2: Faktura VAT -->
+          <div class="co-slide">
+            <div class="co-inv-header">
+              <button class="co-inv-back" onclick="goBackToForm()">← Wróć</button>
+              <div>
+                <div class="checkout-section-title" style="margin-bottom:2px;">Dane do faktury</div>
+                <div class="checkout-section-sub" style="margin-bottom:0;">Uzupełnij dane firmy lub osoby fizycznej.</div>
+              </div>
+              <div style="width:80px;"></div>
+            </div>
+            <div class="co-form" style="margin-top:20px;">
+              <input class="co-input full" type="text" placeholder="NIP" id="invNip" />
+              <input class="co-input full" type="text" placeholder="Imię i nazwisko / nazwa firmy" id="invName" />
+              <input class="co-input" type="text" placeholder="Miasto" id="invCity" />
+              <input class="co-input" type="text" placeholder="Kod pocztowy (XX-XXX)" id="invZip" />
+              <input class="co-input full" type="text" placeholder="Ulica i numer" id="invStreet" />
+            </div>
+          </div>
+
         </div>
       </div>
 
@@ -714,6 +770,20 @@
         document.getElementById('checkoutOverlay').classList.add('open');
         document.body.style.overflow = 'hidden';
       }, 50);
+    }
+
+    function toggleInvoice(cb) {
+      const track = document.getElementById('coSliderTrack');
+      if (cb.checked) {
+        track.classList.add('slid');
+      } else {
+        track.classList.remove('slid');
+      }
+    }
+
+    function goBackToForm() {
+      document.getElementById('coInvoice').checked = false;
+      document.getElementById('coSliderTrack').classList.remove('slid');
     }
 
     function closeCheckout() {
