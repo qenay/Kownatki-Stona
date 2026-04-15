@@ -372,8 +372,12 @@
   }
 
   // ── Audio player ─────────────────────────────────────────────────────────
-  const wishAudio = new Audio('audio/zyczenia.mp3');
+  const wishAudio = new Audio('/urodziny/audio/zyczenia.mp3');
   let currentReadingIdx = null;
+
+  wishAudio.onerror = () => {
+    alert('Nie można załadować pliku audio. Sprawdź czy plik zyczenia.mp3 jest w folderze urodziny/audio/');
+  };
 
   function readWish(idx) {
     const btn = document.getElementById('readBtn' + idx);
@@ -387,7 +391,6 @@
       return;
     }
 
-    // stop previous
     wishAudio.pause();
     wishAudio.currentTime = 0;
     if (currentReadingIdx !== null) {
@@ -395,7 +398,12 @@
       if (prev) { prev.innerHTML = '▶ Odczytaj'; prev.classList.remove('reading'); }
     }
 
-    wishAudio.play();
+    wishAudio.play().catch(e => {
+      console.error('Audio error:', e);
+      btn.innerHTML = '▶ Odczytaj';
+      btn.classList.remove('reading');
+      currentReadingIdx = null;
+    });
     btn.innerHTML = '⏹ Zatrzymaj';
     btn.classList.add('reading');
     currentReadingIdx = idx;
