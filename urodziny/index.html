@@ -139,8 +139,18 @@
       from { opacity: 0; transform: translateY(10px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-    .wish-text { font-size: 0.95rem; line-height: 1.6; color: var(--text); margin-bottom: 6px; }
+    .wish-text { font-size: 0.95rem; line-height: 1.6; color: var(--text); margin-bottom: 10px; }
     .wish-author { font-size: 0.78rem; color: var(--gold); font-weight: 600; letter-spacing: 0.04em; }
+    .wish-read-btn {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 10px; padding: 7px 16px; border-radius: 20px; border: none;
+      background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+      color: var(--white); font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem; font-weight: 600; cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .wish-read-btn:hover { opacity: 0.88; transform: translateY(-1px); }
+    .wish-read-btn.reading { background: linear-gradient(135deg, #b45309, #d97706); animation: pulse 1.5s ease-in-out infinite; }
 
     .wish-form { display: flex; flex-direction: column; gap: 10px; }
     .wish-form textarea {
@@ -349,12 +359,53 @@
     const list = document.getElementById('wishesList');
     const allWishes = [...DEFAULT_WISHES, ...loadWishes()];
     list.innerHTML = '';
-    allWishes.forEach(w => {
+    allWishes.forEach((w, i) => {
       const div = document.createElement('div');
       div.className = 'wish-item';
-      div.innerHTML = `<div class="wish-text">${escHtml(w.text)}</div>${w.author ? `<div class="wish-author">— ${escHtml(w.author)}</div>` : ''}`;
+      div.innerHTML = `
+        <div class="wish-text">${escHtml(w.text)}</div>
+        ${w.author ? `<div class="wish-author">— ${escHtml(w.author)}</div>` : ''}
+        <button class="wish-read-btn" id="readBtn${i}" onclick="readWish(${i})">▶ Odczytaj</button>
+      `;
       list.appendChild(div);
     });
+  }
+
+  // ── Text-to-speech ───────────────────────────────────────────────────────
+  let currentReadingIdx = null;
+
+  function readWish(idx) {
+    const allWishes = [...DEFAULT_WISHES, ...loadWishes()];
+    const w = allWishes[idx];
+    const btn = document.getElementById('readBtn' + idx);
+
+    if (currentReadingIdx === idx && window.speechSynthesis.speaking) {
+      window.speechSynthesis.cancel();
+      btn.innerHTML = '▶ Odczytaj';
+      btn.classList.remove('reading');
+      currentReadingIdx = null;
+      return;
+    }
+
+    window.speechSynthesis.cancel();
+    if (currentReadingIdx !== null) {
+      const prev = document.getElementById('readBtn' + currentReadingIdx);
+      if (prev) { prev.innerHTML = '▶ Odczytaj'; prev.classList.remove('reading'); }
+    }
+
+    const utt = new SpeechSynthesisUtterance(w.text + (w.author ? '. ' + w.author : ''));
+    utt.lang = 'pl-PL';
+    utt.rate = 0.92;
+    utt.pitch = 1.05;
+
+    const voices = window.speechSynthesis.getVoices();
+    const plVoice = voices.find(v => v.lang.startsWith('pl'));
+    if (plVoice) utt.voice = plVoice;
+
+    utt.onstart = () => { btn.innerHTML = '⏹ Zatrzymaj'; btn.classList.add('reading'); currentReadingIdx = idx; };
+    utt.onend = utt.onerror = () => { btn.innerHTML = '▶ Odczytaj'; btn.classList.remove('reading'); currentReadingIdx = null; };
+
+    window.speechSynthesis.speak(utt);
   }
 
   function addWish() {
