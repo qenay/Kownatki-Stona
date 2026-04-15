@@ -489,6 +489,43 @@
     slideInterval = null;
   }
 
+    // CZAS (sekundy) kiedy pada "zyj nam 100 lat"
+  const LYRICS_START    = 88;
+  const LYRICS_DURATION = 4;
+  let lyricsTimer = null;
+  let elapsedTimer = null;
+  let elapsedSecs = 0;
+
+  function startLyricsTracking() {
+    elapsedSecs = 0;
+    clearInterval(elapsedTimer);
+    clearTimeout(lyricsTimer);
+    elapsedTimer = setInterval(function() {
+      elapsedSecs++;
+      if (elapsedSecs === LYRICS_START) show200lat();
+    }, 1000);
+  }
+
+  function stopLyricsTracking() {
+    clearInterval(elapsedTimer);
+    clearTimeout(lyricsTimer);
+    hide200lat();
+  }
+
+  function show200lat() {
+    var el = document.getElementById('overlay200');
+    var txt = document.getElementById('overlay200Text');
+    el.style.display = 'flex';
+    txt.style.animation = 'none';
+    void txt.offsetWidth;
+    txt.style.animation = 'pop200 0.5s cubic-bezier(0.34,1.56,0.64,1)';
+    lyricsTimer = setTimeout(hide200lat, LYRICS_DURATION * 1000);
+  }
+
+  function hide200lat() {
+    document.getElementById('overlay200').style.display = 'none';
+  }
+
   function toggleSlideshowMusic() {
     const btn = document.getElementById('slideshowPlayBtn');
     if (slideshowPlaying) {
