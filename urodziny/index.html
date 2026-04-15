@@ -493,12 +493,14 @@
     const btn = document.getElementById('slideshowPlayBtn');
     if (slideshowPlaying) {
       yt2.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+      stopLyricsTracking();
       stopSlideshow();
       btn.textContent = '▶';
       btn.classList.remove('playing');
       slideshowPlaying = false;
     } else {
       yt2.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+      startLyricsTracking();
       startSlideshow();
       btn.textContent = '⏸';
       btn.classList.add('playing');
@@ -578,5 +580,34 @@
   }
 </script>
 
+
+  <!-- 200 lat overlay -->
+  <style>
+    @keyframes pop200 {
+      from { transform: scale(0.3); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+    #overlay200 {
+      position:fixed;inset:0;z-index:5000;
+      display:none;align-items:center;justify-content:center;
+      pointer-events:none;
+      background: rgba(0,0,0,0.55);
+    }
+    #overlay200Text {
+      font-family:'Playfair Display',serif;
+      font-size:clamp(5rem,18vw,13rem);
+      font-weight:700;
+      text-align:center;
+      line-height:1;
+      background: linear-gradient(135deg,#f9e4a0,#e2c97e,#f9e4a0);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;
+      filter: drop-shadow(0 0 40px rgba(201,168,76,0.9));
+      animation: pop200 0.5s cubic-bezier(0.34,1.56,0.64,1);
+    }
+  </style>
+  <div id="overlay200">
+    <div id="overlay200Text">200 lat!</div>
+  </div>
 </body>
 </html>
