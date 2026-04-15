@@ -718,7 +718,8 @@
       <div class="promo-row">
         <input class="promo-input" id="promoInput" type="text" placeholder="Kod rabatowy"
           onkeydown="if(event.key==='Enter')applyPromo()" />
-        <button class="promo-btn" onclick="applyPromo()">Zastosuj</button>
+        <button class="promo-btn" id="promoApplyBtn" onclick="applyPromo()">Zastosuj</button>
+        <button class="promo-btn" id="promoRemoveBtn" onclick="removePromo()" style="display:none;background:#6b7280;">✕</button>
       </div>
       <div class="promo-feedback" id="promoFeedback"></div>
       <div class="cart-discount-row" id="cartDiscountRow" style="display:none;">
@@ -764,8 +765,8 @@
         fb.className = 'promo-feedback ok';
         fb.textContent = `✓ Kod „${code}" zastosowany — rabat ${PROMO_CODES[code] * 100}%`;
         document.getElementById('promoInput').disabled = true;
-        document.querySelector('.promo-btn').disabled = true;
-        document.querySelector('.promo-btn').style.opacity = '0.5';
+        document.getElementById('promoApplyBtn').style.display = 'none';
+        document.getElementById('promoRemoveBtn').style.display = 'block';
       } else {
         fb.className = 'promo-feedback err';
         fb.textContent = '✕ Nieprawidłowy kod rabatowy.';
@@ -782,8 +783,20 @@
       fb.textContent = `✓ Kod „${activePromo}" zastosowany — rabat ${PROMO_CODES[activePromo] * 100}%`;
       document.getElementById('promoInput').value = activePromo;
       document.getElementById('promoInput').disabled = true;
-      document.querySelector('.promo-btn').disabled = true;
-      document.querySelector('.promo-btn').style.opacity = '0.5';
+      document.getElementById('promoApplyBtn').style.display = 'none';
+      document.getElementById('promoRemoveBtn').style.display = 'block';
+    }
+
+    function removePromo() {
+      activePromo = null;
+      sessionStorage.removeItem('kempingPromo');
+      document.getElementById('promoInput').value = '';
+      document.getElementById('promoInput').disabled = false;
+      document.getElementById('promoInput').focus();
+      document.getElementById('promoApplyBtn').style.display = 'block';
+      document.getElementById('promoRemoveBtn').style.display = 'none';
+      document.getElementById('promoFeedback').textContent = '';
+      updateTotal();
     }
 
     // ── Cart timer ────────────────────────────────────────────────────────
