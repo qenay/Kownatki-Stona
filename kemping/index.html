@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="description" content="Rezerwacja miejsc kempingowych — Ośrodek Plaża Kownatki, Mazury" />
+  <title>Kemping — Ośrodek Plaża Kownatki</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=Marcellus&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #0e2444;
+      --gold:    #bc9675;
+      --gold-lt: #d4b08f;
+      --off-white: #f8f7f5;
+      --white:   #ffffff;
+      --text:    #1a1a1a;
+      --muted:   #6b7280;
+      --radius:  12px;
+      --max-w:   1240px;
+      --nav-h:   88px;
+      --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+    body { font-family: 'DM Sans', 'Helvetica Neue', Arial, sans-serif; color: var(--text); background: var(--off-white); overflow-x: hidden; }
+    h1, h2, h3, h4 { font-family: 'Marcellus', Georgia, serif; line-height: 1.2; }
+    img { max-width: 100%; display: block; }
+    a { text-decoration: none; color: inherit; }
+
+    .container { width: 100%; max-width: var(--max-w); margin: 0 auto; padding: 0 24px; }
+
+    /* ─── Buttons ──────────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 32px; border-radius: 50px;
+      font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 600;
+      cursor: pointer; transition: var(--transition); border: 2px solid transparent;
+    }
+    .btn-primary { background: var(--gold); color: var(--white); border-color: var(--gold); }
+    .btn-primary:hover { background: var(--gold-lt); border-color: var(--gold-lt); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(188,150,117,0.35); }
+    .btn-outline-white { background: transparent; color: var(--white); border-color: rgba(255,255,255,0.7); }
+    .btn-outline-white:hover { background: rgba(255,255,255,0.15); border-color: var(--white); transform: translateY(-2px); }
+
+    /* ─── Navbar ───────────────────────────────────────────────────────── */
+    .navbar {
+      position: fixed; top: 0; left: 0; right: 0;
+      height: calc(var(--nav-h) + 12px); padding-top: 12px;
+      z-index: 1000; background: var(--navy);
+      box-shadow: 0 4px 24px rgba(14,36,68,0.25);
+    }
+    .navbar .container { max-width: none; padding: 0 32px; }
+    .navbar-inner { display: flex; align-items: center; justify-content: space-between; height: 100%; position: relative; }
+    .navbar-logo { display: flex; flex-direction: column; }
+    .navbar-logo .logo-main { font-family: 'Marcellus', serif; font-size: 1.35rem; color: var(--white); line-height: 1.1; }
+    .navbar-logo .logo-sub { font-size: 0.65rem; font-weight: 500; letter-spacing: 0.15em; text-transform: uppercase; color: var(--gold); }
+
+    .navbar-nav {
+      position: absolute; left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 0; list-style: none;
+      border: 2px solid rgba(255,255,255,0.38); border-radius: 9999px; padding: 4px;
+    }
+    .navbar-nav a {
+      display: block; font-size: 0.875rem; font-weight: 500; color: #fff;
+      padding: 8px 18px; border-radius: 9999px; white-space: nowrap;
+      transition: background var(--transition);
+    }
+    .navbar-nav a:hover { background: rgba(255,255,255,0.12); }
+    .navbar-nav a.active { background: var(--gold); }
+    .navbar-cta { margin-left: 16px; display: flex; gap: 10px; align-items: center; }
+
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; margin-left: auto; }
+    .hamburger span { display: block; width: 26px; height: 2px; background: var(--white); border-radius: 2px; transition: var(--transition); }
+    .hamburger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+    .nav-overlay {
+      display: none; position: fixed; inset: 0; background: var(--navy);
+      z-index: 999; flex-direction: column; align-items: center; justify-content: center;
+      gap: 28px; opacity: 0; transition: opacity var(--transition);
+    }
+    .nav-overlay.open { opacity: 1; }
+    .nav-link-mobile { font-family: 'Marcellus', serif; font-size: 1.6rem; color: var(--white); transition: color var(--transition); }
+    .nav-link-mobile:hover { color: var(--gold); }
+
+    /* ─── Hero ─────────────────────────────────────────────────────────── */
+    .page-hero {
+      background: var(--navy);
+      padding: calc(var(--nav-h) + 48px) 0 56px;
+    }
+    .page-hero-label {
+      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.2em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 12px;
+    }
+    .page-hero h1 {
+      font-family: 'Marcellus', serif; font-size: 3rem; color: var(--white);
+      margin-bottom: 12px; line-height: 1.1;
+    }
+    .page-hero p { color: rgba(255,255,255,0.6); font-size: 1rem; }
+
+    /* ─── Main content ─────────────────────────────────────────────────── */
+    .booking-section { padding: 56px 0 80px; }
+
+    .booking-card {
+      background: var(--white);
+      border-radius: 20px;
+      box-shadow: 0 4px 32px rgba(14,36,68,0.08);
+      overflow: hidden;
+      max-width: 780px;
+      margin: 0 auto;
+    }
+
+    .booking-card-header {
+      background: var(--navy);
+      padding: 24px 32px;
+      display: flex; align-items: center; gap: 16px;
+    }
+    .booking-card-header-icon {
+      width: 48px; height: 48px; border-radius: 10px;
+      background: var(--gold); display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem; flex-shrink: 0;
+    }
+    .booking-card-header-text h2 {
+      font-family: 'Marcellus', serif; font-size: 1.2rem; color: var(--gold);
+    }
+    .booking-card-header-text p { font-size: 0.82rem; color: rgba(255,255,255,0.55); margin-top: 2px; }
+
+    /* ─── Ticket rows ──────────────────────────────────────────────────── */
+    .ticket-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 22px 32px;
+      border-bottom: 1px solid rgba(14,36,68,0.07);
+      gap: 16px;
+    }
+    .ticket-row:last-of-type { border-bottom: none; }
+
+    .ticket-row-info { flex: 1; }
+    .ticket-row-name {
+      font-weight: 600; font-size: 0.95rem; color: var(--navy);
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .ticket-row-price {
+      font-size: 0.875rem; color: var(--muted); margin-top: 3px;
+    }
+    .ticket-row-price strong { color: var(--navy); font-size: 1rem; }
+
+    .qty-control {
+      display: flex; align-items: center; gap: 0;
+    }
+    .qty-label {
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--muted);
+      margin-right: 12px; white-space: nowrap;
+    }
+    .qty-btn {
+      width: 32px; height: 32px; border-radius: 6px;
+      border: 2px solid var(--navy); background: transparent;
+      color: var(--navy); font-size: 1.1rem; font-weight: 700;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: var(--transition); user-select: none;
+    }
+    .qty-btn:hover { background: var(--navy); color: var(--white); }
+    .qty-value {
+      width: 40px; text-align: center; font-size: 1rem;
+      font-weight: 600; color: var(--navy);
+    }
+
+    /* ─── Cart footer ──────────────────────────────────────────────────── */
+    .booking-footer {
+      padding: 24px 32px;
+      background: var(--off-white);
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 16px; flex-wrap: wrap;
+      border-top: 2px solid rgba(14,36,68,0.08);
+    }
+    .booking-total { font-family: 'Marcellus', serif; font-size: 1.1rem; color: var(--navy); }
+    .booking-total span { font-size: 1.5rem; color: var(--gold); }
+
+    .btn-cart {
+      background: var(--gold); color: var(--white);
+      border: none; border-radius: 50px;
+      padding: 14px 36px; font-family: 'DM Sans', sans-serif;
+      font-size: 1rem; font-weight: 600; cursor: pointer;
+      transition: var(--transition); white-space: nowrap;
+    }
+    .btn-cart:hover { background: var(--gold-lt); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(188,150,117,0.4); }
+    .btn-cart:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
+
+    /* ─── Info box ─────────────────────────────────────────────────────── */
+    .info-box {
+      max-width: 780px; margin: 24px auto 0;
+      background: var(--white); border-radius: 16px;
+      padding: 20px 28px;
+      display: flex; gap: 12px; align-items: flex-start;
+      box-shadow: 0 2px 12px rgba(14,36,68,0.06);
+    }
+    .info-box-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
+    .info-box p { font-size: 0.875rem; color: var(--muted); line-height: 1.6; }
+
+    /* ─── Footer ───────────────────────────────────────────────────────── */
+    .site-footer {
+      background: var(--navy); color: rgba(255,255,255,0.5);
+      text-align: center; padding: 28px 24px;
+      font-size: 0.8rem; margin-top: 80px;
+    }
+    .site-footer a { color: var(--gold); }
+
+    /* ─── Responsive ───────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .navbar-nav, .navbar-cta { display: none; }
+      .hamburger { display: flex; }
+      .page-hero h1 { font-size: 2rem; }
+      .ticket-row { flex-direction: column; align-items: flex-start; gap: 12px; }
+      .booking-card-header { padding: 20px; }
+      .ticket-row { padding: 18px 20px; }
+      .booking-footer { padding: 20px; }
+    }
+  </style>
+  <script defer src="/_vercel/insights/script.js"></script>
+</head>
+<body>
+
+  <!-- ─── NAVBAR ────────────────────────────────────────────────────────── -->
+  <nav class="navbar" id="navbar">
+    <div class="container">
+      <div class="navbar-inner">
+        <a href="/" class="navbar-logo">
+          <span class="logo-main">Plaża Kownatki</span>
+          <span class="logo-sub">Ośrodek Wypoczynkowy</span>
+        </a>
+        <ul class="navbar-nav">
+          <li><a href="/#about">O nas</a></li>
+          <li><a href="/#accommodation">Domki</a></li>
+          <li><a href="/#camping" class="active">Kemping</a></li>
+          <li><a href="/#attractions">Atrakcje</a></li>
+          <li><a href="/#map">Mapa</a></li>
+          <li><a href="/#events">Grupy &amp; Eventy</a></li>
+          <li><a href="/#contact">Kontakt</a></li>
+        </ul>
+        <div class="navbar-cta">
+          <a href="/#contact" class="btn btn-primary">Zarezerwuj pobyt</a>
+          <a href="/bilety/" class="btn btn-outline-white" style="white-space:nowrap;">🎟 Kup bilety</a>
+        </div>
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile overlay -->
+  <div class="nav-overlay" id="navOverlay">
+    <a href="/#about" class="nav-link-mobile">O nas</a>
+    <a href="/#accommodation" class="nav-link-mobile">Domki</a>
+    <a href="/#camping" class="nav-link-mobile">Kemping</a>
+    <a href="/#attractions" class="nav-link-mobile">Atrakcje</a>
+    <a href="/#map" class="nav-link-mobile">Mapa</a>
+    <a href="/#events" class="nav-link-mobile">Grupy &amp; Eventy</a>
+    <a href="/#contact" class="nav-link-mobile">Kontakt</a>
+    <a href="/bilety/" class="nav-link-mobile" style="color:var(--gold);font-weight:700;">🎟 Kup bilety</a>
+    <a href="/#contact" class="btn btn-primary">Zarezerwuj pobyt</a>
+  </div>
+
+  <!-- ─── HERO ──────────────────────────────────────────────────────────── -->
+  <section class="page-hero">
+    <div class="container">
+      <div class="page-hero-label">Kemping</div>
+      <h1>Rezerwacja miejsca</h1>
+      <p>Plaża Kownatki — Mazury &nbsp;·&nbsp; Kownatki 19A, 13-124 Kozłowo</p>
+    </div>
+  </section>
+
+  <!-- ─── BOOKING ───────────────────────────────────────────────────────── -->
+  <section class="booking-section">
+    <div class="container">
+
+      <div class="booking-card">
+
+        <!-- Header -->
+        <div class="booking-card-header">
+          <div class="booking-card-header-icon">⛺</div>
+          <div class="booking-card-header-text">
+            <h2>OŚRODEK PLAŻA KOWNATKI</h2>
+            <p>Wybierz rodzaj pobytu i ilość miejsc</p>
+          </div>
+        </div>
+
+        <!-- Ticket rows -->
+        <div class="ticket-row">
+          <div class="ticket-row-info">
+            <div class="ticket-row-name">Pobyt 1-dniowy</div>
+            <div class="ticket-row-price">Cena: <strong>50,00 zł</strong> / miejsce</div>
+          </div>
+          <div class="qty-control">
+            <span class="qty-label">Wybierz ilość</span>
+            <button class="qty-btn" onclick="changeQty('q1', -1)">−</button>
+            <span class="qty-value" id="q1">0</span>
+            <button class="qty-btn" onclick="changeQty('q1', 1)">+</button>
+          </div>
+        </div>
+
+        <div class="ticket-row">
+          <div class="ticket-row-info">
+            <div class="ticket-row-name">Pobyt 3-dniowy</div>
+            <div class="ticket-row-price">Cena: <strong>140,00 zł</strong> / miejsce</div>
+          </div>
+          <div class="qty-control">
+            <span class="qty-label">Wybierz ilość</span>
+            <button class="qty-btn" onclick="changeQty('q2', -1)">−</button>
+            <span class="qty-value" id="q2">0</span>
+            <button class="qty-btn" onclick="changeQty('q2', 1)">+</button>
+          </div>
+        </div>
+
+        <div class="ticket-row">
+          <div class="ticket-row-info">
+            <div class="ticket-row-name">Pobyt miesięczny</div>
+            <div class="ticket-row-price">Cena: <strong>4 200,00 zł</strong> / miejsce</div>
+          </div>
+          <div class="qty-control">
+            <span class="qty-label">Wybierz ilość</span>
+            <button class="qty-btn" onclick="changeQty('q3', -1)">−</button>
+            <span class="qty-value" id="q3">0</span>
+            <button class="qty-btn" onclick="changeQty('q3', 1)">+</button>
+          </div>
+        </div>
+
+        <div class="ticket-row">
+          <div class="ticket-row-info">
+            <div class="ticket-row-name">Pobyt 3-miesięczny</div>
+            <div class="ticket-row-price">Cena: <strong>6 000,00 zł</strong> / miejsce</div>
+          </div>
+          <div class="qty-control">
+            <span class="qty-label">Wybierz ilość</span>
+            <button class="qty-btn" onclick="changeQty('q4', -1)">−</button>
+            <span class="qty-value" id="q4">0</span>
+            <button class="qty-btn" onclick="changeQty('q4', 1)">+</button>
+          </div>
+        </div>
+
+        <!-- Footer / total -->
+        <div class="booking-footer">
+          <div class="booking-total">
+            Razem: <span id="totalPrice">0,00 zł</span>
+          </div>
+          <button class="btn-cart" id="cartBtn" disabled onclick="handleCart()">
+            Przejdź do rezerwacji →
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Info -->
+      <div class="info-box">
+        <div class="info-box-icon">ℹ️</div>
+        <p>Masz pytania dotyczące rezerwacji? Zadzwoń: <strong>604 104 405</strong> lub napisz na <strong>osrodekplazakownatki@gmail.com</strong>. Chętnie pomożemy dobrać odpowiedni pakiet.</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ────────────────────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <p>© 2025 Ośrodek Plaża Kownatki &nbsp;·&nbsp; Kownatki 19A, 13-124 Kozłowo &nbsp;·&nbsp; <a href="/">plazakownatki.pl</a></p>
+  </footer>
+
+  <script>
+    // Prices
+    const prices = { q1: 50, q2: 140, q3: 4200, q4: 6000 };
+    const qty    = { q1: 0,  q2: 0,   q3: 0,    q4: 0 };
+
+    function changeQty(id, delta) {
+      qty[id] = Math.max(0, qty[id] + delta);
+      document.getElementById(id).textContent = qty[id];
+      updateTotal();
+    }
+
+    function updateTotal() {
+      const total = Object.keys(qty).reduce((sum, k) => sum + qty[k] * prices[k], 0);
+      document.getElementById('totalPrice').textContent =
+        total.toLocaleString('pl-PL', { minimumFractionDigits: 2 }) + ' zł';
+      document.getElementById('cartBtn').disabled = total === 0;
+    }
+
+    function handleCart() {
+      // Etap 2 — tu będzie koszyk / płatność
+      alert('Funkcja płatności będzie dostępna wkrótce!');
+    }
+
+    // Hamburger
+    const hamburger = document.getElementById('hamburger');
+    const navOverlay = document.getElementById('navOverlay');
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      navOverlay.style.display = navOverlay.style.display === 'flex' ? 'none' : 'flex';
+      setTimeout(() => navOverlay.classList.toggle('open'), 10);
+    });
+  </script>
+
+</body>
+</html>
