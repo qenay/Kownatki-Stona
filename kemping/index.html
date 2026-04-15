@@ -668,7 +668,15 @@
   <div class="cart-drawer" id="cartDrawer">
     <div class="cart-header">
       <h3>🛒 Twój koszyk</h3>
-      <button class="cart-close" onclick="closeCart()">✕</button>
+      <div style="display:flex;align-items:center;gap:14px;">
+        <div id="cartTimer" style="
+          font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:600;
+          color:rgba(255,255,255,0.85);background:rgba(255,255,255,0.12);
+          border-radius:20px;padding:4px 12px;letter-spacing:0.03em;
+          display:none;
+        ">⏱ 5:00</div>
+        <button class="cart-close" onclick="closeCart()">✕</button>
+      </div>
     </div>
     <div class="cart-items" id="cartItems">
       <div class="cart-empty" id="cartEmpty">
@@ -700,6 +708,60 @@
 
     function saveState() {
       sessionStorage.setItem('kempingQty', JSON.stringify(qty));
+    }
+
+    // ── Cart timer ────────────────────────────────────────────────────────
+    const TIMER_SECS = 5 * 60;
+    let timerInterval = null;
+    let timerSecsLeft = TIMER_SECS;
+
+    function startCartTimer() {
+      clearInterval(timerInterval);
+      timerSecsLeft = parseInt(sessionStorage.getItem('kempingTimerEnd') || '0') - Date.now();
+      timerSecsLeft = timerSecsLeft > 0 ? Math.round(timerSecsLeft / 1000) : TIMER_SECS;
+      sessionStorage.setItem('kempingTimerEnd', Date.now() + timerSecsLeft * 1000);
+      updateTimerDisplay();
+      document.getElementById('cartTimer').style.display = 'block';
+      timerInterval = setInterval(() => {
+        timerSecsLeft--;
+        updateTimerDisplay();
+        sessionStorage.setItem('kempingTimerEnd', Date.now() + timerSecsLeft * 1000);
+        if (timerSecsLeft <= 0) resetCartTimer();
+      }, 1000);
+    }
+
+    function stopCartTimer() {
+      clearInterval(timerInterval);
+      document.getElementById('cartTimer').style.display = 'none';
+    }
+
+    function resetCartTimer() {
+      clearInterval(timerInterval);
+      sessionStorage.removeItem('kempingTimerEnd');
+      sessionStorage.removeItem('kempingQty');
+      sessionStorage.removeItem('kempingView');
+      Object.keys(qty).forEach(k => {
+        qty[k] = 0;
+        const el = document.getElementById(k);
+        if (el) el.value = 0;
+      });
+      updateTotal();
+      // close checkout if open
+      document.getElementById('checkoutOverlay').classList.remove('open');
+      closeCart();
+      document.getElementById('cartTimer').style.display = 'none';
+      document.getElementById('cartTimer').textContent = '⏱ 5:00';
+      alert('Czas rezerwacji minął. Koszyk został wyczyszczony.');
+    }
+
+    function updateTimerDisplay() {
+      const m = Math.floor(timerSecsLeft / 60);
+      const s = timerSecsLeft % 60;
+      const el = document.getElementById('cartTimer');
+      el.textContent = `⏱ ${m}:${String(s).padStart(2, '0')}`;
+      el.style.background = timerSecsLeft <= 60
+        ? 'rgba(220,38,38,0.5)'
+        : 'rgba(255,255,255,0.12)';
     }
 
     function fmt(val) {
@@ -778,6 +840,7 @@
       document.getElementById('cartDrawer').classList.add('open');
       document.body.style.overflow = 'hidden';
       sessionStorage.setItem('kempingView', 'cart');
+      startCartTimer();
     }
 
     function closeCart() {
@@ -785,10 +848,13 @@
       document.getElementById('cartDrawer').classList.remove('open');
       document.body.style.overflow = '';
       sessionStorage.removeItem('kempingView');
+      stopCartTimer();
     }
 
     function handleCheckout() {
-      closeCart();
+      // close cart visually but keep timer running
+      document.getElementById('cartOverlay').classList.remove('open');
+      document.getElementById('cartDrawer').classList.remove('open');
       renderCheckout();
       setTimeout(() => {
         document.getElementById('checkoutOverlay').classList.add('open');
@@ -860,6 +926,7 @@
         renderCheckout();
         document.getElementById('checkoutOverlay').classList.add('open');
         document.body.style.overflow = 'hidden';
+        startCartTimer();
       } else if (view === 'cart') {
         renderCart();
         openCart();
