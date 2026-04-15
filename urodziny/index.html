@@ -127,12 +127,7 @@
     }
     .wishes-list {
       display: flex; flex-direction: column; gap: 12px;
-      max-height: 340px; overflow-y: auto;
-      padding-right: 4px;
     }
-    .wishes-list::-webkit-scrollbar { width: 4px; }
-    .wishes-list::-webkit-scrollbar-track { background: transparent; }
-    .wishes-list::-webkit-scrollbar-thumb { background: var(--gold-lt); border-radius: 4px; }
 
     .wish-item {
       background: var(--cream); border-radius: 14px;
@@ -243,11 +238,6 @@
         <!-- wishes rendered here -->
       </div>
 
-      <div class="wish-form">
-        <textarea id="wishText" placeholder="Napisz swoje życzenia dla Dziadka…"></textarea>
-        <input type="text" id="wishAuthor" placeholder="Twoje imię" />
-        <button class="wish-submit" onclick="addWish()">Wyślij życzenia 🎉</button>
-      </div>
     </div>
 
   </div>
