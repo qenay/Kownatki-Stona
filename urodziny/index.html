@@ -491,7 +491,7 @@
 
     // CZAS (sekundy) kiedy pada "zyj nam 100 lat"
   const LYRICS_START    = 88;
-  const LYRICS_DURATION = 2;
+  const LYRICS_TRIGGERS = [{t:88, d:2}, {t:171, d:1}];
   let lyricsTimer = null;
   let elapsedTimer = null;
   let elapsedSecs = 0;
@@ -502,7 +502,7 @@
     clearTimeout(lyricsTimer);
     elapsedTimer = setInterval(function() {
       elapsedSecs++;
-      if (elapsedSecs === LYRICS_START || elapsedSecs === 170) show200lat();
+      LYRICS_TRIGGERS.forEach(function(tr){ if(elapsedSecs === tr.t) show200lat(tr.d); });
     }, 1000);
   }
 
@@ -512,14 +512,14 @@
     hide200lat();
   }
 
-  function show200lat() {
+  function show200lat(dur) {
     var el = document.getElementById('overlay200');
     var txt = document.getElementById('overlay200Text');
     el.style.display = 'flex';
     txt.style.animation = 'none';
     void txt.offsetWidth;
     txt.style.animation = 'pop200 0.5s cubic-bezier(0.34,1.56,0.64,1)';
-    lyricsTimer = setTimeout(hide200lat, LYRICS_DURATION * 1000);
+    lyricsTimer = setTimeout(hide200lat, (dur||2) * 1000);
   }
 
   function hide200lat() {
