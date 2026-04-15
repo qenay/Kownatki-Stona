@@ -371,41 +371,40 @@
     });
   }
 
-  // ── Text-to-speech ───────────────────────────────────────────────────────
+  // ── Audio player ─────────────────────────────────────────────────────────
+  const wishAudio = new Audio('audio/zyczenia.mp3');
   let currentReadingIdx = null;
 
   function readWish(idx) {
-    const allWishes = [...DEFAULT_WISHES, ...loadWishes()];
-    const w = allWishes[idx];
     const btn = document.getElementById('readBtn' + idx);
 
-    if (currentReadingIdx === idx && window.speechSynthesis.speaking) {
-      window.speechSynthesis.cancel();
+    if (currentReadingIdx === idx && !wishAudio.paused) {
+      wishAudio.pause();
+      wishAudio.currentTime = 0;
       btn.innerHTML = '▶ Odczytaj';
       btn.classList.remove('reading');
       currentReadingIdx = null;
       return;
     }
 
-    window.speechSynthesis.cancel();
+    // stop previous
+    wishAudio.pause();
+    wishAudio.currentTime = 0;
     if (currentReadingIdx !== null) {
       const prev = document.getElementById('readBtn' + currentReadingIdx);
       if (prev) { prev.innerHTML = '▶ Odczytaj'; prev.classList.remove('reading'); }
     }
 
-    const utt = new SpeechSynthesisUtterance(w.text + (w.author ? '. ' + w.author : ''));
-    utt.lang = 'pl-PL';
-    utt.rate = 0.92;
-    utt.pitch = 1.05;
+    wishAudio.play();
+    btn.innerHTML = '⏹ Zatrzymaj';
+    btn.classList.add('reading');
+    currentReadingIdx = idx;
 
-    const voices = window.speechSynthesis.getVoices();
-    const plVoice = voices.find(v => v.lang.startsWith('pl'));
-    if (plVoice) utt.voice = plVoice;
-
-    utt.onstart = () => { btn.innerHTML = '⏹ Zatrzymaj'; btn.classList.add('reading'); currentReadingIdx = idx; };
-    utt.onend = utt.onerror = () => { btn.innerHTML = '▶ Odczytaj'; btn.classList.remove('reading'); currentReadingIdx = null; };
-
-    window.speechSynthesis.speak(utt);
+    wishAudio.onended = () => {
+      btn.innerHTML = '▶ Odczytaj';
+      btn.classList.remove('reading');
+      currentReadingIdx = null;
+    };
   }
 
   function addWish() {
