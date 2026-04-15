@@ -286,6 +286,107 @@
     .info-box-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
     .info-box p { font-size: 0.875rem; color: var(--muted); line-height: 1.6; }
 
+    /* ─── Checkout overlay ─────────────────────────────────────────────── */
+    .checkout-overlay {
+      position: fixed; inset: 0; background: var(--off-white);
+      z-index: 1200; overflow-y: auto;
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .checkout-overlay.open { transform: translateY(0); }
+
+    .checkout-topbar {
+      background: var(--navy); padding: 20px 32px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top: 0; z-index: 10;
+    }
+    .checkout-topbar h2 { font-family: 'Marcellus', serif; color: var(--white); font-size: 1.1rem; }
+    .checkout-back {
+      background: none; border: none; color: rgba(255,255,255,0.7);
+      font-size: 0.9rem; font-weight: 600; cursor: pointer;
+      display: flex; align-items: center; gap: 8px; transition: color 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .checkout-back:hover { color: var(--white); }
+
+    .checkout-body { max-width: 760px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    .checkout-section {
+      background: var(--white); border-radius: 16px;
+      padding: 28px 32px; margin-bottom: 24px;
+      box-shadow: 0 2px 16px rgba(14,36,68,0.07);
+    }
+    .checkout-section-title {
+      font-family: 'Marcellus', serif; font-size: 1.2rem;
+      color: var(--navy); margin-bottom: 6px; text-align: center;
+    }
+    .checkout-section-sub {
+      font-size: 0.82rem; color: var(--muted); text-align: center; margin-bottom: 24px;
+    }
+
+    .person-row {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; margin-bottom: 16px; padding-bottom: 16px;
+      border-bottom: 1px solid rgba(14,36,68,0.07);
+    }
+    .person-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .person-row-label {
+      grid-column: 1 / -1; font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .co-form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .co-form .full { grid-column: 1 / -1; }
+
+    .co-input {
+      width: 100%; padding: 12px 16px; border-radius: 8px;
+      border: 2px solid rgba(14,36,68,0.12); background: var(--off-white);
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: var(--text);
+      outline: none; transition: border-color 0.2s;
+    }
+    .co-input:focus { border-color: var(--gold); background: var(--white); }
+    .co-input::placeholder { color: rgba(107,114,128,0.7); }
+    textarea.co-input { resize: vertical; min-height: 100px; }
+
+    .co-checkbox {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 0.875rem; color: var(--text); cursor: pointer;
+      grid-column: 1 / -1;
+    }
+    .co-checkbox input { width: 18px; height: 18px; accent-color: var(--gold); cursor: pointer; }
+
+    /* summary bar */
+    .checkout-summary-bar {
+      background: var(--white); border-radius: 16px;
+      padding: 24px 32px; box-shadow: 0 2px 16px rgba(14,36,68,0.07);
+    }
+    .co-sum-row {
+      display: flex; justify-content: space-between;
+      font-size: 0.875rem; color: var(--muted); margin-bottom: 8px;
+    }
+    .co-sum-row.total {
+      font-family: 'Marcellus', serif; font-size: 1.4rem;
+      color: var(--navy); border-top: 2px solid rgba(14,36,68,0.1);
+      padding-top: 14px; margin-top: 8px; margin-bottom: 20px;
+    }
+    .co-sum-row.total span:last-child { color: var(--gold); }
+
+    .btn-pay {
+      width: 100%; padding: 18px; background: var(--gold); color: var(--white);
+      border: none; border-radius: 50px; font-family: 'DM Sans', sans-serif;
+      font-size: 1.05rem; font-weight: 600; cursor: pointer;
+      transition: var(--transition); letter-spacing: 0.02em;
+    }
+    .btn-pay:hover { background: var(--gold-lt); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(188,150,117,0.45); }
+
+    @media (max-width: 600px) {
+      .person-row { grid-template-columns: 1fr; }
+      .co-form { grid-template-columns: 1fr; }
+      .checkout-section { padding: 20px; }
+      .checkout-topbar { padding: 16px 20px; }
+    }
+
     /* ─── Footer ───────────────────────────────────────────────────────── */
     .site-footer {
       background: var(--navy); color: rgba(255,255,255,0.5);
@@ -448,6 +549,57 @@
     </div>
   </section>
 
+  <!-- ─── CHECKOUT OVERLAY ────────────────────────────────────────────── -->
+  <div class="checkout-overlay" id="checkoutOverlay">
+    <div class="checkout-topbar">
+      <button class="checkout-back" onclick="closeCheckout()">← Wróć do koszyka</button>
+      <h2>Podsumowanie i płatność</h2>
+      <div style="width:140px;"></div>
+    </div>
+    <div class="checkout-body">
+
+      <!-- Personalizacja -->
+      <div class="checkout-section" id="personalizationSection">
+        <div class="checkout-section-title">Personalizacja miejsc</div>
+        <div class="checkout-section-sub">Wypełnij dane osoby, która będzie korzystać z miejsca.</div>
+        <div id="personRows"></div>
+      </div>
+
+      <!-- Zamawiający -->
+      <div class="checkout-section">
+        <div class="checkout-section-title">Zamawiający</div>
+        <div class="checkout-section-sub">Wypełnij pola swoimi danymi.</div>
+        <div class="co-form">
+          <input class="co-input" type="text" placeholder="Imię" id="coFirstName" required />
+          <input class="co-input" type="text" placeholder="Nazwisko" id="coLastName" required />
+          <input class="co-input full" type="email" placeholder="Adres e-mail" id="coEmail" required />
+          <input class="co-input full" type="tel" placeholder="Numer telefonu" id="coPhone" required />
+          <input class="co-input" type="text" placeholder="Kod pocztowy (XX-XXX)" id="coZip" />
+          <textarea class="co-input full" placeholder="Uwagi do zamówienia" id="coNotes"></textarea>
+          <label class="co-checkbox">
+            <input type="checkbox" id="coInvoice" />
+            Dodaj fakturę do zamówienia
+          </label>
+        </div>
+      </div>
+
+      <!-- Podsumowanie -->
+      <div class="checkout-summary-bar">
+        <div id="coSumItems"></div>
+        <div class="co-sum-row">
+          <span>Opłata serwisowa</span>
+          <span id="coServiceFee">0,00 zł</span>
+        </div>
+        <div class="co-sum-row total">
+          <span>Razem do zapłaty</span>
+          <span id="coGrandTotal">0,00 zł</span>
+        </div>
+        <button class="btn-pay" onclick="handlePay()">Zapłać →</button>
+      </div>
+
+    </div>
+  </div>
+
   <!-- ─── CART DRAWER ─────────────────────────────────────────────────── -->
   <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
   <div class="cart-drawer" id="cartDrawer">
@@ -563,7 +715,64 @@
     }
 
     function handleCheckout() {
-      // Etap 3 — tu będzie płatność
+      closeCart();
+      renderCheckout();
+      setTimeout(() => {
+        document.getElementById('checkoutOverlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }, 50);
+    }
+
+    function closeCheckout() {
+      document.getElementById('checkoutOverlay').classList.remove('open');
+      document.body.style.overflow = '';
+      // reopen cart
+      setTimeout(() => openCart(), 100);
+    }
+
+    const SERVICE_FEE_RATE = 0.03; // 3% opłata serwisowa
+
+    function renderCheckout() {
+      // Person rows
+      const personRows = document.getElementById('personRows');
+      personRows.innerHTML = '';
+      let personIndex = 1;
+      Object.keys(qty).forEach(k => {
+        if (qty[k] <= 0) return;
+        for (let i = 0; i < qty[k]; i++) {
+          const div = document.createElement('div');
+          div.className = 'person-row';
+          div.innerHTML = `
+            <div class="person-row-label">${names[k]} — Miejsce ${personIndex++}</div>
+            <input class="co-input" type="text" placeholder="Imię" />
+            <input class="co-input" type="text" placeholder="Nazwisko" />
+          `;
+          personRows.appendChild(div);
+        }
+      });
+
+      // Summary items
+      const sumItems = document.getElementById('coSumItems');
+      sumItems.innerHTML = '';
+      let subtotal = 0;
+      Object.keys(qty).forEach(k => {
+        if (qty[k] <= 0) return;
+        const val = qty[k] * prices[k];
+        subtotal += val;
+        const div = document.createElement('div');
+        div.className = 'co-sum-row';
+        div.innerHTML = `<span>${names[k]} × ${qty[k]}</span><span>${fmt(val)}</span>`;
+        sumItems.appendChild(div);
+      });
+
+      const fee = Math.round(subtotal * SERVICE_FEE_RATE * 100) / 100;
+      const grand = subtotal + fee;
+      document.getElementById('coServiceFee').textContent = fmt(fee);
+      document.getElementById('coGrandTotal').textContent = fmt(grand);
+    }
+
+    function handlePay() {
+      // Etap 4 — podłączenie płatności
       alert('Płatność online będzie dostępna wkrótce!');
     }
 
