@@ -168,9 +168,17 @@
     }
     .qty-btn:hover { background: var(--navy); color: var(--white); }
     .qty-value {
-      width: 40px; text-align: center; font-size: 1rem;
+      width: 52px; text-align: center; font-size: 1rem;
       font-weight: 600; color: var(--navy);
+      border: 2px solid rgba(14,36,68,0.15); border-radius: 6px;
+      padding: 4px 6px; outline: none; background: var(--white);
+      font-family: 'DM Sans', sans-serif;
     }
+    .qty-value:focus { border-color: var(--gold); }
+    /* hide number input arrows */
+    .qty-value::-webkit-outer-spin-button,
+    .qty-value::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+    .qty-value[type=number] { -moz-appearance: textfield; }
 
     /* ─── Cart footer ──────────────────────────────────────────────────── */
     .booking-footer {
@@ -375,7 +383,7 @@
           <div class="qty-control">
             <span class="qty-label">Wybierz ilość</span>
             <button class="qty-btn" onclick="changeQty('q1', -1)">−</button>
-            <span class="qty-value" id="q1">0</span>
+            <input type="number" class="qty-value" id="q1" value="0" min="0" oninput="setQty('q1', this.value)">
             <button class="qty-btn" onclick="changeQty('q1', 1)">+</button>
           </div>
         </div>
@@ -388,7 +396,7 @@
           <div class="qty-control">
             <span class="qty-label">Wybierz ilość</span>
             <button class="qty-btn" onclick="changeQty('q2', -1)">−</button>
-            <span class="qty-value" id="q2">0</span>
+            <input type="number" class="qty-value" id="q2" value="0" min="0" oninput="setQty('q2', this.value)">
             <button class="qty-btn" onclick="changeQty('q2', 1)">+</button>
           </div>
         </div>
@@ -401,7 +409,7 @@
           <div class="qty-control">
             <span class="qty-label">Wybierz ilość</span>
             <button class="qty-btn" onclick="changeQty('q3', -1)">−</button>
-            <span class="qty-value" id="q3">0</span>
+            <input type="number" class="qty-value" id="q3" value="0" min="0" oninput="setQty('q3', this.value)">
             <button class="qty-btn" onclick="changeQty('q3', 1)">+</button>
           </div>
         </div>
@@ -414,7 +422,7 @@
           <div class="qty-control">
             <span class="qty-label">Wybierz ilość</span>
             <button class="qty-btn" onclick="changeQty('q4', -1)">−</button>
-            <span class="qty-value" id="q4">0</span>
+            <input type="number" class="qty-value" id="q4" value="0" min="0" oninput="setQty('q4', this.value)">
             <button class="qty-btn" onclick="changeQty('q4', 1)">+</button>
           </div>
         </div>
@@ -480,7 +488,12 @@
 
     function changeQty(id, delta) {
       qty[id] = Math.max(0, qty[id] + delta);
-      document.getElementById(id).textContent = qty[id];
+      document.getElementById(id).value = qty[id];
+      updateTotal();
+    }
+
+    function setQty(id, val) {
+      qty[id] = Math.max(0, parseInt(val) || 0);
       updateTotal();
     }
 
@@ -532,7 +545,7 @@
 
     function removeItem(k) {
       qty[k] = 0;
-      document.getElementById(k).textContent = 0;
+      document.getElementById(k).value = 0;
       updateTotal();
       renderCart();
     }
