@@ -402,8 +402,19 @@
     }
     .co-sum-row.total span:last-child { color: var(--gold); }
 
+    .co-checkout-actions {
+      display: flex; gap: 12px; align-items: center;
+    }
+    .btn-back-cart {
+      flex-shrink: 0; padding: 18px 24px; background: none;
+      border: 2px solid rgba(14,36,68,0.2); border-radius: 50px;
+      font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500;
+      color: var(--navy); cursor: pointer; white-space: nowrap;
+      transition: var(--transition);
+    }
+    .btn-back-cart:hover { border-color: var(--navy); background: rgba(14,36,68,0.05); }
     .btn-pay {
-      width: 100%; padding: 18px; background: var(--gold); color: var(--white);
+      flex: 1; padding: 18px; background: var(--gold); color: var(--white);
       border: none; border-radius: 50px; font-family: 'DM Sans', sans-serif;
       font-size: 1.05rem; font-weight: 600; cursor: pointer;
       transition: var(--transition); letter-spacing: 0.02em;
@@ -643,7 +654,10 @@
           <span>Razem do zapłaty</span>
           <span id="coGrandTotal">0,00 zł</span>
         </div>
-        <button class="btn-pay" onclick="handlePay()">Zapłać →</button>
+        <div class="co-checkout-actions">
+          <button class="btn-back-cart" onclick="closeCheckout()">← Wróć do koszyka</button>
+          <button class="btn-pay" onclick="handlePay()">Zapłać →</button>
+        </div>
       </div>
 
     </div>
