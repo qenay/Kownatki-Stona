@@ -695,7 +695,12 @@
   <script>
     const prices = { q1: 50, q2: 140, q3: 4200, q4: 6000 };
     const names  = { q1: 'Pobyt 1-dniowy', q2: 'Pobyt 3-dniowy', q3: 'Pobyt miesięczny', q4: 'Pobyt 3-miesięczny' };
-    const qty    = { q1: 0, q2: 0, q3: 0, q4: 0 };
+    const qty    = Object.assign({ q1: 0, q2: 0, q3: 0, q4: 0 },
+      JSON.parse(sessionStorage.getItem('kempingQty') || '{}'));
+
+    function saveState() {
+      sessionStorage.setItem('kempingQty', JSON.stringify(qty));
+    }
 
     function fmt(val) {
       return val.toLocaleString('pl-PL', { minimumFractionDigits: 2 }) + ' zł';
@@ -705,11 +710,13 @@
       qty[id] = Math.max(0, qty[id] + delta);
       document.getElementById(id).value = qty[id];
       updateTotal();
+      saveState();
     }
 
     function setQty(id, val) {
       qty[id] = Math.max(0, parseInt(val) || 0);
       updateTotal();
+      saveState();
     }
 
     function updateTotal() {
@@ -763,18 +770,21 @@
       document.getElementById(k).value = 0;
       updateTotal();
       renderCart();
+      saveState();
     }
 
     function openCart() {
       document.getElementById('cartOverlay').classList.add('open');
       document.getElementById('cartDrawer').classList.add('open');
       document.body.style.overflow = 'hidden';
+      sessionStorage.setItem('kempingView', 'cart');
     }
 
     function closeCart() {
       document.getElementById('cartOverlay').classList.remove('open');
       document.getElementById('cartDrawer').classList.remove('open');
       document.body.style.overflow = '';
+      sessionStorage.removeItem('kempingView');
     }
 
     function handleCheckout() {
@@ -783,6 +793,7 @@
       setTimeout(() => {
         document.getElementById('checkoutOverlay').classList.add('open');
         document.body.style.overflow = 'hidden';
+        sessionStorage.setItem('kempingView', 'checkout');
       }, 50);
     }
 
@@ -803,7 +814,7 @@
     function closeCheckout() {
       document.getElementById('checkoutOverlay').classList.remove('open');
       document.body.style.overflow = '';
-      // reopen cart
+      sessionStorage.setItem('kempingView', 'cart');
       setTimeout(() => openCart(), 100);
     }
 
@@ -834,6 +845,26 @@
       // Etap 4 — podłączenie płatności
       alert('Płatność online będzie dostępna wkrótce!');
     }
+
+    // Restore state after refresh
+    (function restoreView() {
+      // Restore qty inputs
+      Object.keys(qty).forEach(k => {
+        const el = document.getElementById(k);
+        if (el) el.value = qty[k];
+      });
+      updateTotal();
+
+      const view = sessionStorage.getItem('kempingView');
+      if (view === 'checkout') {
+        renderCheckout();
+        document.getElementById('checkoutOverlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+      } else if (view === 'cart') {
+        renderCart();
+        openCart();
+      }
+    })();
 
     // Hamburger
     const hamburger = document.getElementById('hamburger');
