@@ -275,6 +275,36 @@
     }
     .btn-checkout:hover { background: var(--gold-lt); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(188,150,117,0.4); }
 
+    .promo-row {
+      display: flex; gap: 8px; margin-bottom: 16px;
+    }
+    .promo-input {
+      flex: 1; padding: 10px 14px; border-radius: 10px;
+      border: 2px solid rgba(14,36,68,0.15); background: var(--white);
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: var(--navy);
+      outline: none; transition: border-color 0.2s;
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .promo-input:focus { border-color: var(--gold); }
+    .promo-input::placeholder { text-transform: none; letter-spacing: 0; color: rgba(107,114,128,0.7); }
+    .promo-btn {
+      padding: 10px 16px; border-radius: 10px; border: none;
+      background: var(--navy); color: var(--white);
+      font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 600;
+      cursor: pointer; white-space: nowrap; transition: background 0.2s;
+    }
+    .promo-btn:hover { background: #1a3a6e; }
+    .promo-feedback {
+      font-size: 0.8rem; margin-bottom: 12px; min-height: 18px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .promo-feedback.ok  { color: #16a34a; }
+    .promo-feedback.err { color: #dc2626; }
+    .cart-discount-row {
+      display: flex; justify-content: space-between;
+      font-size: 0.82rem; color: #16a34a; margin-bottom: 8px;
+    }
+
     /* ─── Info box ─────────────────────────────────────────────────────── */
     .info-box {
       max-width: 780px; margin: 24px auto 0;
@@ -685,6 +715,16 @@
       </div>
     </div>
     <div class="cart-footer">
+      <div class="promo-row">
+        <input class="promo-input" id="promoInput" type="text" placeholder="Kod rabatowy"
+          onkeydown="if(event.key==='Enter')applyPromo()" />
+        <button class="promo-btn" onclick="applyPromo()">Zastosuj</button>
+      </div>
+      <div class="promo-feedback" id="promoFeedback"></div>
+      <div class="cart-discount-row" id="cartDiscountRow" style="display:none;">
+        <span id="cartDiscountLabel">Rabat</span>
+        <span id="cartDiscountVal"></span>
+      </div>
       <div class="cart-summary">
         <span class="cart-summary-label">Do zapłaty</span>
         <span class="cart-summary-total" id="cartTotal">0,00 zł</span>
@@ -708,6 +748,42 @@
 
     function saveState() {
       sessionStorage.setItem('kempingQty', JSON.stringify(qty));
+    }
+
+    // ── Promo codes ───────────────────────────────────────────────────────
+    const PROMO_CODES = { 'KOWNATKI': 0.10 };
+    let activePromo = sessionStorage.getItem('kempingPromo') || null;
+
+    function applyPromo() {
+      const code = document.getElementById('promoInput').value.trim().toUpperCase();
+      const fb = document.getElementById('promoFeedback');
+      if (!code) return;
+      if (PROMO_CODES[code]) {
+        activePromo = code;
+        sessionStorage.setItem('kempingPromo', code);
+        fb.className = 'promo-feedback ok';
+        fb.textContent = `✓ Kod „${code}" zastosowany — rabat ${PROMO_CODES[code] * 100}%`;
+        document.getElementById('promoInput').disabled = true;
+        document.querySelector('.promo-btn').disabled = true;
+        document.querySelector('.promo-btn').style.opacity = '0.5';
+      } else {
+        fb.className = 'promo-feedback err';
+        fb.textContent = '✕ Nieprawidłowy kod rabatowy.';
+        setTimeout(() => { fb.textContent = ''; }, 2500);
+        return;
+      }
+      updateTotal();
+    }
+
+    function restorePromo() {
+      if (!activePromo) return;
+      const fb = document.getElementById('promoFeedback');
+      fb.className = 'promo-feedback ok';
+      fb.textContent = `✓ Kod „${activePromo}" zastosowany — rabat ${PROMO_CODES[activePromo] * 100}%`;
+      document.getElementById('promoInput').value = activePromo;
+      document.getElementById('promoInput').disabled = true;
+      document.querySelector('.promo-btn').disabled = true;
+      document.querySelector('.promo-btn').style.opacity = '0.5';
     }
 
     // ── Cart timer ────────────────────────────────────────────────────────
@@ -740,6 +816,8 @@
       sessionStorage.removeItem('kempingTimerEnd');
       sessionStorage.removeItem('kempingQty');
       sessionStorage.removeItem('kempingView');
+      sessionStorage.removeItem('kempingPromo');
+      activePromo = null;
       Object.keys(qty).forEach(k => {
         qty[k] = 0;
         const el = document.getElementById(k);
@@ -782,9 +860,27 @@
     }
 
     function updateTotal() {
-      const total = Object.keys(qty).reduce((sum, k) => sum + qty[k] * prices[k], 0);
+      const subtotal = Object.keys(qty).reduce((sum, k) => sum + qty[k] * prices[k], 0);
+      const discount = activePromo ? subtotal * PROMO_CODES[activePromo] : 0;
+      const total = subtotal - discount;
       document.getElementById('totalPrice').textContent = fmt(total);
-      document.getElementById('cartBtn').disabled = total === 0;
+      document.getElementById('cartBtn').disabled = subtotal === 0;
+
+      // discount row in cart footer
+      const discRow = document.getElementById('cartDiscountRow');
+      if (discRow) {
+        if (discount > 0) {
+          discRow.style.display = 'flex';
+          document.getElementById('cartDiscountLabel').textContent =
+            `Rabat (${PROMO_CODES[activePromo] * 100}%)`;
+          document.getElementById('cartDiscountVal').textContent = `−${fmt(discount)}`;
+        } else {
+          discRow.style.display = 'none';
+        }
+      }
+      // also update cart total display if visible
+      const cartTotalEl = document.getElementById('cartTotal');
+      if (cartTotalEl) cartTotalEl.textContent = fmt(total);
     }
 
     function handleCart() {
@@ -919,6 +1015,7 @@
         const el = document.getElementById(k);
         if (el) el.value = qty[k];
       });
+      restorePromo();
       updateTotal();
 
       const view = sessionStorage.getItem('kempingView');
