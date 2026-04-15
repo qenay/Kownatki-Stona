@@ -558,13 +558,6 @@
     </div>
     <div class="checkout-body">
 
-      <!-- Personalizacja -->
-      <div class="checkout-section" id="personalizationSection">
-        <div class="checkout-section-title">Personalizacja miejsc</div>
-        <div class="checkout-section-sub">Wypełnij dane osoby, która będzie korzystać z miejsca.</div>
-        <div id="personRows"></div>
-      </div>
-
       <!-- Zamawiający -->
       <div class="checkout-section">
         <div class="checkout-section-title">Zamawiający</div>
@@ -733,24 +726,6 @@
     const SERVICE_FEE_RATE = 0.03; // 3% opłata serwisowa
 
     function renderCheckout() {
-      // Person rows
-      const personRows = document.getElementById('personRows');
-      personRows.innerHTML = '';
-      let personIndex = 1;
-      Object.keys(qty).forEach(k => {
-        if (qty[k] <= 0) return;
-        for (let i = 0; i < qty[k]; i++) {
-          const div = document.createElement('div');
-          div.className = 'person-row';
-          div.innerHTML = `
-            <div class="person-row-label">${names[k]} — Miejsce ${personIndex++}</div>
-            <input class="co-input" type="text" placeholder="Imię" />
-            <input class="co-input" type="text" placeholder="Nazwisko" />
-          `;
-          personRows.appendChild(div);
-        }
-      });
-
       // Summary items
       const sumItems = document.getElementById('coSumItems');
       sumItems.innerHTML = '';
