@@ -831,5 +831,89 @@
     });
   </script>
 
+  <!-- ─── PASSWORD GATE ─────────────────────────────────────────────────── -->
+  <div id="pwGate" style="
+    position:fixed;inset:0;z-index:9999;
+    background:#0e2444;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'DM Sans',sans-serif;
+  ">
+    <div style="
+      background:#fff;border-radius:20px;padding:48px 40px;
+      width:100%;max-width:400px;margin:24px;text-align:center;
+      box-shadow:0 24px 80px rgba(0,0,0,0.35);
+    ">
+      <img src="/brand_assets/logo.png" alt="Logo" style="height:56px;margin-bottom:28px;object-fit:contain;" onerror="this.style.display='none'" />
+      <div style="font-family:'Marcellus',serif;font-size:1.4rem;color:#0e2444;margin-bottom:6px;">Panel kempingowy</div>
+      <div style="font-size:0.85rem;color:#6b7280;margin-bottom:28px;">Podaj hasło aby kontynuować.</div>
+      <div style="position:relative;margin-bottom:12px;">
+        <input id="pwInput" type="password" placeholder="Hasło" autocomplete="current-password"
+          onkeydown="if(event.key==='Enter')checkPw()"
+          style="
+            width:100%;padding:14px 48px 14px 16px;border-radius:10px;
+            border:2px solid rgba(14,36,68,0.15);font-size:1rem;
+            font-family:'DM Sans',sans-serif;color:#0e2444;outline:none;
+            transition:border-color 0.2s;
+          "
+          onfocus="this.style.borderColor='#bc9675'"
+          onblur="this.style.borderColor='rgba(14,36,68,0.15)'"
+        />
+        <button onclick="togglePwVis()" tabindex="-1" style="
+          position:absolute;right:14px;top:50%;transform:translateY(-50%);
+          background:none;border:none;cursor:pointer;color:#6b7280;font-size:1.1rem;
+          line-height:1;padding:0;
+        " id="pwEye">👁</button>
+      </div>
+      <div id="pwError" style="font-size:0.82rem;color:#dc2626;margin-bottom:12px;min-height:18px;"></div>
+      <button onclick="checkPw()" style="
+        width:100%;padding:14px;background:#0e2444;color:#fff;
+        border:none;border-radius:10px;font-family:'DM Sans',sans-serif;
+        font-size:1rem;font-weight:600;cursor:pointer;
+        transition:background 0.2s,transform 0.1s;
+      "
+        onmouseover="this.style.background='#bc9675'"
+        onmouseout="this.style.background='#0e2444'"
+        onmousedown="this.style.transform='scale(0.98)'"
+        onmouseup="this.style.transform='scale(1)'"
+      >Wejdź →</button>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      if (sessionStorage.getItem('kempingAuth') === '1') {
+        document.getElementById('pwGate').style.display = 'none';
+      }
+      setTimeout(() => document.getElementById('pwInput').focus(), 100);
+    })();
+
+    function checkPw() {
+      const val = document.getElementById('pwInput').value;
+      if (val === 'Franekkimono1') {
+        sessionStorage.setItem('kempingAuth', '1');
+        const gate = document.getElementById('pwGate');
+        gate.style.transition = 'opacity 0.4s';
+        gate.style.opacity = '0';
+        setTimeout(() => gate.style.display = 'none', 400);
+      } else {
+        const err = document.getElementById('pwError');
+        err.textContent = 'Nieprawidłowe hasło. Spróbuj ponownie.';
+        const input = document.getElementById('pwInput');
+        input.style.borderColor = '#dc2626';
+        input.value = '';
+        input.focus();
+        setTimeout(() => {
+          err.textContent = '';
+          input.style.borderColor = 'rgba(14,36,68,0.15)';
+        }, 2500);
+      }
+    }
+
+    function togglePwVis() {
+      const inp = document.getElementById('pwInput');
+      inp.type = inp.type === 'password' ? 'text' : 'password';
+    }
+  </script>
+
 </body>
 </html>
