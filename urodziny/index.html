@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>90. Urodziny Dziadka 🎂</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --gold:   #c9a84c;
+      --gold-lt:#e2c97e;
+      --cream:  #fdf8f0;
+      --brown:  #5c3d1e;
+      --text:   #3a2a1a;
+      --muted:  #8a7560;
+      --white:  #ffffff;
+    }
+
+    html, body { min-height: 100vh; }
+
+    body {
+      background: var(--cream);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text);
+      overflow-x: hidden;
+    }
+
+    /* ── confetti canvas ── */
+    #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+
+    /* ── page layout ── */
+    .page {
+      position: relative; z-index: 1;
+      max-width: 1100px; margin: 0 auto;
+      padding: 48px 24px 80px;
+    }
+
+    /* ── header ── */
+    .header { text-align: center; margin-bottom: 48px; }
+    .header-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+      color: var(--white); font-family: 'Playfair Display', serif;
+      font-size: 1rem; letter-spacing: 0.15em; text-transform: uppercase;
+      padding: 6px 20px; border-radius: 50px; margin-bottom: 20px;
+    }
+    .header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 6vw, 4.5rem);
+      color: var(--brown); line-height: 1.1;
+      margin-bottom: 12px;
+    }
+    .header h1 span { color: var(--gold); }
+    .header-sub {
+      font-size: 1.1rem; color: var(--muted); font-style: italic;
+    }
+
+    /* ── divider ── */
+    .divider {
+      display: flex; align-items: center; gap: 16px;
+      margin: 32px 0;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1;
+      height: 1px; background: linear-gradient(to right, transparent, var(--gold-lt));
+    }
+    .divider::after { background: linear-gradient(to left, transparent, var(--gold-lt)); }
+    .divider-icon { font-size: 1.4rem; }
+
+    /* ── main grid ── */
+    .main-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      align-items: start;
+    }
+    @media (max-width: 700px) {
+      .main-grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── photo card ── */
+    .photo-card {
+      background: var(--white);
+      border-radius: 24px;
+      padding: 16px;
+      box-shadow:
+        0 4px 24px rgba(92,61,30,0.1),
+        0 1px 4px rgba(92,61,30,0.06);
+      position: relative;
+    }
+    .photo-card::before {
+      content: '';
+      position: absolute; inset: -3px;
+      border-radius: 27px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-lt), var(--gold));
+      z-index: -1;
+      opacity: 0.6;
+    }
+    .photo-card img {
+      width: 100%; border-radius: 16px;
+      display: block;
+      object-fit: cover;
+    }
+    .photo-caption {
+      text-align: center; margin-top: 14px;
+      font-family: 'Playfair Display', serif;
+      font-style: italic; color: var(--muted); font-size: 0.95rem;
+    }
+
+    /* ── wishes card ── */
+    .wishes-card {
+      background: var(--white); border-radius: 24px;
+      padding: 28px 28px 24px;
+      box-shadow: 0 4px 24px rgba(92,61,30,0.08), 0 1px 4px rgba(92,61,30,0.05);
+      display: flex; flex-direction: column; gap: 20px;
+    }
+    .wishes-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem; color: var(--brown);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .wishes-list {
+      display: flex; flex-direction: column; gap: 12px;
+      max-height: 340px; overflow-y: auto;
+      padding-right: 4px;
+    }
+    .wishes-list::-webkit-scrollbar { width: 4px; }
+    .wishes-list::-webkit-scrollbar-track { background: transparent; }
+    .wishes-list::-webkit-scrollbar-thumb { background: var(--gold-lt); border-radius: 4px; }
+
+    .wish-item {
+      background: var(--cream); border-radius: 14px;
+      padding: 14px 16px;
+      border-left: 3px solid var(--gold);
+      animation: wishIn 0.4s cubic-bezier(0.4,0,0.2,1);
+    }
+    @keyframes wishIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .wish-text { font-size: 0.95rem; line-height: 1.6; color: var(--text); margin-bottom: 6px; }
+    .wish-author { font-size: 0.78rem; color: var(--gold); font-weight: 600; letter-spacing: 0.04em; }
+
+    .wish-form { display: flex; flex-direction: column; gap: 10px; }
+    .wish-form textarea {
+      width: 100%; padding: 12px 14px; border-radius: 12px;
+      border: 2px solid rgba(92,61,30,0.12); background: var(--cream);
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: var(--text);
+      outline: none; resize: none; height: 90px; line-height: 1.5;
+      transition: border-color 0.2s;
+    }
+    .wish-form textarea:focus { border-color: var(--gold); }
+    .wish-form textarea::placeholder { color: var(--muted); }
+    .wish-form input {
+      width: 100%; padding: 10px 14px; border-radius: 12px;
+      border: 2px solid rgba(92,61,30,0.12); background: var(--cream);
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: var(--text);
+      outline: none; transition: border-color 0.2s;
+    }
+    .wish-form input:focus { border-color: var(--gold); }
+    .wish-form input::placeholder { color: var(--muted); }
+    .wish-submit {
+      padding: 12px; border-radius: 12px; border: none;
+      background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+      color: var(--white); font-family: 'DM Sans', sans-serif;
+      font-size: 0.95rem; font-weight: 600; cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s;
+      letter-spacing: 0.02em;
+    }
+    .wish-submit:hover { opacity: 0.9; transform: translateY(-1px); }
+    .wish-submit:active { transform: scale(0.98); }
+
+    /* ── music button ── */
+    .music-btn {
+      position: fixed; bottom: 28px; right: 28px; z-index: 100;
+      width: 56px; height: 56px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+      border: none; cursor: pointer; font-size: 1.4rem;
+      box-shadow: 0 4px 20px rgba(201,168,76,0.5);
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .music-btn:hover { transform: scale(1.1); box-shadow: 0 6px 28px rgba(201,168,76,0.6); }
+    .music-btn.playing { animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 4px 20px rgba(201,168,76,0.5); }
+      50% { box-shadow: 0 4px 32px rgba(201,168,76,0.9); }
+    }
+    .music-tooltip {
+      position: fixed; bottom: 94px; right: 28px; z-index: 100;
+      background: var(--brown); color: var(--white);
+      font-size: 0.78rem; padding: 6px 12px; border-radius: 8px;
+      white-space: nowrap; pointer-events: none;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .music-tooltip.show { opacity: 1; }
+
+    /* ── footer ── */
+    .footer { text-align: center; margin-top: 56px; color: var(--muted); font-size: 0.82rem; }
+  </style>
+</head>
+<body>
+
+<canvas id="confetti"></canvas>
+
+<!-- hidden YouTube player -->
+<iframe id="ytPlayer"
+  src="https://www.youtube-nocookie.com/embed/vJFpr6__A8Q?autoplay=1&loop=1&playlist=vJFpr6__A8Q&controls=0&mute=0&enablejsapi=1"
+  allow="autoplay; encrypted-media"
+  style="position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;top:-9999px;"
+  frameborder="0">
+</iframe>
+
+<div class="page">
+
+  <div class="header">
+    <div class="header-badge">🎂 Wyjątkowy Dzień</div>
+    <h1>Wszystkiego<br>najlepszego,<br><span>Dziadku!</span></h1>
+    <p class="header-sub">Z okazji pięknych <strong>90. urodzin</strong> — z miłością od całej rodziny</p>
+  </div>
+
+  <div class="divider"><span class="divider-icon">🌻</span></div>
+
+  <div class="main-grid">
+
+    <!-- Zdjęcie -->
+    <div class="photo-card">
+      <img src="dziadek.jpeg" alt="Dziadek" />
+      <p class="photo-caption">Chwile, które zostają na zawsze ❤️</p>
+    </div>
+
+    <!-- Życzenia -->
+    <div class="wishes-card">
+      <div class="wishes-title">💌 Życzenia</div>
+
+      <div class="wishes-list" id="wishesList">
+        <!-- wishes rendered here -->
+      </div>
+
+      <div class="wish-form">
+        <textarea id="wishText" placeholder="Napisz swoje życzenia dla Dziadka…"></textarea>
+        <input type="text" id="wishAuthor" placeholder="Twoje imię" />
+        <button class="wish-submit" onclick="addWish()">Wyślij życzenia 🎉</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="footer">
+    Strona stworzona z miłością 💛
+  </div>
+
+</div>
+
+<!-- Music button -->
+<div class="music-tooltip" id="musicTooltip">Kliknij aby włączyć muzykę</div>
+<button class="music-btn" id="musicBtn" onclick="toggleMusic()" title="Muzyka">🎵</button>
+
+<!-- Password gate -->
+<div id="pwGate" style="
+  position:fixed;inset:0;z-index:9999;
+  background: linear-gradient(135deg, #5c3d1e 0%, #3a2a1a 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Sans',sans-serif;
+">
+  <div style="
+    background:#fdf8f0;border-radius:24px;padding:52px 40px;
+    width:100%;max-width:420px;margin:24px;text-align:center;
+    box-shadow:0 32px 80px rgba(0,0,0,0.4);
+  ">
+    <div style="font-size:3rem;margin-bottom:16px;">🎂</div>
+    <div style="font-family:'Playfair Display',serif;font-size:1.6rem;color:#5c3d1e;margin-bottom:8px;">Niespodzianka!</div>
+    <div style="font-size:0.9rem;color:#8a7560;margin-bottom:32px;line-height:1.6;">
+      Ta strona jest wyjątkowa i chroniona hasłem.<br>Wpisz hasło aby zobaczyć niespodziankę.
+    </div>
+    <input id="pwInput" type="password" placeholder="Hasło"
+      oninput="if(this.value==='dziadek')checkPw()"
+      onkeydown="if(event.key==='Enter')checkPw()"
+      style="
+        width:100%;padding:14px 16px;border-radius:12px;
+        border:2px solid rgba(92,61,30,0.2);background:#fff;
+        font-size:1rem;font-family:'DM Sans',sans-serif;
+        color:#3a2a1a;outline:none;transition:border-color 0.2s;
+        margin-bottom:10px;text-align:center;letter-spacing:0.1em;
+      "
+      onfocus="this.style.borderColor='#c9a84c'"
+      onblur="this.style.borderColor='rgba(92,61,30,0.2)'"
+    />
+    <div id="pwError" style="font-size:0.82rem;color:#dc2626;min-height:20px;margin-bottom:10px;"></div>
+    <button onclick="checkPw()" style="
+      width:100%;padding:14px;
+      background:linear-gradient(135deg,#c9a84c,#e2c97e);
+      color:#fff;border:none;border-radius:12px;
+      font-family:'DM Sans',sans-serif;font-size:1rem;font-weight:600;
+      cursor:pointer;transition:opacity 0.2s;
+    " onmouseover="this.style.opacity='0.88'" onmouseout="this.style.opacity='1'">
+      Wejdź 🎉
+    </button>
+  </div>
+</div>
+
+<script>
+  // ── Password ─────────────────────────────────────────────────────────────
+  (function() {
+    if (sessionStorage.getItem('urodzinyAuth') === '1') unlock(false);
+    else setTimeout(() => document.getElementById('pwInput').focus(), 200);
+  })();
+
+  function checkPw() {
+    if (document.getElementById('pwInput').value === 'dziadek') {
+      sessionStorage.setItem('urodzinyAuth', '1');
+      unlock(true);
+    } else {
+      const err = document.getElementById('pwError');
+      err.textContent = 'Nieprawidłowe hasło. Spróbuj ponownie.';
+      const inp = document.getElementById('pwInput');
+      inp.style.borderColor = '#dc2626';
+      inp.value = ''; inp.focus();
+      setTimeout(() => { err.textContent = ''; inp.style.borderColor = 'rgba(92,61,30,0.2)'; }, 2500);
+    }
+  }
+
+  function unlock(animate) {
+    const gate = document.getElementById('pwGate');
+    if (animate) {
+      gate.style.transition = 'opacity 0.5s';
+      gate.style.opacity = '0';
+      setTimeout(() => { gate.style.display = 'none'; startConfetti(); tryAutoplay(); }, 500);
+    } else {
+      gate.style.display = 'none';
+    }
+    showMusicTooltip();
+  }
+
+  // ── Wishes ───────────────────────────────────────────────────────────────
+  const WISHES_KEY = 'urodzinyWishes';
+
+  function loadWishes() {
+    try { return JSON.parse(localStorage.getItem(WISHES_KEY)) || []; }
+    catch { return []; }
+  }
+
+  function saveWishes(wishes) {
+    localStorage.setItem(WISHES_KEY, JSON.stringify(wishes));
+  }
+
+  function renderWishes() {
+    const list = document.getElementById('wishesList');
+    const wishes = loadWishes();
+    list.innerHTML = '';
+    if (wishes.length === 0) {
+      list.innerHTML = '<div style="color:var(--muted);font-size:0.85rem;text-align:center;padding:16px 0;">Bądź pierwszą osobą, która złoży życzenia! 🌻</div>';
+      return;
+    }
+    wishes.forEach(w => {
+      const div = document.createElement('div');
+      div.className = 'wish-item';
+      div.innerHTML = `<div class="wish-text">${escHtml(w.text)}</div><div class="wish-author">— ${escHtml(w.author)}</div>`;
+      list.appendChild(div);
+    });
+    list.scrollTop = list.scrollHeight;
+  }
+
+  function addWish() {
+    const text   = document.getElementById('wishText').value.trim();
+    const author = document.getElementById('wishAuthor').value.trim() || 'Anonimowo';
+    if (!text) { document.getElementById('wishText').focus(); return; }
+    const wishes = loadWishes();
+    wishes.push({ text, author, ts: Date.now() });
+    saveWishes(wishes);
+    document.getElementById('wishText').value = '';
+    document.getElementById('wishAuthor').value = '';
+    renderWishes();
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  renderWishes();
+
+  // ── Music ────────────────────────────────────────────────────────────────
+  let musicPlaying = false;
+  const yt = document.getElementById('ytPlayer');
+
+  function tryAutoplay() {
+    yt.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+    musicPlaying = true;
+    document.getElementById('musicBtn').classList.add('playing');
+    document.getElementById('musicBtn').textContent = '🎶';
+  }
+
+  function toggleMusic() {
+    if (musicPlaying) {
+      yt.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+      musicPlaying = false;
+      document.getElementById('musicBtn').classList.remove('playing');
+      document.getElementById('musicBtn').textContent = '🎵';
+    } else {
+      yt.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+      musicPlaying = true;
+      document.getElementById('musicBtn').classList.add('playing');
+      document.getElementById('musicBtn').textContent = '🎶';
+    }
+    document.getElementById('musicTooltip').classList.remove('show');
+  }
+
+  function showMusicTooltip() {
+    const t = document.getElementById('musicTooltip');
+    setTimeout(() => { t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 3000); }, 800);
+  }
+
+  // ── Confetti ─────────────────────────────────────────────────────────────
+  function startConfetti() {
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const colors = ['#c9a84c','#e2c97e','#f9e4a0','#5c3d1e','#ffffff','#f4c430'];
+    const pieces = Array.from({ length: 120 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * -canvas.height,
+      w: Math.random() * 10 + 4,
+      h: Math.random() * 6 + 3,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      rot: Math.random() * Math.PI * 2,
+      vx: (Math.random() - 0.5) * 2,
+      vy: Math.random() * 3 + 1.5,
+      vr: (Math.random() - 0.5) * 0.1,
+    }));
+
+    let frame = 0;
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      pieces.forEach(p => {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        ctx.restore();
+        p.x += p.vx; p.y += p.vy; p.rot += p.vr;
+        if (p.y > canvas.height) { p.y = -20; p.x = Math.random() * canvas.width; }
+      });
+      frame++;
+      if (frame < 400) requestAnimationFrame(draw);
+      else ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+    draw();
+  }
+</script>
+
+</body>
+</html>
