@@ -655,6 +655,11 @@
     setTimeout(function() {
       document.getElementById('wishesCover').style.display = 'none';
     }, 700);
+    // Auto-play wishes audio
+    setTimeout(function() {
+      var btn = document.getElementById('readBtn0');
+      if (btn) readWish(0);
+    }, 400);
   }
 </script>
 
