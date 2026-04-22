@@ -856,9 +856,7 @@
     </div>
   </div>
 
-  <audio id="radioAudio" preload="none">
-    <source src="https://sluchaj.link:5443/plonsk" type="audio/mpeg">
-  </audio>
+  <audio id="radioAudio" preload="none" crossorigin="anonymous"></audio>
 
   <style>
     @keyframes wavePulse1 { 0%,100%{height:4px} 50%{height:14px} }
@@ -919,8 +917,8 @@
         setLive(false);
         setWaveAnimation(false);
       } else {
+        radioStatus.textContent = 'Łączenie…';
         radioAudio.src = 'https://sluchaj.link:5443/plonsk';
-        radioAudio.load();
         radioAudio.play().then(() => {
           isPlaying = true;
           iconPlay.style.display  = 'none';
@@ -928,8 +926,9 @@
           radioStatus.textContent = 'Słuchasz na żywo';
           setLive(true);
           setWaveAnimation(true);
-        }).catch(() => {
-          radioStatus.textContent = 'Błąd połączenia';
+        }).catch(err => {
+          radioAudio.src = '';
+          radioStatus.textContent = 'Błąd: ' + (err.name || 'połączenia');
         });
       }
     }
