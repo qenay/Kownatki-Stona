@@ -857,7 +857,7 @@
   </div>
 
   <audio id="radioAudio" preload="none">
-    <source src="https://www.radioplonsk.pl/radio/6bff99520dcb4158b6c5b8cf6ad6f09c" type="audio/mpeg">
+    <source src="https://sluchaj.link:5443/plonsk" type="audio/mpeg">
   </audio>
 
   <style>
@@ -919,7 +919,7 @@
         setLive(false);
         setWaveAnimation(false);
       } else {
-        radioAudio.src = 'https://www.radioplonsk.pl/radio/6bff99520dcb4158b6c5b8cf6ad6f09c';
+        radioAudio.src = 'https://sluchaj.link:5443/plonsk';
         radioAudio.load();
         radioAudio.play().then(() => {
           isPlaying = true;
