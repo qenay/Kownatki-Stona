@@ -736,6 +736,224 @@
     </div>
   </div>
 
+  <!-- ─── RADIO PLAYER ───────────────────────────────────────────────────── -->
+  <div id="radioWidget" style="
+    position: fixed; bottom: 28px; right: 28px; z-index: 1050;
+    font-family: 'DM Sans', sans-serif;
+    filter: drop-shadow(0 8px 32px rgba(14,36,68,0.28));
+    transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+  ">
+    <!-- Collapsed pill -->
+    <div id="radioPill" onclick="expandRadio()" style="
+      display: none;
+      background: var(--navy); border-radius: 50px;
+      padding: 10px 20px 10px 14px;
+      align-items: center; gap: 10px; cursor: pointer;
+      border: 1.5px solid rgba(188,150,117,0.35);
+      transition: background 0.25s, transform 0.2s;
+    "
+      onmouseover="this.style.background='#1a3a6e'"
+      onmouseout="this.style.background='var(--navy)'"
+    >
+      <span id="pillDot" style="
+        width: 8px; height: 8px; border-radius: 50%;
+        background: #6b7280; flex-shrink: 0;
+        transition: background 0.3s;
+      "></span>
+      <span style="color: var(--white); font-size: 0.82rem; font-weight: 600; white-space: nowrap;">Radio Płońsk</span>
+    </div>
+
+    <!-- Expanded card -->
+    <div id="radioCard" style="
+      background: var(--navy);
+      border-radius: 20px;
+      border: 1.5px solid rgba(188,150,117,0.25);
+      overflow: hidden;
+      width: 260px;
+    ">
+      <!-- Card header -->
+      <div style="
+        background: linear-gradient(135deg, #0e2444 0%, #152e54 100%);
+        padding: 18px 20px 16px;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        display: flex; align-items: center; justify-content: space-between;
+      ">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <!-- Animated sound icon -->
+          <div id="waveIcon" style="display:flex; align-items:flex-end; gap:2px; height:16px; flex-shrink:0;">
+            <span class="wave-bar" style="width:3px; border-radius:2px; background:var(--gold); animation: none; height:4px;"></span>
+            <span class="wave-bar" style="width:3px; border-radius:2px; background:var(--gold); animation: none; height:4px;"></span>
+            <span class="wave-bar" style="width:3px; border-radius:2px; background:var(--gold); animation: none; height:4px;"></span>
+            <span class="wave-bar" style="width:3px; border-radius:2px; background:var(--gold); animation: none; height:4px;"></span>
+          </div>
+          <div>
+            <div style="font-family:'Marcellus',serif; font-size:0.95rem; color:var(--white); line-height:1.1;">Radio Płońsk</div>
+            <div style="font-size:0.68rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold-lt); margin-top:1px;">93,6 FM</div>
+          </div>
+        </div>
+        <button onclick="collapseRadio()" style="
+          background: rgba(255,255,255,0.08); border: none; border-radius: 50%;
+          width: 26px; height: 26px; cursor: pointer; color: rgba(255,255,255,0.55);
+          font-size: 0.75rem; display:flex; align-items:center; justify-content:center;
+          transition: background 0.2s, color 0.2s; flex-shrink:0;
+        "
+          onmouseover="this.style.background='rgba(255,255,255,0.16)';this.style.color='#fff'"
+          onmouseout="this.style.background='rgba(255,255,255,0.08)';this.style.color='rgba(255,255,255,0.55)'"
+          title="Zwiń"
+        >✕</button>
+      </div>
+
+      <!-- Live badge + status -->
+      <div style="padding: 14px 20px 0; display:flex; align-items:center; gap:8px;">
+        <span id="liveBadge" style="
+          display:inline-flex; align-items:center; gap:5px;
+          background: rgba(107,114,128,0.2); border-radius:50px;
+          padding: 3px 10px; font-size: 0.7rem; font-weight:700;
+          letter-spacing:0.1em; color: #9ca3af; text-transform:uppercase;
+          transition: background 0.3s, color 0.3s;
+        ">
+          <span id="liveDot" style="width:6px;height:6px;border-radius:50%;background:#6b7280;display:inline-block;transition:background 0.3s;"></span>
+          NA ŻYWO
+        </span>
+        <span id="radioStatus" style="font-size:0.78rem; color:rgba(255,255,255,0.4);">Wciśnij play</span>
+      </div>
+
+      <!-- Controls -->
+      <div style="padding: 16px 20px 20px; display:flex; align-items:center; gap:14px;">
+        <!-- Play/pause -->
+        <button id="playBtn" onclick="toggleRadio()" style="
+          width: 48px; height: 48px; border-radius: 50%;
+          background: var(--gold); border: none; cursor: pointer;
+          display: flex; align-items:center; justify-content:center;
+          flex-shrink: 0;
+          transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+          box-shadow: 0 4px 16px rgba(188,150,117,0.35);
+        "
+          onmouseover="this.style.background='var(--gold-lt)';this.style.transform='scale(1.06)'"
+          onmouseout="this.style.background='var(--gold)';this.style.transform='scale(1)'"
+          onmousedown="this.style.transform='scale(0.94)'"
+          onmouseup="this.style.transform='scale(1.06)'"
+          aria-label="Odtwórz / pauza"
+        >
+          <svg id="iconPlay" width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="iconPause" width="18" height="18" viewBox="0 0 24 24" fill="white" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        </button>
+
+        <!-- Volume -->
+        <div style="flex:1;">
+          <div style="font-size:0.7rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:6px;">Głośność</div>
+          <input type="range" id="volSlider" min="0" max="1" step="0.02" value="0.8"
+            oninput="setVolume(this.value)"
+            style="
+              width:100%; height:4px; border-radius:2px; cursor:pointer;
+              -webkit-appearance:none; appearance:none;
+              background: linear-gradient(to right, var(--gold) 80%, rgba(255,255,255,0.15) 80%);
+              outline:none; border:none;
+            "
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <audio id="radioAudio" preload="none">
+    <source src="https://www.radioplonsk.pl/radio/6bff99520dcb4158b6c5b8cf6ad6f09c" type="audio/mpeg">
+  </audio>
+
+  <style>
+    @keyframes wavePulse1 { 0%,100%{height:4px} 50%{height:14px} }
+    @keyframes wavePulse2 { 0%,100%{height:8px} 50%{height:4px} }
+    @keyframes wavePulse3 { 0%,100%{height:12px} 50%{height:5px} }
+    @keyframes wavePulse4 { 0%,100%{height:5px} 50%{height:13px} }
+    #volSlider::-webkit-slider-thumb {
+      -webkit-appearance:none; width:14px; height:14px;
+      border-radius:50%; background:var(--white);
+      box-shadow:0 1px 4px rgba(0,0,0,0.3); cursor:pointer;
+    }
+    #volSlider::-moz-range-thumb {
+      width:14px; height:14px; border-radius:50%;
+      background:var(--white); border:none;
+      box-shadow:0 1px 4px rgba(0,0,0,0.3); cursor:pointer;
+    }
+    .wave-bar { transition: height 0.15s; }
+  </style>
+
+  <script>
+    const radioAudio = document.getElementById('radioAudio');
+    const playBtn    = document.getElementById('playBtn');
+    const iconPlay   = document.getElementById('iconPlay');
+    const iconPause  = document.getElementById('iconPause');
+    const liveBadge  = document.getElementById('liveBadge');
+    const liveDot    = document.getElementById('liveDot');
+    const radioStatus = document.getElementById('radioStatus');
+    const waveBars   = document.querySelectorAll('.wave-bar');
+    const pillDot    = document.getElementById('pillDot');
+    let isPlaying = false;
+
+    function setWaveAnimation(active) {
+      const anims = ['wavePulse1 0.7s ease-in-out infinite','wavePulse2 0.9s ease-in-out infinite 0.1s','wavePulse3 0.75s ease-in-out infinite 0.2s','wavePulse4 0.85s ease-in-out infinite 0.05s'];
+      waveBars.forEach((b, i) => { b.style.animation = active ? anims[i] : 'none'; b.style.height = active ? '' : '4px'; });
+    }
+
+    function setLive(active) {
+      liveBadge.style.background = active ? 'rgba(22,163,74,0.2)'   : 'rgba(107,114,128,0.2)';
+      liveBadge.style.color      = active ? '#4ade80'                : '#9ca3af';
+      liveDot.style.background   = active ? '#22c55e'                : '#6b7280';
+      pillDot.style.background   = active ? '#22c55e'                : '#6b7280';
+    }
+
+    function updateVolumeTrack(val) {
+      const pct = Math.round(val * 100);
+      document.getElementById('volSlider').style.background =
+        `linear-gradient(to right, var(--gold) ${pct}%, rgba(255,255,255,0.15) ${pct}%)`;
+    }
+
+    function toggleRadio() {
+      if (isPlaying) {
+        radioAudio.pause();
+        radioAudio.src = '';
+        isPlaying = false;
+        iconPlay.style.display  = 'block';
+        iconPause.style.display = 'none';
+        radioStatus.textContent = 'Wciśnij play';
+        setLive(false);
+        setWaveAnimation(false);
+      } else {
+        radioAudio.src = 'https://www.radioplonsk.pl/radio/6bff99520dcb4158b6c5b8cf6ad6f09c';
+        radioAudio.load();
+        radioAudio.play().then(() => {
+          isPlaying = true;
+          iconPlay.style.display  = 'none';
+          iconPause.style.display = 'block';
+          radioStatus.textContent = 'Słuchasz na żywo';
+          setLive(true);
+          setWaveAnimation(true);
+        }).catch(() => {
+          radioStatus.textContent = 'Błąd połączenia';
+        });
+      }
+    }
+
+    function setVolume(val) {
+      radioAudio.volume = parseFloat(val);
+      updateVolumeTrack(val);
+    }
+
+    function collapseRadio() {
+      document.getElementById('radioCard').style.display = 'none';
+      const pill = document.getElementById('radioPill');
+      pill.style.display = 'flex';
+    }
+
+    function expandRadio() {
+      document.getElementById('radioPill').style.display = 'none';
+      document.getElementById('radioCard').style.display = 'block';
+    }
+
+    // init volume track
+    updateVolumeTrack(0.8);
+  </script>
+
   <!-- ─── FOOTER ────────────────────────────────────────────────────────── -->
   <footer class="site-footer">
     <p>© 2025 Ośrodek Plaża Kownatki &nbsp;·&nbsp; Kownatki 19A, 13-124 Kozłowo &nbsp;·&nbsp; <a href="/">plazakownatki.pl</a></p>
