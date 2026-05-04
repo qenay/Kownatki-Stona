@@ -226,6 +226,7 @@
       background: var(--gold); color: var(--white);
     }
     .ticket-cta:hover { background: var(--gold-lt); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(188,150,117,0.4); }
+    .ticket-card.no-stub::before, .ticket-card.no-stub::after { display: none; }
 
     /* ─── Logo slider ──────────────────────────────────────────────────── */
     .logo-slider-section {
@@ -391,67 +392,22 @@
   <section class="artists-section">
     <div class="container">
       <div class="artists-label">Artyści</div>
-      <div class="artists-grid">
-
-        <div class="artist-card">
-          <div class="artist-photo">
-            <img src="artist-1.jpg" alt="Miły Pan" />
+      <div style="display:flex; justify-content:center;">
+        <div class="artist-card" style="max-width:280px; width:100%;">
+          <div class="artist-photo" style="width:100%;">
+            <div class="artist-photo-placeholder" style="width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; padding:40px 0;">
+              <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:72px;height:72px;">
+                <circle cx="32" cy="32" r="30" stroke="rgba(188,150,117,0.4)" stroke-width="2"/>
+                <text x="32" y="44" text-anchor="middle" font-family="Marcellus,serif" font-size="36" fill="rgba(188,150,117,0.6)">?</text>
+              </svg>
+            </div>
           </div>
-          <div class="artist-name">MIŁY PAN</div>
+          <div class="artist-name" style="letter-spacing:0.08em;">JUŻ WKRÓTCE!</div>
         </div>
-
-        <div class="artist-card">
-          <div class="artist-photo">
-            <img src="artist-2.jpg" alt="Grupa Active" />
-          </div>
-          <div class="artist-name">GRUPA ACTIVE</div>
-        </div>
-
-        <div class="artist-card">
-          <div class="artist-photo">
-            <img src="artist-3.jpg" alt="Topky" />
-          </div>
-          <div class="artist-name">TOPKY</div>
-        </div>
-
-        <div class="artist-card">
-          <div class="artist-photo">
-            <img src="artist-4.jpg" alt="Łukasz Sienicki" />
-          </div>
-          <div class="artist-name">ŁUKASZ SIENICKI</div>
-        </div>
-
-
       </div>
     </div>
   </section>
 
-  <!-- ─── EVENT BAR ─────────────────────────────────────────────────────── -->
-  <div class="event-bar">
-    <div class="container">
-      <div class="event-bar-inner">
-        <div class="event-bar-item">
-          <span>📅</span>
-          <span><strong>Data:</strong> 2.05.2026</span>
-        </div>
-        <div class="event-bar-sep"></div>
-        <div class="event-bar-item">
-          <span>🕐</span>
-          <span><strong>Godzina:</strong> 18:00</span>
-        </div>
-        <div class="event-bar-sep"></div>
-        <div class="event-bar-item">
-          <span>📍</span>
-          <span><strong>Miejsce:</strong> Kownatki 19A, 13-124 Kozłowo</span>
-        </div>
-        <div class="event-bar-sep"></div>
-        <div class="event-bar-item">
-          <span>🏖️</span>
-          <span><strong>Prywatna plaża</strong> nad jeziorem</span>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- ─── TICKETS ───────────────────────────────────────────────────────── -->
   <section class="tickets-section">
@@ -464,38 +420,12 @@
 
       <div class="tickets-grid">
 
-        <div class="ticket-card">
-          <div class="ticket-main">
-            <div style="font-family:'Marcellus',serif; font-size:3rem; color:var(--navy); line-height:1; letter-spacing:-0.02em;">2.05.2026</div>
-            <div style="font-size:0.75rem; font-weight:600; letter-spacing:0.15em; text-transform:uppercase; color:var(--gold);">Ośrodek Plaża Kownatki</div>
-            <ul class="ticket-features">
-              <li>Wstęp na koncert</li>
-              <li>Liczba biletów ograniczona: 999</li>
-              <li>Możliwość zakupienia biletów stacjonarnie w dniach 1.05.2026 - 2.05.2026 do godziny 17:00</li>
-            </ul>
-            <div style="font-size:0.85rem; color:var(--muted); display:flex; flex-direction:column; gap:6px; padding-top:8px; border-top:1px solid rgba(14,36,68,0.08);">
-              <span>👶 Dzieci do lat 3 — <strong style="color:var(--navy);">bezpłatnie</strong></span>
-              <span>🧒 Dzieci do lat 12 — <strong style="color:var(--navy);">30 zł</strong></span>
-              <span>♿ Osoby niepełnosprawne — <strong style="color:var(--navy);">bezpłatnie</strong></span>
-            </div>
+        <div class="ticket-card no-stub">
+          <div class="ticket-main" style="align-items:center; justify-content:center; text-align:center; padding:56px 48px; width:100%;">
+            <div style="font-size:3rem; margin-bottom:16px;">🎟</div>
+            <div style="font-family:'Marcellus',serif; font-size:2rem; color:var(--navy); margin-bottom:8px;">Już Wkrótce</div>
+            <div style="font-size:0.95rem; color:var(--muted); line-height:1.6;">Informacje o nowym wydarzeniu<br>pojawią się tu wkrótce.</div>
           </div>
-          <div class="ticket-stub">
-            <div style="font-family:'Marcellus',serif; font-size:2.4rem; color:var(--gold); line-height:1;">50 zł</div>
-            <div style="font-size:0.8rem; color:rgba(255,255,255,0.55); text-transform:uppercase; letter-spacing:0.1em;">za osobę</div>
-            <a href="https://biletomat.pl/wydarzenia/koncert-majowkowy-plaza-kownatki-31344?eventId=342764" target="_blank" rel="noopener" class="ticket-cta">Kup bilet na koncert →</a>
-          </div>
-        </div>
-
-        <div style="text-align:center; margin-top:32px;">
-          <a href="https://www.facebook.com/plazakownatki/posts/pfbid0322cVS84QsD7t87h1ijN5n7EpYzh5WgsWAzMnniRbZXPMXy3ocGEKgDfMN2178WKvl?locale=pl_PL"
-             target="_blank" rel="noopener"
-             style="display:inline-flex; align-items:center; gap:10px;
-                    background:#0e2444; color:#fff; border:2px solid rgba(255,255,255,0.15);
-                    border-radius:50px; padding:14px 32px;
-                    font-family:'DM Sans',sans-serif; font-size:1rem; font-weight:600;
-                    text-decoration:none; transition:all 0.25s ease;">
-            🎟 Konkurs na darmowe bilety
-          </a>
         </div>
 
       </div>
