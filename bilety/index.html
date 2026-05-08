@@ -652,6 +652,96 @@
     </div>
   </section>
 
+  <!-- ─── GALLERY ─────────────────────────────────────────────────────── -->
+  <section style="background:#08192e; padding:72px 0 80px;">
+    <div class="container">
+      <div style="text-align:center; margin-bottom:48px;">
+        <div style="font-size:0.72rem; font-weight:600; letter-spacing:0.18em; text-transform:uppercase; color:var(--gold); margin-bottom:12px;">Wspomnienia</div>
+        <h2 style="font-family:'Marcellus',serif; font-size:2.2rem; color:var(--white); letter-spacing:-0.01em;">Galeria z poprzednich koncertów</h2>
+      </div>
+
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:auto auto; gap:12px;">
+
+        <div style="grid-column:1/2; grid-row:1/2; border-radius:14px; overflow:hidden; aspect-ratio:3/2; cursor:pointer;" onclick="openLightbox(0)">
+          <img src="gallery/concert-1.jpg" alt="Koncert 1" style="width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
+        </div>
+
+        <div style="grid-column:2/3; grid-row:1/3; border-radius:14px; overflow:hidden; cursor:pointer;" onclick="openLightbox(1)">
+          <img src="gallery/concert-2.jpg" alt="Koncert 2" style="width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
+        </div>
+
+        <div style="grid-column:3/4; grid-row:1/2; border-radius:14px; overflow:hidden; aspect-ratio:3/2; cursor:pointer;" onclick="openLightbox(2)">
+          <img src="gallery/concert-3.jpg" alt="Koncert 3" style="width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
+        </div>
+
+        <div style="grid-column:1/2; grid-row:2/3; border-radius:14px; overflow:hidden; aspect-ratio:3/2; cursor:pointer;" onclick="openLightbox(3)">
+          <img src="gallery/concert-4.jpg" alt="Koncert 4" style="width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
+        </div>
+
+        <div style="grid-column:3/4; grid-row:2/3; border-radius:14px; overflow:hidden; aspect-ratio:3/2; cursor:pointer;" onclick="openLightbox(4)">
+          <img src="gallery/concert-5.jpg" alt="Koncert 5" style="width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
+        </div>
+
+      </div>
+
+      <div style="text-align:center; margin-top:36px;">
+        <a href="https://www.facebook.com/plazakownatki/posts/pfbid036LHESwrRz7Fnv92t3Lz4Sxy4ab3R18yzpKRVmbvoY6un87eJsY2fvqKkCxwU53Lpl" target="_blank" rel="noopener"
+           style="display:inline-flex; align-items:center; gap:10px; padding:14px 32px; border-radius:50px; border:1.5px solid rgba(188,150,117,0.4); color:var(--gold); font-size:0.9rem; font-weight:600; letter-spacing:0.05em; transition:all 0.25s ease;"
+           onmouseover="this.style.background='rgba(188,150,117,0.1)'; this.style.borderColor='var(--gold)'"
+           onmouseout="this.style.background='transparent'; this.style.borderColor='rgba(188,150,117,0.4)'">
+          Zobacz więcej na Facebooku →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── LIGHTBOX ──────────────────────────────────────────────────────── -->
+  <div id="lightbox" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.93); z-index:9999; align-items:center; justify-content:center;">
+    <button onclick="closeLightbox()" style="position:absolute; top:20px; right:28px; background:none; border:none; color:#fff; font-size:2.2rem; cursor:pointer; opacity:0.7; line-height:1;">✕</button>
+    <button onclick="prevPhoto()" style="position:absolute; left:20px; background:rgba(255,255,255,0.1); border:none; color:#fff; font-size:2rem; width:52px; height:52px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">‹</button>
+    <img id="lightbox-img" src="" alt="" style="max-width:90vw; max-height:88vh; border-radius:10px; object-fit:contain; box-shadow:0 32px 80px rgba(0,0,0,0.8);"/>
+    <button onclick="nextPhoto()" style="position:absolute; right:20px; background:rgba(255,255,255,0.1); border:none; color:#fff; font-size:2rem; width:52px; height:52px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.25)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">›</button>
+    <div id="lightbox-counter" style="position:absolute; bottom:24px; left:50%; transform:translateX(-50%); color:rgba(255,255,255,0.5); font-size:0.85rem; letter-spacing:0.1em;"></div>
+  </div>
+
+  <script>
+    const galleryImgs = ['gallery/concert-1.jpg','gallery/concert-2.jpg','gallery/concert-3.jpg','gallery/concert-4.jpg','gallery/concert-5.jpg'];
+    let currentIdx = 0;
+
+    function openLightbox(idx) {
+      currentIdx = idx;
+      document.getElementById('lightbox-img').src = galleryImgs[idx];
+      document.getElementById('lightbox-counter').textContent = (idx+1) + ' / ' + galleryImgs.length;
+      const lb = document.getElementById('lightbox');
+      lb.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLightbox() {
+      document.getElementById('lightbox').style.display = 'none';
+      document.body.style.overflow = '';
+    }
+    function prevPhoto() {
+      currentIdx = (currentIdx - 1 + galleryImgs.length) % galleryImgs.length;
+      document.getElementById('lightbox-img').src = galleryImgs[currentIdx];
+      document.getElementById('lightbox-counter').textContent = (currentIdx+1) + ' / ' + galleryImgs.length;
+    }
+    function nextPhoto() {
+      currentIdx = (currentIdx + 1) % galleryImgs.length;
+      document.getElementById('lightbox-img').src = galleryImgs[currentIdx];
+      document.getElementById('lightbox-counter').textContent = (currentIdx+1) + ' / ' + galleryImgs.length;
+    }
+    document.getElementById('lightbox').addEventListener('click', function(e) {
+      if (e.target === this) closeLightbox();
+    });
+    document.addEventListener('keydown', function(e) {
+      if (document.getElementById('lightbox').style.display === 'flex') {
+        if (e.key === 'ArrowLeft') prevPhoto();
+        if (e.key === 'ArrowRight') nextPhoto();
+        if (e.key === 'Escape') closeLightbox();
+      }
+    });
+  </script>
+
   <!-- ─── FOOTER ───────────────────────────────────────────────────────── -->
   <footer class="footer">
     <div class="container">
