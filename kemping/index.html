@@ -476,6 +476,39 @@
     .cp-total-lbl { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
     .cp-total-val { font-family: 'Marcellus', serif; font-size: 2rem; color: var(--navy); line-height: 1; }
     .cp-foot-note { font-size: 0.7rem; color: var(--muted); line-height: 1.55; }
+    .cp-total-breakdown {
+      font-size: 0.76rem; color: var(--muted); margin-bottom: 8px; line-height: 1.7;
+    }
+    .cp-days {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 22px;
+      border-bottom: 1px solid rgba(14,36,68,0.07);
+      background: rgba(14,36,68,0.02);
+    }
+    .cp-days-lbl {
+      font-size: 0.76rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted);
+    }
+    .cp-days-stepper {
+      display: flex; align-items: center;
+      background: var(--white); border-radius: 8px;
+      border: 1.5px solid rgba(14,36,68,0.12); overflow: hidden;
+    }
+    .cp-days-val {
+      min-width: 32px; text-align: center;
+      font-size: 0.95rem; font-weight: 700; color: var(--navy);
+      padding: 0 4px; line-height: 30px;
+      border-left: 1px solid rgba(14,36,68,0.1);
+      border-right: 1px solid rgba(14,36,68,0.1);
+    }
+    .cp-discount-banner {
+      display: flex; align-items: center; gap: 7px;
+      padding: 9px 22px;
+      background: rgba(21,128,61,0.08);
+      border-bottom: 1px solid rgba(21,128,61,0.15);
+      font-size: 0.78rem; font-weight: 700;
+      color: #15803d; letter-spacing: 0.02em;
+    }
 
     .item-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
     .item-stepper {
@@ -596,9 +629,9 @@
       <!-- Header -->
       <div class="cennik-header">
         <span class="cennik-label">Kemping · Plaża Kownatki</span>
-        <h2>Cennik pola campingowego</h2>
-        <p class="cennik-sub">Wszystkie ceny podane są za dobę. Doba hotelowa kończy się o godz. <strong>12:00</strong>.</p>
-        <div class="cennik-calc-toggle">
+        <h2>Cennik pola kempingowego</h2>
+        <p class="cennik-sub">Wszystkie ceny podane są za dobę. Doba kończy się o godz. <strong>12:00</strong>.</p>
+        <div class="cennik-calc-toggle" style="margin-top: 44px;">
           <button class="calc-toggle-btn" id="calcToggleBtn" onclick="toggleCalc()">
             <span class="calc-btn-icon">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -755,15 +788,29 @@
             </div>
             <button class="cp-clear" onclick="clearCalcItems()">Wyczyść</button>
           </div>
+          <!-- Days stepper -->
+          <div class="cp-days">
+            <span class="cp-days-lbl">Liczba dni</span>
+            <div class="cp-days-stepper">
+              <button class="step-btn" onclick="stepDays(-1)">−</button>
+              <span class="cp-days-val" id="cpDaysVal">1</span>
+              <button class="step-btn" onclick="stepDays(1)">+</button>
+            </div>
+          </div>
+          <div class="cp-discount-banner" id="cpDiscountBanner" style="display:none;">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Zniżka 5% — pobyt powyżej 7 dni
+          </div>
           <div class="cp-body" id="cpBody">
             <div class="cp-empty">Wybierz pozycje z cennika,<br>aby zobaczyć szacunkowy koszt.</div>
           </div>
           <div class="cp-foot">
+            <div class="cp-total-breakdown" id="cpBreakdown" style="display:none;"></div>
             <div class="cp-total">
-              <span class="cp-total-lbl">Łącznie / dobę</span>
+              <span class="cp-total-lbl" id="cpTotalLbl">Łącznie / dobę</span>
               <span class="cp-total-val" id="cpTotal">0 zł</span>
             </div>
-            <p class="cp-foot-note">* Orientacyjny koszt za jedną dobę pobytu. Ostateczna cena jest ustalana w recepcji.</p>
+            <p class="cp-foot-note">* Orientacyjny koszt pobytu. Ostateczna cena jest ustalana w recepcji.</p>
           </div>
         </div>
       </div>
@@ -780,6 +827,7 @@
   <script>
     // ─── Calculator ────────────────────────────────────────────────────────
     let calcActive = false;
+    let calcDays = 1;
 
     function toggleCalc() {
       calcActive = !calcActive;
@@ -789,6 +837,8 @@
         document.querySelectorAll('.step-val').forEach(el => {
           el.textContent = '0'; el.classList.remove('has-val');
         });
+        calcDays = 1;
+        document.getElementById('cpDaysVal').textContent = '1';
       }
       renderCalcPanel();
     }
@@ -801,24 +851,38 @@
       renderCalcPanel();
     }
 
+    function stepDays(delta) {
+      calcDays = Math.max(1, calcDays + delta);
+      document.getElementById('cpDaysVal').textContent = calcDays;
+      renderCalcPanel();
+    }
+
     function clearCalcItems() {
       document.querySelectorAll('.step-val').forEach(el => {
         el.textContent = '0'; el.classList.remove('has-val');
       });
+      calcDays = 1;
+      document.getElementById('cpDaysVal').textContent = '1';
       renderCalcPanel();
     }
 
     function renderCalcPanel() {
       const body = document.getElementById('cpBody');
       const totalEl = document.getElementById('cpTotal');
-      let total = 0;
+      const totalLbl = document.getElementById('cpTotalLbl');
+      const discountBanner = document.getElementById('cpDiscountBanner');
+      const breakdown = document.getElementById('cpBreakdown');
+
+      let perDay = 0;
       const rows = [];
       document.querySelectorAll('#cennik li[data-price]').forEach(li => {
         const price = parseInt(li.dataset.price) || 0;
         const name = li.dataset.name;
         const qty = parseInt(li.querySelector('.step-val').textContent) || 0;
-        if (qty > 0) { total += price * qty; rows.push({ name, qty, price, sub: price * qty }); }
+        if (qty > 0) { perDay += price * qty; rows.push({ name, qty, price, sub: price * qty }); }
       });
+
+      // Items list
       if (rows.length === 0) {
         body.innerHTML = '<div class="cp-empty">Wybierz pozycje z cennika,<br>aby zobaczyć szacunkowy koszt.</div>';
       } else {
@@ -833,6 +897,26 @@
               : '<span class="cp-row-val">' + r.sub + ' zł</span>'}
           </div>`).join('');
       }
+
+      // Discount and total
+      const hasDiscount = calcDays >= 7;
+      discountBanner.style.display = hasDiscount ? 'flex' : 'none';
+
+      const gross = perDay * calcDays;
+      const discountAmt = hasDiscount ? Math.round(gross * 0.05) : 0;
+      const total = gross - discountAmt;
+
+      if (calcDays > 1 && perDay > 0) {
+        let txt = perDay + ' zł/dobę × ' + calcDays + ' dni = ' + gross + ' zł';
+        if (hasDiscount) txt += '<br><span style="color:#15803d;font-weight:700;">− ' + discountAmt + ' zł (zniżka 5%)</span>';
+        breakdown.innerHTML = txt;
+        breakdown.style.display = 'block';
+        totalLbl.textContent = 'Łącznie za ' + calcDays + ' dni';
+      } else {
+        breakdown.style.display = 'none';
+        totalLbl.textContent = calcDays === 1 ? 'Łącznie / dobę' : 'Łącznie za ' + calcDays + ' dni';
+      }
+
       totalEl.textContent = total + ' zł';
     }
 
