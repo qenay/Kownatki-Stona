@@ -91,378 +91,429 @@
     .nav-link-mobile:hover { color: var(--gold); }
 
     /* ─── Hero ─────────────────────────────────────────────────────────── */
-    .page-hero {
-      background: var(--navy);
-      padding: calc(var(--nav-h) + 48px) 0 56px;
+    /* ─── Drone Hero ───────────────────────────────────────────────────── */
+    #drone-hero {
+      position: relative; width: 100%; height: 100vh; min-height: 600px;
+      overflow: hidden; background: #06141f;
     }
-    .page-hero-label {
-      font-size: 0.75rem; font-weight: 600; letter-spacing: 0.2em;
-      text-transform: uppercase; color: var(--gold); margin-bottom: 12px;
+    .drone-layer {
+      position: absolute; inset: 0;
+      background-size: cover; background-position: center;
+      will-change: transform, opacity;
     }
-    .page-hero h1 {
-      font-family: 'Marcellus', serif; font-size: 3rem; color: var(--white);
-      margin-bottom: 12px; line-height: 1.1;
+    .drone-close {
+      background-image: url('drone-low.jpeg');
+      animation: droneClose 5.5s cubic-bezier(0.25,0.46,0.45,0.94) both;
     }
-    .page-hero p { color: rgba(255,255,255,0.6); font-size: 1rem; }
+    .drone-aerial {
+      background-image: url('drone-aerial.jpeg');
+      animation: droneAerial 7s linear 4s both;
+    }
+    .drone-wide {
+      background-image: url('drone-wide.jpeg');
+      animation: droneWide 9s linear 9.5s both;
+    }
+    @keyframes droneClose {
+      0%   { transform: scale(1.38) translateY(4%); opacity: 1; }
+      75%  { transform: scale(1.12) translateY(0%); opacity: 1; }
+      100% { transform: scale(1.08); opacity: 0; }
+    }
+    @keyframes droneAerial {
+      0%   { transform: scale(1.3); opacity: 0; }
+      8%   { transform: scale(1.26); opacity: 1; }
+      88%  { transform: scale(1.04); opacity: 1; }
+      100% { transform: scale(1.02); opacity: 0; }
+    }
+    @keyframes droneWide {
+      0%   { transform: scale(1.45); opacity: 0; }
+      8%   { transform: scale(1.41); opacity: 1; }
+      100% { transform: scale(1.0);  opacity: 1; }
+    }
+    .drone-vignette {
+      position: absolute; inset: 0; z-index: 10; pointer-events: none;
+      background:
+        linear-gradient(to top,  rgba(6,20,31,0.9) 0%, rgba(6,20,31,0.35) 45%, transparent 70%),
+        linear-gradient(to bottom, rgba(6,20,31,0.5) 0%, transparent 25%);
+    }
+    .drone-content {
+      position: absolute; inset: 0; z-index: 20;
+      display: flex; flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 0 72px;
+      animation: droneText 0.9s 11.5s both;
+    }
+    @keyframes droneText {
+      from { opacity: 0; transform: translateY(28px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .drone-content .container { display: flex; flex-direction: column; align-items: flex-start; }
+    .drone-label {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.26em;
+      text-transform: uppercase; color: var(--gold); margin-bottom: 14px;
+    }
+    #drone-hero h1 {
+      font-family: 'Marcellus', serif;
+      font-size: clamp(2.6rem, 5vw, 4.2rem);
+      color: var(--white); line-height: 1.08; margin-bottom: 18px;
+      text-shadow: 0 4px 32px rgba(0,0,0,0.5);
+    }
+    #drone-hero .hero-sub {
+      color: rgba(255,255,255,0.65); font-size: 1rem; margin-bottom: 36px;
+      letter-spacing: 0.02em;
+    }
+    .drone-scroll {
+      display: flex; flex-direction: column; align-items: flex-start; gap: 8px;
+      color: rgba(255,255,255,0.35); font-size: 0.7rem;
+      letter-spacing: 0.14em; text-transform: uppercase;
+    }
+    .drone-scroll-line {
+      width: 1px; height: 44px;
+      background: linear-gradient(to bottom, rgba(188,150,117,0.9), transparent);
+      animation: scrollPulse 2s 5s infinite;
+    }
+    @keyframes scrollPulse {
+      0%,100% { opacity: 0.35; transform: scaleY(1) translateY(0); }
+      50%     { opacity: 1;    transform: scaleY(1.15) translateY(4px); }
+    }
+    .page-hero { display: none; }
 
     /* ─── Main content ─────────────────────────────────────────────────── */
-    .booking-section { padding: 56px 0 80px; }
 
-    .booking-card {
-      background: var(--white);
-      border-radius: 20px;
-      box-shadow: 0 4px 32px rgba(14,36,68,0.08);
-      overflow: hidden;
-      max-width: 780px;
-      margin: 0 auto;
-    }
-
-    .booking-card-header {
-      background: var(--navy);
-      padding: 24px 32px;
-      display: flex; align-items: center; gap: 16px;
-    }
-    .booking-card-header-icon {
-      width: 48px; height: 48px; border-radius: 10px;
-      background: var(--gold); display: flex; align-items: center; justify-content: center;
-      font-size: 1.4rem; flex-shrink: 0;
-    }
-    .booking-card-header-text h2 {
-      font-family: 'Marcellus', serif; font-size: 1.2rem; color: var(--gold);
-    }
-    .booking-card-header-text p { font-size: 0.82rem; color: rgba(255,255,255,0.55); margin-top: 2px; }
-
-    /* ─── Ticket rows ──────────────────────────────────────────────────── */
-    .ticket-row {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 22px 32px;
-      border-bottom: 1px solid rgba(14,36,68,0.07);
-      gap: 16px;
-    }
-    .ticket-row:last-of-type { border-bottom: none; }
-
-    .ticket-row-info { flex: 1; }
-    .ticket-row-name {
-      font-weight: 600; font-size: 0.95rem; color: var(--navy);
-      text-transform: uppercase; letter-spacing: 0.05em;
-    }
-    .ticket-row-price {
-      font-size: 0.875rem; color: var(--muted); margin-top: 3px;
-    }
-    .ticket-row-price strong { color: var(--navy); font-size: 1rem; }
-
-    .qty-control {
-      display: flex; align-items: center; gap: 0;
-    }
-    .qty-label {
-      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em;
-      text-transform: uppercase; color: var(--muted);
-      margin-right: 12px; white-space: nowrap;
-    }
-    .qty-btn {
-      width: 32px; height: 32px; border-radius: 6px;
-      border: 2px solid var(--navy); background: transparent;
-      color: var(--navy); font-size: 1.1rem; font-weight: 700;
-      cursor: pointer; display: flex; align-items: center; justify-content: center;
-      transition: var(--transition); user-select: none;
-    }
-    .qty-btn:hover { background: var(--navy); color: var(--white); }
-    .qty-value {
-      width: 52px; text-align: center; font-size: 1rem;
-      font-weight: 600; color: var(--navy);
-      border: 2px solid rgba(14,36,68,0.15); border-radius: 6px;
-      padding: 4px 6px; outline: none; background: var(--white);
-      font-family: 'DM Sans', sans-serif;
-    }
-    .qty-value:focus { border-color: var(--gold); }
-    /* hide number input arrows */
-    .qty-value::-webkit-outer-spin-button,
-    .qty-value::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-    .qty-value[type=number] { -moz-appearance: textfield; }
-
-    /* ─── Cart footer ──────────────────────────────────────────────────── */
-    .booking-footer {
-      padding: 24px 32px;
+    /* ─── Cennik ──────────────────────────────────────────────────────────── */
+    #cennik {
+      padding: 96px 0 80px;
       background: var(--off-white);
-      display: flex; align-items: center; justify-content: space-between;
-      gap: 16px; flex-wrap: wrap;
-      border-top: 2px solid rgba(14,36,68,0.08);
+      position: relative;
     }
-    .booking-total { font-family: 'Marcellus', serif; font-size: 1.1rem; color: var(--navy); }
-    .booking-total span { font-size: 1.5rem; color: var(--gold); }
+    #cennik::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(188,150,117,0.4), transparent);
+    }
 
-    .btn-cart {
-      background: var(--gold); color: var(--white);
-      border: none; border-radius: 50px;
-      padding: 14px 36px; font-family: 'DM Sans', sans-serif;
-      font-size: 1rem; font-weight: 600; cursor: pointer;
-      transition: var(--transition); white-space: nowrap;
+    .cennik-header {
+      text-align: center;
+      margin-bottom: 64px;
     }
-    .btn-cart:hover { background: var(--gold-lt); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(188,150,117,0.4); }
-    .btn-cart:disabled { opacity: 0.4; cursor: not-allowed; transform: none; box-shadow: none; }
-
-    /* ─── Cart drawer ──────────────────────────────────────────────────── */
-    .cart-overlay {
-      position: fixed; inset: 0; background: rgba(14,36,68,0.5);
-      z-index: 1100; opacity: 0; pointer-events: none;
-      transition: opacity 0.3s ease;
-    }
-    .cart-overlay.open { opacity: 1; pointer-events: all; }
-
-    .cart-drawer {
-      position: fixed; top: 0; right: 0; bottom: 0;
-      width: 420px; max-width: 100vw;
-      background: var(--white); z-index: 1101;
-      transform: translateX(100%);
-      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex; flex-direction: column;
-      box-shadow: -8px 0 40px rgba(14,36,68,0.15);
-    }
-    .cart-drawer.open { transform: translateX(0); }
-
-    .cart-header {
-      background: var(--navy); padding: 24px 28px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .cart-header h3 { font-family: 'Marcellus', serif; color: var(--white); font-size: 1.2rem; }
-    .cart-close {
-      background: none; border: none; color: rgba(255,255,255,0.7);
-      font-size: 1.5rem; cursor: pointer; line-height: 1;
-      transition: color 0.2s;
-    }
-    .cart-close:hover { color: var(--white); }
-
-    .cart-items { flex: 1; overflow-y: auto; padding: 24px 28px; }
-
-    .cart-item {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 0; border-bottom: 1px solid rgba(14,36,68,0.08); gap: 12px;
-    }
-    .cart-item:last-child { border-bottom: none; }
-    .cart-item-info { flex: 1; }
-    .cart-item-name { font-weight: 600; color: var(--navy); font-size: 0.9rem; }
-    .cart-item-detail { font-size: 0.8rem; color: var(--muted); margin-top: 3px; }
-    .cart-item-price { font-family: 'Marcellus', serif; font-size: 1rem; color: var(--navy); white-space: nowrap; }
-    .cart-item-remove {
-      background: none; border: none; cursor: pointer;
-      color: var(--muted); font-size: 1.1rem; padding: 4px;
-      transition: color 0.2s; flex-shrink: 0;
-    }
-    .cart-item-remove:hover { color: #c0392b; }
-
-    .cart-empty {
-      text-align: center; padding: 48px 24px;
-      color: var(--muted); font-size: 0.9rem;
-    }
-    .cart-empty-icon { font-size: 2.5rem; margin-bottom: 12px; }
-
-    .cart-footer {
-      padding: 24px 28px;
-      border-top: 2px solid rgba(14,36,68,0.08);
-      background: var(--off-white);
-    }
-    .cart-summary {
-      display: flex; justify-content: space-between; align-items: center;
+    .cennik-label {
+      display: inline-block;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.26em;
+      text-transform: uppercase; color: var(--gold);
       margin-bottom: 16px;
     }
-    .cart-summary-label { font-size: 0.85rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; }
-    .cart-summary-total { font-family: 'Marcellus', serif; font-size: 1.6rem; color: var(--navy); }
-    .btn-checkout {
-      width: 100%; padding: 16px; background: var(--gold); color: var(--white);
-      border: none; border-radius: 50px; font-family: 'DM Sans', sans-serif;
-      font-size: 1rem; font-weight: 600; cursor: pointer;
-      transition: var(--transition); text-align: center;
+    .cennik-header h2 {
+      font-family: 'Marcellus', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      color: var(--navy); line-height: 1.1; margin-bottom: 16px;
     }
-    .btn-checkout:hover { background: var(--gold-lt); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(188,150,117,0.4); }
+    .cennik-sub {
+      font-size: 0.95rem; color: var(--muted); line-height: 1.6;
+    }
+    .cennik-sub strong { color: var(--navy); }
 
-    .promo-row {
-      display: flex; gap: 8px; margin-bottom: 16px;
-    }
-    .promo-input {
-      flex: 1; padding: 10px 14px; border-radius: 10px;
-      border: 2px solid rgba(14,36,68,0.15); background: var(--white);
-      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: var(--navy);
-      outline: none; transition: border-color 0.2s;
-      text-transform: uppercase; letter-spacing: 0.05em;
-    }
-    .promo-input:focus { border-color: var(--gold); }
-    .promo-input::placeholder { text-transform: none; letter-spacing: 0; color: rgba(107,114,128,0.7); }
-    .promo-btn {
-      padding: 10px 16px; border-radius: 10px; border: none;
-      background: var(--navy); color: var(--white);
-      font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 600;
-      cursor: pointer; white-space: nowrap; transition: background 0.2s;
-    }
-    .promo-btn:hover { background: #1a3a6e; }
-    .promo-feedback {
-      font-size: 0.8rem; margin-bottom: 12px; min-height: 18px;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .promo-feedback.ok  { color: #16a34a; }
-    .promo-feedback.err { color: #dc2626; }
-    .cart-discount-row {
-      display: flex; justify-content: space-between;
-      font-size: 0.82rem; color: #16a34a; margin-bottom: 8px;
+    .cennik-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 32px;
     }
 
-    /* ─── Info box ─────────────────────────────────────────────────────── */
-    .info-box {
-      max-width: 780px; margin: 24px auto 0;
-      background: var(--white); border-radius: 16px;
-      padding: 20px 28px;
-      display: flex; gap: 12px; align-items: flex-start;
-      box-shadow: 0 2px 12px rgba(14,36,68,0.06);
+    .cennik-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 36px 36px 32px;
+      box-shadow: 0 4px 32px rgba(14,36,68,0.07), 0 1px 4px rgba(14,36,68,0.04);
+      position: relative;
+      overflow: hidden;
     }
-    .info-box-icon { font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
-    .info-box p { font-size: 0.875rem; color: var(--muted); line-height: 1.6; }
-
-    /* ─── Checkout overlay ─────────────────────────────────────────────── */
-    .checkout-overlay {
-      position: fixed; inset: 0; background: var(--off-white);
-      z-index: 1200; overflow-y: auto;
-      transform: translateY(100%);
-      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .checkout-overlay.open { transform: translateY(0); }
-
-    .checkout-topbar {
-      background: var(--navy); padding: 20px 32px;
-      display: flex; align-items: center; justify-content: space-between;
-      position: sticky; top: 0; z-index: 10;
-    }
-    .checkout-topbar h2 { font-family: 'Marcellus', serif; color: var(--white); font-size: 1.1rem; }
-    .checkout-back {
-      background: none; border: none; color: rgba(255,255,255,0.7);
-      font-size: 0.9rem; font-weight: 600; cursor: pointer;
-      display: flex; align-items: center; gap: 8px; transition: color 0.2s;
-      font-family: 'DM Sans', sans-serif;
-    }
-    .checkout-back:hover { color: var(--white); }
-
-    .checkout-body { max-width: 760px; margin: 0 auto; padding: 40px 24px 80px; }
-
-    .checkout-section {
-      background: var(--white); border-radius: 16px;
-      padding: 28px 32px; margin-bottom: 24px;
-      box-shadow: 0 2px 16px rgba(14,36,68,0.07);
-    }
-    .checkout-section-title {
-      font-family: 'Marcellus', serif; font-size: 1.2rem;
-      color: var(--navy); margin-bottom: 6px; text-align: center;
-    }
-    .checkout-section-sub {
-      font-size: 0.82rem; color: var(--muted); text-align: center; margin-bottom: 24px;
+    .cennik-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(to right, var(--gold), var(--gold-lt));
     }
 
-    .person-row {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 12px; margin-bottom: 16px; padding-bottom: 16px;
-      border-bottom: 1px solid rgba(14,36,68,0.07);
+    .cennik-card-top {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 28px;
     }
-    .person-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
-    .person-row-label {
-      grid-column: 1 / -1; font-size: 0.78rem; font-weight: 600;
-      letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted);
-      margin-bottom: 4px;
+    .cennik-card-icon {
+      width: 44px; height: 44px; border-radius: 12px;
+      background: linear-gradient(135deg, rgba(188,150,117,0.15), rgba(188,150,117,0.08));
+      border: 1.5px solid rgba(188,150,117,0.25);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      color: var(--gold);
+    }
+    .cennik-card-title {
+      font-family: 'Marcellus', serif;
+      font-size: 1.15rem; color: var(--navy);
     }
 
-    .co-form { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .co-form .full { grid-column: 1 / -1; }
-
-    .co-input {
-      width: 100%; padding: 12px 16px; border-radius: 8px;
-      border: 2px solid rgba(14,36,68,0.12); background: var(--off-white);
-      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: var(--text);
-      outline: none; transition: border-color 0.2s;
+    .cennik-list {
+      list-style: none;
     }
-    .co-input:focus { border-color: var(--gold); background: var(--white); }
-    .co-input::placeholder { color: rgba(107,114,128,0.7); }
-    textarea.co-input { resize: vertical; min-height: 100px; }
-
-    .co-checkbox {
-      display: flex; align-items: center; gap: 10px;
-      font-size: 0.875rem; color: var(--text); cursor: pointer;
-      grid-column: 1 / -1;
-    }
-    .co-checkbox input { width: 18px; height: 18px; accent-color: var(--gold); cursor: pointer; }
-
-    /* slider */
-    .co-slider-wrapper { overflow: hidden; padding: 0 !important; }
-    .co-slider-track {
-      display: flex;
-      width: 200%;
-      transition: transform 0.42s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .co-slider-track.slid { transform: translateX(-50%); }
-    .co-slide {
-      width: 50%;
-      padding: 28px 32px;
-      box-sizing: border-box;
-    }
-    .co-inv-header {
-      display: flex; align-items: center; justify-content: space-between;
+    .cennik-list li {
+      display: flex; justify-content: space-between; align-items: baseline;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(14,36,68,0.06);
       gap: 12px;
     }
-    .co-inv-back {
-      background: none; border: 2px solid rgba(14,36,68,0.15); border-radius: 8px;
-      padding: 8px 14px; font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
-      color: var(--navy); cursor: pointer;
-      transition: background 0.2s, border-color 0.2s;
-      white-space: nowrap;
+    .cennik-list li:last-child { border-bottom: none; padding-bottom: 0; }
+    .cennik-list li span:first-child {
+      font-size: 0.9rem; color: var(--text); flex: 1;
+      line-height: 1.4;
     }
-    .co-inv-back:hover { background: rgba(14,36,68,0.06); border-color: var(--navy); }
-    @media (max-width: 600px) {
-      .co-slide { padding: 20px; }
-      .co-inv-header { flex-wrap: wrap; gap: 8px; }
+    .cennik-list .price {
+      font-family: 'Marcellus', serif;
+      font-size: 1rem; color: var(--navy);
+      white-space: nowrap; font-weight: 400;
+    }
+    .cennik-list .price.free {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.78rem; font-weight: 600;
+      color: #15803d; letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .cennik-list .price-note {
+      font-size: 0.72rem; color: var(--muted);
+      font-style: italic; margin-left: 4px;
     }
 
-    /* summary bar */
-    .checkout-summary-bar {
-      background: var(--white); border-radius: 16px;
-      padding: 24px 32px; box-shadow: 0 2px 16px rgba(14,36,68,0.07);
+    /* Season offer */
+    .cennik-sezon {
+      background: var(--navy);
+      border-radius: 24px;
+      padding: 56px 64px;
+      display: flex; flex-direction: column; align-items: center;
+      text-align: center;
+      position: relative; overflow: hidden;
+      margin-bottom: 24px;
     }
-    .co-sum-row {
-      display: flex; justify-content: space-between;
-      font-size: 0.875rem; color: var(--muted); margin-bottom: 8px;
+    .cennik-sezon::before {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 20% 50%, rgba(188,150,117,0.12) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 40% at 80% 50%, rgba(188,150,117,0.08) 0%, transparent 70%);
+      pointer-events: none;
     }
-    .co-sum-row.total {
-      font-family: 'Marcellus', serif; font-size: 1.4rem;
-      color: var(--navy); border-top: 2px solid rgba(14,36,68,0.1);
-      padding-top: 14px; margin-top: 8px; margin-bottom: 20px;
+    .cennik-sezon-badge {
+      display: inline-block;
+      background: rgba(188,150,117,0.2);
+      border: 1.5px solid rgba(188,150,117,0.4);
+      color: var(--gold); font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.22em; text-transform: uppercase;
+      padding: 6px 16px; border-radius: 50px;
+      margin-bottom: 24px;
     }
-    .co-sum-row.total span:last-child { color: var(--gold); }
+    .cennik-sezon h3 {
+      font-family: 'Marcellus', serif;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      color: var(--white); line-height: 1.15; margin-bottom: 12px;
+    }
+    .cennik-sezon-desc {
+      font-size: 0.88rem; color: rgba(255,255,255,0.5);
+      letter-spacing: 0.03em; margin-bottom: 36px;
+    }
+    .cennik-sezon-price {
+      font-family: 'Marcellus', serif;
+      font-size: clamp(3rem, 6vw, 4.8rem);
+      color: var(--gold); line-height: 1;
+      margin-bottom: 8px;
+    }
+    .cennik-sezon-unit {
+      font-size: 0.78rem; color: rgba(255,255,255,0.35);
+      letter-spacing: 0.1em; text-transform: uppercase;
+      margin-bottom: 40px;
+    }
+    .cennik-sezon-divider {
+      width: 100%; max-width: 480px;
+      height: 1px;
+      background: linear-gradient(to right, transparent, rgba(188,150,117,0.3), transparent);
+      margin-bottom: 32px;
+    }
+    .cennik-sezon-daily {
+      display: flex; gap: 0; align-items: stretch;
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid rgba(188,150,117,0.2);
+      border-radius: 14px; overflow: hidden;
+    }
+    .cennik-daily-item {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 20px 40px; gap: 6px;
+    }
+    .cennik-daily-item span:first-child {
+      font-size: 0.78rem; color: rgba(255,255,255,0.45);
+      letter-spacing: 0.08em; text-transform: uppercase; font-weight: 600;
+    }
+    .cennik-daily-item span:last-child {
+      font-family: 'Marcellus', serif;
+      font-size: 1.4rem; color: var(--white);
+    }
+    .cennik-daily-item strong { color: var(--gold-lt); }
+    .cennik-daily-sep {
+      width: 1px;
+      background: rgba(188,150,117,0.2);
+      flex-shrink: 0;
+    }
 
-    .co-checkout-actions {
-      display: flex; gap: 12px; align-items: center;
+    /* Contact strip */
+    .cennik-contact {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 24px 40px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 48px; flex-wrap: wrap;
+      box-shadow: 0 2px 16px rgba(14,36,68,0.06);
     }
-    .btn-back-cart {
-      flex-shrink: 0; padding: 18px 24px; background: none;
-      border: 2px solid rgba(14,36,68,0.2); border-radius: 50px;
-      font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 500;
-      color: var(--navy); cursor: pointer; white-space: nowrap;
-      transition: var(--transition);
+    .cennik-contact-item {
+      display: flex; align-items: center; gap: 12px;
+      color: var(--navy);
     }
-    .btn-back-cart:hover { border-color: var(--navy); background: rgba(14,36,68,0.05); }
-    .btn-pay {
-      flex: 1; padding: 18px; background: var(--gold); color: var(--white);
-      border: none; border-radius: 50px; font-family: 'DM Sans', sans-serif;
-      font-size: 1.05rem; font-weight: 600; cursor: pointer;
-      transition: var(--transition); letter-spacing: 0.02em;
+    .cennik-contact-item svg { color: var(--gold); flex-shrink: 0; }
+    .cennik-contact-label {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: var(--muted);
+      display: block; margin-bottom: 2px;
     }
-    .btn-pay:hover { background: var(--gold-lt); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(188,150,117,0.45); }
+    .cennik-contact-value {
+      font-family: 'Marcellus', serif; font-size: 1rem; color: var(--navy);
+    }
 
-    @media (max-width: 600px) {
-      .person-row { grid-template-columns: 1fr; }
-      .co-form { grid-template-columns: 1fr; }
-      .checkout-section { padding: 20px; }
-      .checkout-topbar { padding: 16px 20px; }
+    @media (max-width: 900px) {
+      .cennik-grid { grid-template-columns: 1fr; }
+      .cennik-sezon { padding: 40px 28px; }
+      .cennik-daily-item { padding: 16px 24px; }
+      .cennik-contact { gap: 24px; padding: 24px 28px; }
+    }
+
+    /* ─── Calculator mode ─────────────────────────────────────────────── */
+    .cennik-calc-toggle { display: flex; justify-content: center; margin-top: 28px; }
+    .calc-toggle-btn {
+      display: inline-flex; align-items: center; gap: 12px;
+      background: var(--white); border: 2px solid rgba(14,36,68,0.12);
+      border-radius: 50px; padding: 12px 22px 12px 18px;
+      cursor: pointer; font-family: 'DM Sans', sans-serif;
+      font-size: 0.875rem; font-weight: 600; color: var(--muted);
+      transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+      box-shadow: 0 2px 12px rgba(14,36,68,0.06);
+    }
+    .calc-toggle-btn:hover {
+      border-color: rgba(188,150,117,0.5); color: var(--navy);
+      box-shadow: 0 6px 24px rgba(14,36,68,0.1); transform: translateY(-1px);
+    }
+    .calc-toggle-btn.active {
+      background: var(--navy); border-color: var(--navy);
+      color: var(--white); box-shadow: 0 8px 32px rgba(14,36,68,0.3);
+    }
+    .calc-btn-icon { color: var(--gold); flex-shrink: 0; display: flex; }
+    .calc-toggle-btn.active .calc-btn-icon { color: var(--gold-lt); }
+    .toggle-sw {
+      width: 38px; height: 22px; border-radius: 11px;
+      background: rgba(14,36,68,0.1); border: 1.5px solid rgba(14,36,68,0.15);
+      position: relative; transition: background 0.3s, border-color 0.3s; flex-shrink: 0;
+    }
+    .calc-toggle-btn.active .toggle-sw { background: var(--gold); border-color: var(--gold); }
+    .toggle-th {
+      position: absolute; top: 2px; left: 2px;
+      width: 16px; height: 16px; background: var(--white); border-radius: 50%;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    .calc-toggle-btn.active .toggle-th { transform: translateX(16px); }
+
+    .cennik-body { display: flex; align-items: flex-start; }
+    .cennik-main { flex: 1; min-width: 0; }
+
+    .calc-panel {
+      flex-shrink: 0; width: 0; overflow: hidden; opacity: 0; margin-left: 0;
+      transition: width 0.45s cubic-bezier(0.4,0,0.2,1), opacity 0.3s, margin-left 0.45s;
+    }
+    .calc-mode .calc-panel { width: 296px; opacity: 1; margin-left: 28px; }
+    .calc-panel-inner {
+      width: 296px; position: sticky; top: 110px;
+      background: var(--white); border-radius: 20px;
+      box-shadow: 0 8px 48px rgba(14,36,68,0.14), 0 2px 8px rgba(14,36,68,0.06);
+      overflow: hidden; border: 1px solid rgba(14,36,68,0.06);
+    }
+    .cp-head {
+      background: var(--navy); padding: 18px 22px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .cp-head-title {
+      font-family: 'Marcellus', serif; font-size: 0.95rem; color: var(--white);
+      display: flex; align-items: center; gap: 9px;
+    }
+    .cp-head-title svg { color: var(--gold); }
+    .cp-clear {
+      background: none; border: none; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: rgba(255,255,255,0.3); transition: color 0.2s; padding: 0;
+    }
+    .cp-clear:hover { color: rgba(255,255,255,0.75); }
+    .cp-body { padding: 4px 0; min-height: 72px; max-height: 380px; overflow-y: auto; }
+    .cp-empty {
+      padding: 28px 22px; text-align: center;
+      font-size: 0.82rem; color: var(--muted); line-height: 1.65;
+    }
+    .cp-row {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      padding: 11px 22px; border-bottom: 1px solid rgba(14,36,68,0.05); gap: 10px;
+    }
+    .cp-row:last-child { border-bottom: none; }
+    .cp-row-left { flex: 1; }
+    .cp-row-name { font-size: 0.84rem; color: var(--text); line-height: 1.35; }
+    .cp-row-detail { font-size: 0.73rem; color: var(--muted); margin-top: 2px; }
+    .cp-row-val { font-family: 'Marcellus', serif; font-size: 0.95rem; color: var(--navy); white-space: nowrap; flex-shrink: 0; }
+    .cp-row-free { font-size: 0.7rem; font-weight: 700; color: #15803d; text-transform: uppercase; letter-spacing: 0.05em; }
+    .cp-foot {
+      border-top: 2px solid rgba(14,36,68,0.08);
+      padding: 18px 22px; background: rgba(248,247,245,0.7);
+    }
+    .cp-total { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px; }
+    .cp-total-lbl { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+    .cp-total-val { font-family: 'Marcellus', serif; font-size: 2rem; color: var(--navy); line-height: 1; }
+    .cp-foot-note { font-size: 0.7rem; color: var(--muted); line-height: 1.55; }
+
+    .item-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+    .item-stepper {
+      display: none; align-items: center;
+      background: rgba(14,36,68,0.04); border-radius: 8px;
+      border: 1.5px solid rgba(14,36,68,0.1); overflow: hidden;
+    }
+    .calc-mode .item-stepper { display: flex; }
+    .calc-mode .cennik-list li { align-items: center; }
+    .step-btn {
+      width: 30px; height: 30px; background: none; border: none;
+      font-size: 1.1rem; font-weight: 600; color: var(--navy);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: background 0.15s; line-height: 1; user-select: none;
+    }
+    .step-btn:hover { background: rgba(14,36,68,0.08); }
+    .step-val {
+      min-width: 28px; text-align: center;
+      font-size: 0.88rem; font-weight: 700; color: var(--navy);
+      padding: 0 2px; line-height: 30px;
+      border-left: 1px solid rgba(14,36,68,0.1);
+      border-right: 1px solid rgba(14,36,68,0.1);
+      transition: color 0.2s;
+    }
+    .step-val.has-val { color: var(--gold); }
+
+    @media (max-width: 960px) {
+      .cennik-body { flex-direction: column; }
+      .calc-mode .calc-panel { width: 100%; margin-left: 0; margin-top: 24px; }
+      .calc-panel-inner { width: 100%; position: relative; top: 0; }
+      .cp-body { max-height: 220px; }
     }
 
     /* ─── Footer ───────────────────────────────────────────────────────── */
     .site-footer {
       background: var(--navy); color: rgba(255,255,255,0.5);
       text-align: center; padding: 28px 24px;
-      font-size: 0.8rem; margin-top: 80px;
+      font-size: 0.8rem; margin-top: 0;
     }
     .site-footer a { color: var(--gold); }
 
@@ -470,11 +521,8 @@
     @media (max-width: 768px) {
       .navbar-nav, .navbar-cta { display: none; }
       .hamburger { display: flex; }
-      .page-hero h1 { font-size: 2rem; }
-      .ticket-row { flex-direction: column; align-items: flex-start; gap: 12px; }
-      .booking-card-header { padding: 20px; }
-      .ticket-row { padding: 18px 20px; }
-      .booking-footer { padding: 20px; }
+      #drone-hero h1 { font-size: 2.2rem; }
+      .drone-content { padding-bottom: 48px; }
     }
   </style>
   <script defer src="/_vercel/insights/script.js"></script>
@@ -522,436 +570,207 @@
     <a href="/#contact" class="btn btn-primary">Zarezerwuj pobyt</a>
   </div>
 
-  <!-- ─── HERO ──────────────────────────────────────────────────────────── -->
-  <section class="page-hero">
-    <div class="container">
-      <div class="page-hero-label">Kemping</div>
-      <h1>Rezerwacja miejsca</h1>
-      <p>Plaża Kownatki — Mazury &nbsp;·&nbsp; Kownatki 19A, 13-124 Kozłowo</p>
+  <!-- ─── DRONE HERO ──────────────────────────────────────────────────── -->
+  <section id="drone-hero">
+    <div class="drone-layer drone-close"></div>
+    <div class="drone-layer drone-aerial"></div>
+    <div class="drone-layer drone-wide"></div>
+    <div class="drone-vignette"></div>
+    <div class="drone-content">
+      <div class="container">
+        <span class="drone-label">Kemping · Plaża Kownatki</span>
+        <h1>Rezerwacja miejsca<br>kempingowego</h1>
+        <p class="hero-sub">Kownatki 19A, 13-124 Kozłowo &nbsp;·&nbsp; Mazury</p>
+        <div class="drone-scroll">
+          <span>Rezerwuj</span>
+          <div class="drone-scroll-line"></div>
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- ─── BOOKING ───────────────────────────────────────────────────────── -->
-  <section class="booking-section">
+  <!-- ─── CENNIK ────────────────────────────────────────────────────────── -->
+  <section id="cennik">
     <div class="container">
 
-      <div class="booking-card">
-
-        <!-- Header -->
-        <div class="booking-card-header">
-          <div class="booking-card-header-icon">⛺</div>
-          <div class="booking-card-header-text">
-            <h2>OŚRODEK PLAŻA KOWNATKI</h2>
-            <p>Wybierz rodzaj pobytu i ilość miejsc</p>
-          </div>
-        </div>
-
-        <!-- Ticket rows -->
-        <div class="ticket-row">
-          <div class="ticket-row-info">
-            <div class="ticket-row-name">Pobyt 1-dniowy</div>
-            <div class="ticket-row-price">Cena: <strong>50,00 zł</strong> / miejsce</div>
-          </div>
-          <div class="qty-control">
-            <span class="qty-label">Wybierz ilość</span>
-            <button class="qty-btn" onclick="changeQty('q1', -1)">−</button>
-            <input type="number" class="qty-value" id="q1" value="0" min="0" oninput="setQty('q1', this.value)">
-            <button class="qty-btn" onclick="changeQty('q1', 1)">+</button>
-          </div>
-        </div>
-
-        <div class="ticket-row">
-          <div class="ticket-row-info">
-            <div class="ticket-row-name">Pobyt 3-dniowy</div>
-            <div class="ticket-row-price">Cena: <strong>140,00 zł</strong> / miejsce</div>
-          </div>
-          <div class="qty-control">
-            <span class="qty-label">Wybierz ilość</span>
-            <button class="qty-btn" onclick="changeQty('q2', -1)">−</button>
-            <input type="number" class="qty-value" id="q2" value="0" min="0" oninput="setQty('q2', this.value)">
-            <button class="qty-btn" onclick="changeQty('q2', 1)">+</button>
-          </div>
-        </div>
-
-        <div class="ticket-row">
-          <div class="ticket-row-info">
-            <div class="ticket-row-name">Pobyt miesięczny</div>
-            <div class="ticket-row-price">Cena: <strong>4 200,00 zł</strong> / miejsce</div>
-          </div>
-          <div class="qty-control">
-            <span class="qty-label">Wybierz ilość</span>
-            <button class="qty-btn" onclick="changeQty('q3', -1)">−</button>
-            <input type="number" class="qty-value" id="q3" value="0" min="0" oninput="setQty('q3', this.value)">
-            <button class="qty-btn" onclick="changeQty('q3', 1)">+</button>
-          </div>
-        </div>
-
-        <div class="ticket-row">
-          <div class="ticket-row-info">
-            <div class="ticket-row-name">Pobyt 3-miesięczny</div>
-            <div class="ticket-row-price">Cena: <strong>6 000,00 zł</strong> / miejsce</div>
-          </div>
-          <div class="qty-control">
-            <span class="qty-label">Wybierz ilość</span>
-            <button class="qty-btn" onclick="changeQty('q4', -1)">−</button>
-            <input type="number" class="qty-value" id="q4" value="0" min="0" oninput="setQty('q4', this.value)">
-            <button class="qty-btn" onclick="changeQty('q4', 1)">+</button>
-          </div>
-        </div>
-
-        <!-- Footer / total -->
-        <div class="booking-footer">
-          <div class="booking-total">
-            Razem: <span id="totalPrice">0,00 zł</span>
-          </div>
-          <button class="btn-cart" id="cartBtn" disabled onclick="handleCart()">
-            Przejdź do rezerwacji →
+      <!-- Header -->
+      <div class="cennik-header">
+        <span class="cennik-label">Kemping · Plaża Kownatki</span>
+        <h2>Cennik pola campingowego</h2>
+        <p class="cennik-sub">Wszystkie ceny podane są za dobę. Doba hotelowa kończy się o godz. <strong>12:00</strong>.</p>
+        <div class="cennik-calc-toggle">
+          <button class="calc-toggle-btn" id="calcToggleBtn" onclick="toggleCalc()">
+            <span class="calc-btn-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="2" width="16" height="20" rx="2"/>
+                <line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="8" y2="11" stroke-width="2.5"/>
+                <line x1="12" y1="11" x2="12" y2="11" stroke-width="2.5"/><line x1="16" y1="11" x2="16" y2="11" stroke-width="2.5"/>
+                <line x1="8" y1="15" x2="8" y2="15" stroke-width="2.5"/><line x1="12" y1="15" x2="12" y2="15" stroke-width="2.5"/>
+                <line x1="16" y1="15" x2="16" y2="15" stroke-width="2.5"/><line x1="8" y1="19" x2="12" y2="19" stroke-width="2.5"/>
+              </svg>
+            </span>
+            <span>Przelicz koszty</span>
+            <span class="toggle-sw"><span class="toggle-th"></span></span>
           </button>
         </div>
+      </div>
+
+      <div class="cennik-body">
+      <div class="cennik-main">
+
+      <!-- Pricing cards -->
+      <div class="cennik-grid">
+
+        <!-- Pobyt -->
+        <div class="cennik-card">
+          <div class="cennik-card-top">
+            <div class="cennik-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/>
+              </svg>
+            </div>
+            <h3 class="cennik-card-title">Osoby</h3>
+          </div>
+          <ul class="cennik-list">
+            <li data-price="25" data-name="Osoba dorosła"><span class="item-name">Osoba dorosła</span><div class="item-right"><div class="item-stepper"><button class="step-btn" onclick="stepItem(this,-1)">−</button><span class="step-val">0</span><button class="step-btn" onclick="stepItem(this,1)">+</button></div><span class="price">25 zł</span></div></li>
+            <li data-price="0" data-name="Dziecko do 3 lat"><span class="item-name">Dziecko do 3 lat</span><div class="item-right"><div class="item-stepper"><button class="step-btn" onclick="stepItem(this,-1)">−</button><span class="step-val">0</span><button class="step-btn" onclick="stepItem(this,1)">+</button></div><span class="price free">bezpłatnie</span></div></li>
+            <li data-price="15" data-name="Dziecko do 12 lat"><span class="item-name">Dziecko do 12 lat</span><div class="item-right"><div class="item-stepper"><button class="step-btn" onclick="stepItem(this,-1)">−</button><span class="step-val">0</span><button class="step-btn" onclick="stepItem(this,1)">+</button></div><span class="price">15 zł</span></div></li>
+          </ul>
+        </div>
+
+        <!-- Namioty -->
+        <div class="cennik-card">
+          <div class="cennik-card-top">
+            <div class="cennik-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 20 L12 4 L21 20 Z"/><path d="M3 20 h18"/>
+              </svg>
+            </div>
+            <h3 class="cennik-card-title">Namioty</h3>
+          </div>
+          <ul class="cennik-list">
+            <li data-price="20" data-name="Namiot (2 os.)"><span class="item-name">Namiot na 2 osoby</span><div class="item-right"><div class="item-stepper"><button class="step-btn" onclick="stepItem(this,-1)">−</button><span class="step-val">0</span><button class="step-btn" onclick="stepItem(this,1)">+</button></div><span class="price">20 zł</span></div></li>
+            <li data-price="25" data-name="Namiot (3–4 os.)"><span class="item-name">Namiot na 3–4 osoby</span><div class="item-right"><div class="item-stepper"><button class="step-btn" onclick="stepItem(this,-1)">−</button><span class="step-val">0</span><button class="step-btn" onclick="stepItem(this,1)">+</button></div><span class="price">25 zł</span></div></li>
+            <li data-price="30" data-name="Namiot (5+ os.)"><span class="item-name">Namiot na 5 osób i więcej</span><div class="item-right"><div class="item-stepper"><button class="step-btn" onclick="stepItem(this,-1)">−</button><span class="step-val">0</span><button class="step-btn" onclick="stepItem(this,1)">+</button></div><span class="price">30 zł</span></div></li>
+          </ul>
+        </div>
+
+        <!-- Pojazdy i sprzęt -->
+        <div class="cennik-card">
+          <div class="cennik-card-top">
+            <div class="cennik-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="1" y="11" width="22" height="7" rx="2"/><path d="M5 11V7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v4"/>
+                <circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/>
+              </svg>
+            </div>
+            <h3 class="cennik-card-title">Pojazdy i przyczepy</h3>
+          </div>
+          <ul class="cennik-list">
+            <li data-price="15" data-name="Samochód osobowy"><span class="item-name">Samochód osobowy</span><div class="item-right"><div class="item-stepper"><button class="step-btn" onclick="stepItem(this,-1)">−</button><span class="step-val">0</span><button class="step-btn" onclick="stepItem(this,1)">+</button></div><span class="price">15 zł</span></div></li>
+            <li data-price="15" data-name="Motocykl"><span class="item-name">Motocykl</span><div class="item-right"><div class="item-stepper"><button class="step-btn" onclick="stepItem(this,-1)">−</button><span class="step-val">0</span><button class="step-btn" onclick="stepItem(this,1)">+</button></div><span class="price">15 zł</span></div></li>
+            <li data-price="35" data-name="Camper / bus"><span class="item-name">Camper / bus</span><div class="item-right"><div class="item-stepper"><button class="step-btn" onclick="stepItem(this,-1)">−</button><span class="step-val">0</span><button class="step-btn" onclick="stepItem(this,1)">+</button></div><span class="price">35 zł</span></div></li>
+            <li data-price="30" data-name="Przyczepa mała"><span class="item-name">Przyczepa mała</span><div class="item-right"><div class="item-stepper"><button class="step-btn" onclick="stepItem(this,-1)">−</button><span class="step-val">0</span><button class="step-btn" onclick="stepItem(this,1)">+</button></div><span class="price">30 zł</span></div></li>
+            <li data-price="40" data-name="Przyczepa duża"><span class="item-name">Przyczepa duża</span><div class="item-right"><div class="item-stepper"><button class="step-btn" onclick="stepItem(this,-1)">−</button><span class="step-val">0</span><button class="step-btn" onclick="stepItem(this,1)">+</button></div><span class="price">40 zł</span></div></li>
+            <li data-price="15" data-name="Przyczepa / łódka"><span class="item-name">Przyczepa / łódka</span><div class="item-right"><div class="item-stepper"><button class="step-btn" onclick="stepItem(this,-1)">−</button><span class="step-val">0</span><button class="step-btn" onclick="stepItem(this,1)">+</button></div><span class="price">15 zł</span></div></li>
+          </ul>
+        </div>
+
+        <!-- Wyposażenie dodatkowe -->
+        <div class="cennik-card">
+          <div class="cennik-card-top">
+            <div class="cennik-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+              </svg>
+            </div>
+            <h3 class="cennik-card-title">Wyposażenie dodatkowe</h3>
+          </div>
+          <ul class="cennik-list">
+            <li data-price="10" data-name="Przedsionek / altana"><span class="item-name">Przedsionek / altana</span><div class="item-right"><div class="item-stepper"><button class="step-btn" onclick="stepItem(this,-1)">−</button><span class="step-val">0</span><button class="step-btn" onclick="stepItem(this,1)">+</button></div><span class="price">10 zł</span></div></li>
+            <li data-price="25" data-name="Energia (prąd)"><span class="item-name">Energia (prąd)</span><div class="item-right"><div class="item-stepper"><button class="step-btn" onclick="stepItem(this,-1)">−</button><span class="step-val">0</span><button class="step-btn" onclick="stepItem(this,1)">+</button></div><span class="price">25 zł</span></div></li>
+          </ul>
+        </div>
 
       </div>
 
-      <!-- Info -->
-      <div class="info-box">
-        <div class="info-box-icon">ℹ️</div>
-        <p>Masz pytania dotyczące rezerwacji? Zadzwoń: <strong>604 104 405</strong> lub napisz na <strong>osrodekplazakownatki@gmail.com</strong>. Chętnie pomożemy dobrać odpowiedni pakiet.</p>
+      <!-- Full season offer -->
+      <div class="cennik-sezon">
+        <div class="cennik-sezon-badge">Oferta sezonowa</div>
+        <h3>Wynajem parceli na cały sezon</h3>
+        <p class="cennik-sezon-desc">Maj – Wrzesień &nbsp;·&nbsp; Miejsce pod przyczepę &nbsp;·&nbsp; Samochód &nbsp;·&nbsp; Prąd &nbsp;·&nbsp; 4 osoby</p>
+        <div class="cennik-sezon-price">6 000 zł</div>
+        <p class="cennik-sezon-unit">za sezon</p>
+        <div class="cennik-sezon-divider"></div>
+        <div class="cennik-sezon-daily">
+          <div class="cennik-daily-item">
+            <span>Pobyt dzienny</span>
+            <span><strong>10 zł</strong> / os.</span>
+          </div>
+          <div class="cennik-daily-sep"></div>
+          <div class="cennik-daily-item">
+            <span>Dziecko pow. 3 lat</span>
+            <span><strong>5 zł</strong></span>
+          </div>
+        </div>
       </div>
 
+      <!-- Contact strip -->
+      <div class="cennik-contact">
+        <div class="cennik-contact-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.16 6.16l.95-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+          </svg>
+          <div>
+            <span class="cennik-contact-label">Telefon</span>
+            <span class="cennik-contact-value">604 104 405 &nbsp;·&nbsp; 501 453 481</span>
+          </div>
+        </div>
+        <div class="cennik-contact-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+          </svg>
+          <div>
+            <span class="cennik-contact-label">Strona</span>
+            <span class="cennik-contact-value">plazakownatki.pl</span>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /cennik-main -->
+
+      <!-- Summary panel -->
+      <div class="calc-panel">
+        <div class="calc-panel-inner">
+          <div class="cp-head">
+            <div class="cp-head-title">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="7" x2="16" y2="7"/>
+                <line x1="8" y1="11" x2="8" y2="11" stroke-width="3"/><line x1="12" y1="11" x2="12" y2="11" stroke-width="3"/>
+                <line x1="16" y1="11" x2="16" y2="11" stroke-width="3"/><line x1="8" y1="15" x2="8" y2="15" stroke-width="3"/>
+                <line x1="12" y1="15" x2="12" y2="15" stroke-width="3"/><line x1="16" y1="15" x2="16" y2="15" stroke-width="3"/>
+              </svg>
+              Twój kosztorys
+            </div>
+            <button class="cp-clear" onclick="clearCalcItems()">Wyczyść</button>
+          </div>
+          <div class="cp-body" id="cpBody">
+            <div class="cp-empty">Wybierz pozycje z cennika,<br>aby zobaczyć szacunkowy koszt.</div>
+          </div>
+          <div class="cp-foot">
+            <div class="cp-total">
+              <span class="cp-total-lbl">Łącznie / dobę</span>
+              <span class="cp-total-val" id="cpTotal">0 zł</span>
+            </div>
+            <p class="cp-foot-note">* Orientacyjny koszt za jedną dobę pobytu. Ostateczna cena jest ustalana w recepcji.</p>
+          </div>
+        </div>
+      </div>
+
+      </div><!-- /cennik-body -->
     </div>
   </section>
-
-  <!-- ─── CHECKOUT OVERLAY ────────────────────────────────────────────── -->
-  <div class="checkout-overlay" id="checkoutOverlay">
-    <div class="checkout-topbar">
-      <button class="checkout-back" onclick="closeCheckout()">← Wróć do koszyka</button>
-      <h2>Podsumowanie i płatność</h2>
-      <div style="width:140px;"></div>
-    </div>
-    <div class="checkout-body">
-
-      <!-- Zamawiający / Faktura – slider -->
-      <div class="checkout-section co-slider-wrapper">
-        <div class="co-slider-track" id="coSliderTrack">
-
-          <!-- Panel 1: Zamawiający -->
-          <div class="co-slide">
-            <div class="checkout-section-title">Zamawiający</div>
-            <div class="checkout-section-sub">Wypełnij pola swoimi danymi.</div>
-            <div class="co-form">
-              <input class="co-input" type="text" placeholder="Imię" id="coFirstName" required />
-              <input class="co-input" type="text" placeholder="Nazwisko" id="coLastName" required />
-              <input class="co-input full" type="email" placeholder="Adres e-mail" id="coEmail" required />
-              <input class="co-input full" type="tel" placeholder="Numer telefonu" id="coPhone" required />
-              <input class="co-input" type="text" placeholder="Kod pocztowy (XX-XXX)" id="coZip" />
-              <textarea class="co-input full" placeholder="Uwagi do zamówienia" id="coNotes"></textarea>
-              <label class="co-checkbox">
-                <input type="checkbox" id="coInvoice" onchange="toggleInvoice(this)" />
-                Dodaj fakturę do zamówienia
-              </label>
-            </div>
-          </div>
-
-          <!-- Panel 2: Faktura VAT -->
-          <div class="co-slide">
-            <div class="co-inv-header">
-              <button class="co-inv-back" onclick="goBackToForm()">← Wróć</button>
-              <div>
-                <div class="checkout-section-title" style="margin-bottom:2px;">Dane do faktury</div>
-                <div class="checkout-section-sub" style="margin-bottom:0;">Uzupełnij dane firmy lub osoby fizycznej.</div>
-              </div>
-              <div style="width:80px;"></div>
-            </div>
-            <div class="co-form" style="margin-top:20px;">
-              <input class="co-input full" type="text" placeholder="NIP" id="invNip" />
-              <input class="co-input full" type="text" placeholder="Imię i nazwisko / nazwa firmy" id="invName" />
-              <input class="co-input" type="text" placeholder="Miasto" id="invCity" />
-              <input class="co-input" type="text" placeholder="Kod pocztowy (XX-XXX)" id="invZip" />
-              <input class="co-input full" type="text" placeholder="Ulica i numer" id="invStreet" />
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- Podsumowanie -->
-      <div class="checkout-summary-bar">
-        <div id="coSumItems"></div>
-        <div class="co-sum-row">
-          <span>Opłata serwisowa</span>
-          <span id="coServiceFee">0,00 zł</span>
-        </div>
-        <div class="co-sum-row total">
-          <span>Razem do zapłaty</span>
-          <span id="coGrandTotal">0,00 zł</span>
-        </div>
-        <div class="co-checkout-actions">
-          <button class="btn-back-cart" onclick="closeCheckout()">← Wróć do koszyka</button>
-          <button class="btn-pay" onclick="handlePay()">Zapłać →</button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-
-  <!-- ─── CART DRAWER ─────────────────────────────────────────────────── -->
-  <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
-  <div class="cart-drawer" id="cartDrawer">
-    <div class="cart-header">
-      <h3>🛒 Twój koszyk</h3>
-      <div style="display:flex;align-items:center;gap:14px;">
-        <div id="cartTimer" style="
-          font-family:'DM Sans',sans-serif;font-size:0.85rem;font-weight:600;
-          color:rgba(255,255,255,0.85);background:rgba(255,255,255,0.12);
-          border-radius:20px;padding:4px 12px;letter-spacing:0.03em;
-          display:none;
-        ">⏱ 5:00</div>
-        <button class="cart-close" onclick="closeCart()">✕</button>
-      </div>
-    </div>
-    <div class="cart-items" id="cartItems">
-      <div class="cart-empty" id="cartEmpty">
-        <div class="cart-empty-icon">⛺</div>
-        <p>Koszyk jest pusty</p>
-      </div>
-    </div>
-    <div class="cart-footer">
-      <div class="promo-row">
-        <input class="promo-input" id="promoInput" type="text" placeholder="Kod rabatowy"
-          onkeydown="if(event.key==='Enter')applyPromo()" />
-        <button class="promo-btn" id="promoApplyBtn" onclick="applyPromo()">Zastosuj</button>
-        <button class="promo-btn" id="promoRemoveBtn" onclick="removePromo()" style="display:none;background:#6b7280;">✕</button>
-      </div>
-      <div class="promo-feedback" id="promoFeedback"></div>
-      <div class="cart-discount-row" id="cartDiscountRow" style="display:none;">
-        <span id="cartDiscountLabel">Rabat</span>
-        <span id="cartDiscountVal"></span>
-      </div>
-      <div class="cart-summary">
-        <span class="cart-summary-label">Do zapłaty</span>
-        <span class="cart-summary-total" id="cartTotal">0,00 zł</span>
-      </div>
-      <button class="btn-checkout" id="checkoutBtn" onclick="handleCheckout()">
-        Podsumowanie i płatność →
-      </button>
-    </div>
-  </div>
-
-  <!-- ─── RADIO PLAYER ───────────────────────────────────────────────────── -->
-  <div id="radioWidget" style="
-    position: fixed; bottom: 28px; right: 28px; z-index: 1050;
-    font-family: 'DM Sans', sans-serif;
-    filter: drop-shadow(0 8px 32px rgba(14,36,68,0.28));
-    transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
-  ">
-    <!-- Collapsed pill -->
-    <div id="radioPill" onclick="expandRadio()" style="
-      display: none;
-      background: var(--navy); border-radius: 50px;
-      padding: 10px 20px 10px 14px;
-      align-items: center; gap: 10px; cursor: pointer;
-      border: 1.5px solid rgba(188,150,117,0.35);
-      transition: background 0.25s, transform 0.2s;
-    "
-      onmouseover="this.style.background='#1a3a6e'"
-      onmouseout="this.style.background='var(--navy)'"
-    >
-      <span id="pillDot" style="
-        width: 8px; height: 8px; border-radius: 50%;
-        background: #6b7280; flex-shrink: 0;
-        transition: background 0.3s;
-      "></span>
-      <span style="color: var(--white); font-size: 0.82rem; font-weight: 600; white-space: nowrap;">Radio Płońsk</span>
-    </div>
-
-    <!-- Expanded card -->
-    <div id="radioCard" style="
-      background: var(--navy);
-      border-radius: 20px;
-      border: 1.5px solid rgba(188,150,117,0.25);
-      overflow: hidden;
-      width: 260px;
-    ">
-      <!-- Card header -->
-      <div style="
-        background: linear-gradient(135deg, #0e2444 0%, #152e54 100%);
-        padding: 18px 20px 16px;
-        border-bottom: 1px solid rgba(255,255,255,0.06);
-        display: flex; align-items: center; justify-content: space-between;
-      ">
-        <div style="display:flex; align-items:center; gap:10px;">
-          <!-- Animated sound icon -->
-          <div id="waveIcon" style="display:flex; align-items:flex-end; gap:2px; height:16px; flex-shrink:0;">
-            <span class="wave-bar" style="width:3px; border-radius:2px; background:var(--gold); animation: none; height:4px;"></span>
-            <span class="wave-bar" style="width:3px; border-radius:2px; background:var(--gold); animation: none; height:4px;"></span>
-            <span class="wave-bar" style="width:3px; border-radius:2px; background:var(--gold); animation: none; height:4px;"></span>
-            <span class="wave-bar" style="width:3px; border-radius:2px; background:var(--gold); animation: none; height:4px;"></span>
-          </div>
-          <div>
-            <div style="font-family:'Marcellus',serif; font-size:0.95rem; color:var(--white); line-height:1.1;">Radio Płońsk</div>
-            <div style="font-size:0.68rem; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:var(--gold-lt); margin-top:1px;">93,6 FM</div>
-          </div>
-        </div>
-        <button onclick="collapseRadio()" style="
-          background: rgba(255,255,255,0.08); border: none; border-radius: 50%;
-          width: 26px; height: 26px; cursor: pointer; color: rgba(255,255,255,0.55);
-          font-size: 0.75rem; display:flex; align-items:center; justify-content:center;
-          transition: background 0.2s, color 0.2s; flex-shrink:0;
-        "
-          onmouseover="this.style.background='rgba(255,255,255,0.16)';this.style.color='#fff'"
-          onmouseout="this.style.background='rgba(255,255,255,0.08)';this.style.color='rgba(255,255,255,0.55)'"
-          title="Zwiń"
-        >✕</button>
-      </div>
-
-      <!-- Live badge + status -->
-      <div style="padding: 14px 20px 0; display:flex; align-items:center; gap:8px;">
-        <span id="liveBadge" style="
-          display:inline-flex; align-items:center; gap:5px;
-          background: rgba(107,114,128,0.2); border-radius:50px;
-          padding: 3px 10px; font-size: 0.7rem; font-weight:700;
-          letter-spacing:0.1em; color: #9ca3af; text-transform:uppercase;
-          transition: background 0.3s, color 0.3s;
-        ">
-          <span id="liveDot" style="width:6px;height:6px;border-radius:50%;background:#6b7280;display:inline-block;transition:background 0.3s;"></span>
-          NA ŻYWO
-        </span>
-        <span id="radioStatus" style="font-size:0.78rem; color:rgba(255,255,255,0.4);">Wciśnij play</span>
-      </div>
-
-      <!-- Controls -->
-      <div style="padding: 16px 20px 20px; display:flex; align-items:center; gap:14px;">
-        <!-- Play/pause -->
-        <button id="playBtn" onclick="toggleRadio()" style="
-          width: 48px; height: 48px; border-radius: 50%;
-          background: var(--gold); border: none; cursor: pointer;
-          display: flex; align-items:center; justify-content:center;
-          flex-shrink: 0;
-          transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
-          box-shadow: 0 4px 16px rgba(188,150,117,0.35);
-        "
-          onmouseover="this.style.background='var(--gold-lt)';this.style.transform='scale(1.06)'"
-          onmouseout="this.style.background='var(--gold)';this.style.transform='scale(1)'"
-          onmousedown="this.style.transform='scale(0.94)'"
-          onmouseup="this.style.transform='scale(1.06)'"
-          aria-label="Odtwórz / pauza"
-        >
-          <svg id="iconPlay" width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
-          <svg id="iconPause" width="18" height="18" viewBox="0 0 24 24" fill="white" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-        </button>
-
-        <!-- Volume -->
-        <div style="flex:1;">
-          <div style="font-size:0.7rem; color:rgba(255,255,255,0.4); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:6px;">Głośność</div>
-          <input type="range" id="volSlider" min="0" max="1" step="0.02" value="0.8"
-            oninput="setVolume(this.value)"
-            style="
-              width:100%; height:4px; border-radius:2px; cursor:pointer;
-              -webkit-appearance:none; appearance:none;
-              background: linear-gradient(to right, var(--gold) 80%, rgba(255,255,255,0.15) 80%);
-              outline:none; border:none;
-            "
-          />
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <audio id="radioAudio" preload="none" crossorigin="anonymous"></audio>
-
-  <style>
-    @keyframes wavePulse1 { 0%,100%{height:4px} 50%{height:14px} }
-    @keyframes wavePulse2 { 0%,100%{height:8px} 50%{height:4px} }
-    @keyframes wavePulse3 { 0%,100%{height:12px} 50%{height:5px} }
-    @keyframes wavePulse4 { 0%,100%{height:5px} 50%{height:13px} }
-    #volSlider::-webkit-slider-thumb {
-      -webkit-appearance:none; width:14px; height:14px;
-      border-radius:50%; background:var(--white);
-      box-shadow:0 1px 4px rgba(0,0,0,0.3); cursor:pointer;
-    }
-    #volSlider::-moz-range-thumb {
-      width:14px; height:14px; border-radius:50%;
-      background:var(--white); border:none;
-      box-shadow:0 1px 4px rgba(0,0,0,0.3); cursor:pointer;
-    }
-    .wave-bar { transition: height 0.15s; }
-  </style>
-
-  <script>
-    const radioAudio = document.getElementById('radioAudio');
-    const playBtn    = document.getElementById('playBtn');
-    const iconPlay   = document.getElementById('iconPlay');
-    const iconPause  = document.getElementById('iconPause');
-    const liveBadge  = document.getElementById('liveBadge');
-    const liveDot    = document.getElementById('liveDot');
-    const radioStatus = document.getElementById('radioStatus');
-    const waveBars   = document.querySelectorAll('.wave-bar');
-    const pillDot    = document.getElementById('pillDot');
-    let isPlaying = false;
-
-    function setWaveAnimation(active) {
-      const anims = ['wavePulse1 0.7s ease-in-out infinite','wavePulse2 0.9s ease-in-out infinite 0.1s','wavePulse3 0.75s ease-in-out infinite 0.2s','wavePulse4 0.85s ease-in-out infinite 0.05s'];
-      waveBars.forEach((b, i) => { b.style.animation = active ? anims[i] : 'none'; b.style.height = active ? '' : '4px'; });
-    }
-
-    function setLive(active) {
-      liveBadge.style.background = active ? 'rgba(22,163,74,0.2)'   : 'rgba(107,114,128,0.2)';
-      liveBadge.style.color      = active ? '#4ade80'                : '#9ca3af';
-      liveDot.style.background   = active ? '#22c55e'                : '#6b7280';
-      pillDot.style.background   = active ? '#22c55e'                : '#6b7280';
-    }
-
-    function updateVolumeTrack(val) {
-      const pct = Math.round(val * 100);
-      document.getElementById('volSlider').style.background =
-        `linear-gradient(to right, var(--gold) ${pct}%, rgba(255,255,255,0.15) ${pct}%)`;
-    }
-
-    function toggleRadio() {
-      if (isPlaying) {
-        radioAudio.pause();
-        radioAudio.src = '';
-        isPlaying = false;
-        iconPlay.style.display  = 'block';
-        iconPause.style.display = 'none';
-        radioStatus.textContent = 'Wciśnij play';
-        setLive(false);
-        setWaveAnimation(false);
-      } else {
-        radioStatus.textContent = 'Łączenie…';
-        radioAudio.src = 'https://sluchaj.link:5443/plonsk';
-        radioAudio.play().then(() => {
-          isPlaying = true;
-          iconPlay.style.display  = 'none';
-          iconPause.style.display = 'block';
-          radioStatus.textContent = 'Słuchasz na żywo';
-          setLive(true);
-          setWaveAnimation(true);
-        }).catch(err => {
-          radioAudio.src = '';
-          radioStatus.textContent = 'Błąd: ' + (err.name || 'połączenia');
-        });
-      }
-    }
-
-    function setVolume(val) {
-      radioAudio.volume = parseFloat(val);
-      updateVolumeTrack(val);
-    }
-
-    function collapseRadio() {
-      document.getElementById('radioCard').style.display = 'none';
-      const pill = document.getElementById('radioPill');
-      pill.style.display = 'flex';
-    }
-
-    function expandRadio() {
-      document.getElementById('radioPill').style.display = 'none';
-      document.getElementById('radioCard').style.display = 'block';
-    }
-
-    // init volume track
-    updateVolumeTrack(0.8);
-  </script>
 
   <!-- ─── FOOTER ────────────────────────────────────────────────────────── -->
   <footer class="site-footer">
@@ -959,306 +778,63 @@
   </footer>
 
   <script>
-    const prices = { q1: 50, q2: 140, q3: 4200, q4: 6000 };
-    const names  = { q1: 'Pobyt 1-dniowy', q2: 'Pobyt 3-dniowy', q3: 'Pobyt miesięczny', q4: 'Pobyt 3-miesięczny' };
-    const qty    = Object.assign({ q1: 0, q2: 0, q3: 0, q4: 0 },
-      JSON.parse(sessionStorage.getItem('kempingQty') || '{}'));
+    // ─── Calculator ────────────────────────────────────────────────────────
+    let calcActive = false;
 
-    function saveState() {
-      sessionStorage.setItem('kempingQty', JSON.stringify(qty));
-    }
-
-    // ── Promo codes ───────────────────────────────────────────────────────
-    const PROMO_CODES = { 'KOWNATKI': 0.10 };
-    let activePromo = sessionStorage.getItem('kempingPromo') || null;
-
-    function applyPromo() {
-      const code = document.getElementById('promoInput').value.trim().toUpperCase();
-      const fb = document.getElementById('promoFeedback');
-      if (!code) return;
-      if (PROMO_CODES[code]) {
-        activePromo = code;
-        sessionStorage.setItem('kempingPromo', code);
-        fb.className = 'promo-feedback ok';
-        fb.textContent = `✓ Kod „${code}" zastosowany — rabat ${PROMO_CODES[code] * 100}%`;
-        document.getElementById('promoInput').disabled = true;
-        document.getElementById('promoApplyBtn').style.display = 'none';
-        document.getElementById('promoRemoveBtn').style.display = 'block';
-      } else {
-        fb.className = 'promo-feedback err';
-        fb.textContent = '✕ Nieprawidłowy kod rabatowy.';
-        setTimeout(() => { fb.textContent = ''; }, 2500);
-        return;
+    function toggleCalc() {
+      calcActive = !calcActive;
+      document.getElementById('calcToggleBtn').classList.toggle('active', calcActive);
+      document.getElementById('cennik').classList.toggle('calc-mode', calcActive);
+      if (!calcActive) {
+        document.querySelectorAll('.step-val').forEach(el => {
+          el.textContent = '0'; el.classList.remove('has-val');
+        });
       }
-      updateTotal();
+      renderCalcPanel();
     }
 
-    function restorePromo() {
-      if (!activePromo) return;
-      const fb = document.getElementById('promoFeedback');
-      fb.className = 'promo-feedback ok';
-      fb.textContent = `✓ Kod „${activePromo}" zastosowany — rabat ${PROMO_CODES[activePromo] * 100}%`;
-      document.getElementById('promoInput').value = activePromo;
-      document.getElementById('promoInput').disabled = true;
-      document.getElementById('promoApplyBtn').style.display = 'none';
-      document.getElementById('promoRemoveBtn').style.display = 'block';
+    function stepItem(btn, delta) {
+      const sv = btn.closest('.item-stepper').querySelector('.step-val');
+      let v = Math.max(0, (parseInt(sv.textContent) || 0) + delta);
+      sv.textContent = v;
+      sv.classList.toggle('has-val', v > 0);
+      renderCalcPanel();
     }
 
-    function removePromo() {
-      activePromo = null;
-      sessionStorage.removeItem('kempingPromo');
-      document.getElementById('promoInput').value = '';
-      document.getElementById('promoInput').disabled = false;
-      document.getElementById('promoInput').focus();
-      document.getElementById('promoApplyBtn').style.display = 'block';
-      document.getElementById('promoRemoveBtn').style.display = 'none';
-      document.getElementById('promoFeedback').textContent = '';
-      updateTotal();
-    }
-
-    // ── Cart timer ────────────────────────────────────────────────────────
-    const TIMER_SECS = 5 * 60;
-    let timerInterval = null;
-    let timerSecsLeft = TIMER_SECS;
-
-    function startCartTimer() {
-      clearInterval(timerInterval);
-      timerSecsLeft = parseInt(sessionStorage.getItem('kempingTimerEnd') || '0') - Date.now();
-      timerSecsLeft = timerSecsLeft > 0 ? Math.round(timerSecsLeft / 1000) : TIMER_SECS;
-      sessionStorage.setItem('kempingTimerEnd', Date.now() + timerSecsLeft * 1000);
-      updateTimerDisplay();
-      document.getElementById('cartTimer').style.display = 'block';
-      timerInterval = setInterval(() => {
-        timerSecsLeft--;
-        updateTimerDisplay();
-        sessionStorage.setItem('kempingTimerEnd', Date.now() + timerSecsLeft * 1000);
-        if (timerSecsLeft <= 0) resetCartTimer();
-      }, 1000);
-    }
-
-    function stopCartTimer() {
-      clearInterval(timerInterval);
-      document.getElementById('cartTimer').style.display = 'none';
-    }
-
-    function resetCartTimer() {
-      clearInterval(timerInterval);
-      sessionStorage.removeItem('kempingTimerEnd');
-      sessionStorage.removeItem('kempingQty');
-      sessionStorage.removeItem('kempingView');
-      sessionStorage.removeItem('kempingPromo');
-      activePromo = null;
-      Object.keys(qty).forEach(k => {
-        qty[k] = 0;
-        const el = document.getElementById(k);
-        if (el) el.value = 0;
+    function clearCalcItems() {
+      document.querySelectorAll('.step-val').forEach(el => {
+        el.textContent = '0'; el.classList.remove('has-val');
       });
-      updateTotal();
-      // close checkout if open
-      document.getElementById('checkoutOverlay').classList.remove('open');
-      closeCart();
-      document.getElementById('cartTimer').style.display = 'none';
-      document.getElementById('cartTimer').textContent = '⏱ 5:00';
-      alert('Czas rezerwacji minął. Koszyk został wyczyszczony.');
+      renderCalcPanel();
     }
 
-    function updateTimerDisplay() {
-      const m = Math.floor(timerSecsLeft / 60);
-      const s = timerSecsLeft % 60;
-      const el = document.getElementById('cartTimer');
-      el.textContent = `⏱ ${m}:${String(s).padStart(2, '0')}`;
-      el.style.background = timerSecsLeft <= 60
-        ? 'rgba(220,38,38,0.5)'
-        : 'rgba(255,255,255,0.12)';
-    }
-
-    function fmt(val) {
-      return val.toLocaleString('pl-PL', { minimumFractionDigits: 2 }) + ' zł';
-    }
-
-    function changeQty(id, delta) {
-      qty[id] = Math.max(0, qty[id] + delta);
-      document.getElementById(id).value = qty[id];
-      updateTotal();
-      saveState();
-    }
-
-    function setQty(id, val) {
-      qty[id] = Math.max(0, parseInt(val) || 0);
-      updateTotal();
-      saveState();
-    }
-
-    function updateTotal() {
-      const subtotal = Object.keys(qty).reduce((sum, k) => sum + qty[k] * prices[k], 0);
-      const discount = activePromo ? subtotal * PROMO_CODES[activePromo] : 0;
-      const total = subtotal - discount;
-      document.getElementById('totalPrice').textContent = fmt(total);
-      document.getElementById('cartBtn').disabled = subtotal === 0;
-
-      // discount row in cart footer
-      const discRow = document.getElementById('cartDiscountRow');
-      if (discRow) {
-        if (discount > 0) {
-          discRow.style.display = 'flex';
-          document.getElementById('cartDiscountLabel').textContent =
-            `Rabat (${PROMO_CODES[activePromo] * 100}%)`;
-          document.getElementById('cartDiscountVal').textContent = `−${fmt(discount)}`;
-        } else {
-          discRow.style.display = 'none';
-        }
-      }
-      // also update cart total display if visible
-      const cartTotalEl = document.getElementById('cartTotal');
-      if (cartTotalEl) cartTotalEl.textContent = fmt(total);
-    }
-
-    function handleCart() {
-      renderCart();
-      openCart();
-    }
-
-    function renderCart() {
-      const container = document.getElementById('cartItems');
-      const empty     = document.getElementById('cartEmpty');
-      const items = Object.keys(qty).filter(k => qty[k] > 0);
-
-      if (items.length === 0) {
-        empty.style.display = 'block';
-        // remove any old rows
-        container.querySelectorAll('.cart-item').forEach(el => el.remove());
-        document.getElementById('cartTotal').textContent = fmt(0);
-        return;
-      }
-      empty.style.display = 'none';
-      container.querySelectorAll('.cart-item').forEach(el => el.remove());
-
+    function renderCalcPanel() {
+      const body = document.getElementById('cpBody');
+      const totalEl = document.getElementById('cpTotal');
       let total = 0;
-      items.forEach(k => {
-        const subtotal = qty[k] * prices[k];
-        total += subtotal;
-        const div = document.createElement('div');
-        div.className = 'cart-item';
-        div.dataset.key = k;
-        div.innerHTML = `
-          <div class="cart-item-info">
-            <div class="cart-item-name">${names[k]}</div>
-            <div class="cart-item-detail">${qty[k]} × ${fmt(prices[k])}</div>
-          </div>
-          <div class="cart-item-price">${fmt(subtotal)}</div>
-          <button class="cart-item-remove" onclick="removeItem('${k}')" title="Usuń">✕</button>
-        `;
-        container.appendChild(div);
+      const rows = [];
+      document.querySelectorAll('#cennik li[data-price]').forEach(li => {
+        const price = parseInt(li.dataset.price) || 0;
+        const name = li.dataset.name;
+        const qty = parseInt(li.querySelector('.step-val').textContent) || 0;
+        if (qty > 0) { total += price * qty; rows.push({ name, qty, price, sub: price * qty }); }
       });
-      document.getElementById('cartTotal').textContent = fmt(total);
-    }
-
-    function removeItem(k) {
-      qty[k] = 0;
-      document.getElementById(k).value = 0;
-      updateTotal();
-      renderCart();
-      saveState();
-    }
-
-    function openCart() {
-      document.getElementById('cartOverlay').classList.add('open');
-      document.getElementById('cartDrawer').classList.add('open');
-      document.body.style.overflow = 'hidden';
-      sessionStorage.setItem('kempingView', 'cart');
-      startCartTimer();
-    }
-
-    function closeCart() {
-      document.getElementById('cartOverlay').classList.remove('open');
-      document.getElementById('cartDrawer').classList.remove('open');
-      document.body.style.overflow = '';
-      sessionStorage.removeItem('kempingView');
-      stopCartTimer();
-    }
-
-    function handleCheckout() {
-      // close cart visually but keep timer running
-      document.getElementById('cartOverlay').classList.remove('open');
-      document.getElementById('cartDrawer').classList.remove('open');
-      renderCheckout();
-      setTimeout(() => {
-        document.getElementById('checkoutOverlay').classList.add('open');
-        document.body.style.overflow = 'hidden';
-        sessionStorage.setItem('kempingView', 'checkout');
-      }, 50);
-    }
-
-    function toggleInvoice(cb) {
-      const track = document.getElementById('coSliderTrack');
-      if (cb.checked) {
-        track.classList.add('slid');
+      if (rows.length === 0) {
+        body.innerHTML = '<div class="cp-empty">Wybierz pozycje z cennika,<br>aby zobaczyć szacunkowy koszt.</div>';
       } else {
-        track.classList.remove('slid');
+        body.innerHTML = rows.map(r => `
+          <div class="cp-row">
+            <div class="cp-row-left">
+              <div class="cp-row-name">${r.name}</div>
+              <div class="cp-row-detail">${r.qty} × ${r.price === 0 ? 'bezpłatnie' : r.price + ' zł'}</div>
+            </div>
+            ${r.price === 0
+              ? '<span class="cp-row-free">bezpłatnie</span>'
+              : '<span class="cp-row-val">' + r.sub + ' zł</span>'}
+          </div>`).join('');
       }
+      totalEl.textContent = total + ' zł';
     }
-
-    function goBackToForm() {
-      document.getElementById('coInvoice').checked = false;
-      document.getElementById('coSliderTrack').classList.remove('slid');
-    }
-
-    function closeCheckout() {
-      document.getElementById('checkoutOverlay').classList.remove('open');
-      document.body.style.overflow = '';
-      sessionStorage.setItem('kempingView', 'cart');
-      setTimeout(() => openCart(), 100);
-    }
-
-    const SERVICE_FEE_RATE = 0.03; // 3% opłata serwisowa
-
-    function renderCheckout() {
-      // Summary items
-      const sumItems = document.getElementById('coSumItems');
-      sumItems.innerHTML = '';
-      let subtotal = 0;
-      Object.keys(qty).forEach(k => {
-        if (qty[k] <= 0) return;
-        const val = qty[k] * prices[k];
-        subtotal += val;
-        const div = document.createElement('div');
-        div.className = 'co-sum-row';
-        div.innerHTML = `<span>${names[k]} × ${qty[k]}</span><span>${fmt(val)}</span>`;
-        sumItems.appendChild(div);
-      });
-
-      const fee = Math.round(subtotal * SERVICE_FEE_RATE * 100) / 100;
-      const grand = subtotal + fee;
-      document.getElementById('coServiceFee').textContent = fmt(fee);
-      document.getElementById('coGrandTotal').textContent = fmt(grand);
-    }
-
-    function handlePay() {
-      // Etap 4 — podłączenie płatności
-      alert('Płatność online będzie dostępna wkrótce!');
-    }
-
-    // Restore state after refresh
-    (function restoreView() {
-      // Restore qty inputs
-      Object.keys(qty).forEach(k => {
-        const el = document.getElementById(k);
-        if (el) el.value = qty[k];
-      });
-      restorePromo();
-      updateTotal();
-
-      const view = sessionStorage.getItem('kempingView');
-      if (view === 'checkout') {
-        renderCheckout();
-        document.getElementById('checkoutOverlay').classList.add('open');
-        document.body.style.overflow = 'hidden';
-        startCartTimer();
-      } else if (view === 'cart') {
-        renderCart();
-        openCart();
-      }
-    })();
 
     // Hamburger
     const hamburger = document.getElementById('hamburger');
