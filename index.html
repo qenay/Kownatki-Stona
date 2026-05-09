@@ -1442,6 +1442,8 @@
       .events-layout,
       .contact-grid { grid-template-columns: 1fr; gap: 40px; }
 
+      #eventsRightCol { display: none; }
+
       .about-image-accent { display: none; }
 
       .rooms-grid { grid-template-columns: 1fr; }
@@ -2906,10 +2908,19 @@
 
   <script>
     function closeAllEventPanels() {
+      const rightCol = document.getElementById('eventsRightCol');
+      const videoWrapper = document.getElementById('videoWrapper');
       ['wieczorPanel','urodzinyPanel','firmowePanel','eventyPanel'].forEach(id => {
-        document.getElementById(id).style.display = 'none';
+        const panel = document.getElementById(id);
+        panel.style.display = 'none';
+        panel.style.height = '';
+        panel.style.maxHeight = '';
+        panel.style.overflowY = '';
+        if (panel.parentNode !== rightCol) {
+          rightCol.insertBefore(panel, videoWrapper);
+        }
       });
-      document.getElementById('videoWrapper').style.display = '';
+      videoWrapper.style.display = '';
       [['cardWieczor','wieczorHint'],['cardUrodziny','urodzinyHint'],['cardFirmowe','firmoweHint'],['cardEventy','eventyHint']].forEach(([cId,hId]) => {
         document.getElementById(cId).style.background = '';
         document.getElementById(cId).style.borderColor = '';
@@ -2920,8 +2931,18 @@
       closeAllEventPanels();
       document.getElementById('videoWrapper').style.display = 'none';
       const panel = document.getElementById(panelId);
-      panel.style.display = 'flex';
-      panel.style.height = '100%';
+      const isMobile = window.innerWidth <= 768;
+      if (isMobile) {
+        document.getElementById(cardId).after(panel);
+        panel.style.display = 'flex';
+        panel.style.height = 'auto';
+        panel.style.maxHeight = 'none';
+        panel.style.overflowY = 'visible';
+        setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 80);
+      } else {
+        panel.style.display = 'flex';
+        panel.style.height = '100%';
+      }
       document.getElementById(cardId).style.background = 'rgba(188,150,117,0.12)';
       document.getElementById(cardId).style.borderColor = 'rgba(188,150,117,0.4)';
       document.getElementById(hintId).textContent = 'Kliknij, aby zamknąć ✕';
