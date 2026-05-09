@@ -1886,15 +1886,16 @@
 
         <!-- Komfort -->
         <div class="room-card reveal">
-          <div class="room-image img-komfort" onclick="openKomfortLightbox(0)" style="cursor:pointer;">
+          <div class="room-image img-komfort" onclick="openKomfortLightbox(0)">
             <img src="komfort-1.jpg" alt="Domek Komfort">
             <div class="room-image-overlay">
               <span class="room-image-overlay-text">
-                <span class="room-image-overlay-icon">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>
-                </span>
-                Zobacz 8 zdjęć
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                8 zdjęć
               </span>
+              <div class="room-image-overlay-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
+              </div>
             </div>
           </div>
           <div class="room-body">
@@ -2902,14 +2903,6 @@
     <div id="lightbox-thumbs"></div>
   </div>
 
-  <!-- ─── KOMFORT LIGHTBOX ────────────────────────────────────────────── -->
-  <div id="komfort-lb" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.93); z-index:9999; align-items:center; justify-content:center; flex-direction:column;">
-    <button onclick="closeKomfortLb()" style="position:absolute; top:20px; right:28px; background:none; border:none; color:#fff; font-size:2.2rem; cursor:pointer; opacity:0.7; line-height:1;">✕</button>
-    <button id="klb-prev" style="position:absolute; left:20px; background:rgba(255,255,255,0.1); border:none; color:#fff; font-size:2rem; width:52px; height:52px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center;">‹</button>
-    <img id="komfort-lb-img" src="" alt="" style="max-width:90vw; max-height:88vh; border-radius:10px; object-fit:contain; box-shadow:0 32px 80px rgba(0,0,0,0.8);"/>
-    <button id="klb-next" style="position:absolute; right:20px; background:rgba(255,255,255,0.1); border:none; color:#fff; font-size:2rem; width:52px; height:52px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center;">›</button>
-    <div id="komfort-lb-counter" style="position:absolute; bottom:24px; left:50%; transform:translateX(-50%); color:rgba(255,255,255,0.5); font-size:0.85rem; letter-spacing:0.1em;"></div>
-  </div>
 
   <script>
     function closeAllEventPanels() {
@@ -2966,36 +2959,10 @@
       { src: 'komfort-7.jpg', alt: 'Sypialnia 3' },
       { src: 'komfort-8.jpg', alt: 'Sypialnia 4' },
     ];
-    let klbIdx = 0;
-    const klb     = document.getElementById('komfort-lb');
-    const klbImg  = document.getElementById('komfort-lb-img');
-    const klbCnt  = document.getElementById('komfort-lb-counter');
 
     function openKomfortLightbox(idx) {
-      klbIdx = idx;
-      klbImg.src = KOMFORT[idx].src;
-      klbCnt.textContent = (idx + 1) + ' / ' + KOMFORT.length;
-      klb.style.display = 'flex';
-      document.body.style.overflow = 'hidden';
+      openLightboxWith(KOMFORT, idx);
     }
-    function closeKomfortLb() {
-      klb.style.display = 'none';
-      document.body.style.overflow = '';
-    }
-    function klbGo(dir) {
-      klbIdx = (klbIdx + dir + KOMFORT.length) % KOMFORT.length;
-      klbImg.src = KOMFORT[klbIdx].src;
-      klbCnt.textContent = (klbIdx + 1) + ' / ' + KOMFORT.length;
-    }
-    document.getElementById('klb-prev').addEventListener('click', () => klbGo(-1));
-    document.getElementById('klb-next').addEventListener('click', () => klbGo(1));
-    klb.addEventListener('click', (e) => { if (e.target === klb) closeKomfortLb(); });
-    document.addEventListener('keydown', (e) => {
-      if (klb.style.display !== 'flex') return;
-      if (e.key === 'ArrowLeft')  klbGo(-1);
-      if (e.key === 'ArrowRight') klbGo(1);
-      if (e.key === 'Escape')     closeKomfortLb();
-    });
   </script>
 
   <!-- ─── LANDSCAPE LIGHTBOX ──────────────────────────────────────────── -->
@@ -3069,6 +3036,7 @@
     ];
 
     let current = 0;
+    let activeGallery = GALLERY;
     const lb       = document.getElementById('lightbox');
     const lbImg    = document.getElementById('lightbox-img');
     const lbCounter= document.getElementById('lightbox-counter');
@@ -3077,37 +3045,47 @@
     const lbPrev   = document.getElementById('lb-prev');
     const lbNext   = document.getElementById('lb-next');
 
-    // Build thumbnails once
-    GALLERY.forEach((item, i) => {
-      const t = document.createElement('img');
-      t.src = item.src;
-      t.alt = item.alt;
-      t.className = 'lb-thumb';
-      t.addEventListener('click', () => goTo(i));
-      lbThumbs.appendChild(t);
-    });
+    function buildThumbs(gallery) {
+      lbThumbs.innerHTML = '';
+      gallery.forEach((item, i) => {
+        const t = document.createElement('img');
+        t.src = item.src;
+        t.alt = item.alt;
+        t.className = 'lb-thumb';
+        t.addEventListener('click', () => goTo(i));
+        lbThumbs.appendChild(t);
+      });
+    }
+
+    buildThumbs(GALLERY);
 
     function goTo(index) {
       lbImg.classList.add('fade');
       setTimeout(() => {
-        current = (index + GALLERY.length) % GALLERY.length;
-        lbImg.src = GALLERY[current].src;
-        lbImg.alt = GALLERY[current].alt;
-        lbCounter.textContent = (current + 1) + ' / ' + GALLERY.length;
+        current = (index + activeGallery.length) % activeGallery.length;
+        lbImg.src = activeGallery[current].src;
+        lbImg.alt = activeGallery[current].alt;
+        lbCounter.textContent = (current + 1) + ' / ' + activeGallery.length;
         document.querySelectorAll('.lb-thumb').forEach((t, i) => {
           t.classList.toggle('active', i === current);
         });
-        // scroll active thumb into view
         const activeThumb = lbThumbs.children[current];
         if (activeThumb) activeThumb.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
         lbImg.classList.remove('fade');
       }, 220);
     }
 
-    function openLightbox(index) {
+    function openLightboxWith(gallery, index) {
+      activeGallery = gallery;
+      buildThumbs(gallery);
       document.body.style.overflow = 'hidden';
       lb.classList.add('active');
+      current = 0;
       goTo(index);
+    }
+
+    function openLightbox(index) {
+      openLightboxWith(GALLERY, index);
     }
 
     function closeLightbox() {
