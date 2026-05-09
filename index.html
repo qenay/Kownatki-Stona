@@ -2169,11 +2169,34 @@
         <h2 class="section-title reveal reveal-delay-1">Kownatki na zdjęciach</h2>
       </div>
     </div>
-    <div style="padding: 0 24px;">
-      <div class="gallery-scroll reveal">
-        <div class="gallery-item" data-label="Widok na jezioro Kownatki"><img src="img-jezioro-kownatki.jpg" alt="Widok na jezioro Kownatki" style="width:100%;height:100%;object-fit:cover;" /></div>
+    <div style="padding:0 32px;">
+      <div class="reveal" style="display:grid; grid-template-columns:repeat(5,1fr); gap:14px;">
 
-        <div class="gallery-item" data-label="Zachód słońca nad jeziorem"><img src="gallery-zachod.jpg" alt="Zachód słońca nad jeziorem" style="width:100%;height:100%;object-fit:cover;display:block;"></div>
+        <div class="gallery-item" style="width:auto; aspect-ratio:4/3; cursor:pointer;" onclick="openLandscapeBox(0)">
+          <img src="gallery-zachod.jpg" alt="Zachód słońca nad jeziorem" style="width:100%;height:100%;object-fit:cover;display:block;">
+        </div>
+
+        <div class="gallery-item" style="width:auto; aspect-ratio:4/3; cursor:pointer;" onclick="openLandscapeBox(1)">
+          <img src="img-jezioro-kownatki.jpg" alt="Widok na jezioro Kownatki" style="width:100%;height:100%;object-fit:cover;" />
+        </div>
+
+        <div class="gallery-item" style="width:auto; aspect-ratio:4/3; cursor:pointer;" onclick="openLandscapeBox(2)">
+          <img src="krajobraz-8.jpg" alt="Kownatki" style="width:100%;height:100%;object-fit:cover;display:block;">
+        </div>
+
+        <div class="gallery-item" style="width:auto; aspect-ratio:4/3; cursor:pointer;" onclick="openLandscapeBox(3)">
+          <img src="krajobraz-2.jpg" alt="Kownatki" style="width:100%;height:100%;object-fit:cover;display:block;">
+        </div>
+
+        <div style="aspect-ratio:4/3; border-radius:14px; overflow:hidden; cursor:pointer; position:relative;" onclick="openLandscapeBox(4)">
+          <img src="krajobraz-3.jpg" alt="Kownatki" style="width:100%;height:100%;object-fit:cover;display:block;filter:blur(3px);transform:scale(1.06);">
+          <div style="position:absolute;inset:0;background:rgba(14,36,68,0.72);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;">
+            <span style="color:#fff;font-size:2.4rem;line-height:1;">+</span>
+            <span style="color:#fff;font-family:'Marcellus',serif;font-size:1.05rem;letter-spacing:0.02em;">Pokaż więcej</span>
+            <span style="color:rgba(255,255,255,0.6);font-size:0.8rem;letter-spacing:0.08em;">9 zdjęć</span>
+          </div>
+        </div>
+
       </div>
     </div>
     <div class="container" style="text-align:center; margin-top:32px;">
@@ -2759,6 +2782,63 @@
     </div>
     <div id="lightbox-thumbs"></div>
   </div>
+
+  <!-- ─── LANDSCAPE LIGHTBOX ──────────────────────────────────────────── -->
+  <div id="landscape-lb" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.93); z-index:9999; align-items:center; justify-content:center; flex-direction:column;">
+    <button onclick="closeLandscapeBox()" style="position:absolute; top:20px; right:28px; background:none; border:none; color:#fff; font-size:2.2rem; cursor:pointer; opacity:0.7; line-height:1;">✕</button>
+    <button id="lb2-prev" style="position:absolute; left:20px; background:rgba(255,255,255,0.1); border:none; color:#fff; font-size:2rem; width:52px; height:52px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center;">‹</button>
+    <img id="landscape-lb-img" src="" alt="" style="max-width:90vw; max-height:88vh; border-radius:10px; object-fit:contain; box-shadow:0 32px 80px rgba(0,0,0,0.8);"/>
+    <button id="lb2-next" style="position:absolute; right:20px; background:rgba(255,255,255,0.1); border:none; color:#fff; font-size:2rem; width:52px; height:52px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center;">›</button>
+    <div id="landscape-lb-counter" style="position:absolute; bottom:24px; left:50%; transform:translateX(-50%); color:rgba(255,255,255,0.5); font-size:0.85rem; letter-spacing:0.1em;"></div>
+  </div>
+
+  <script>
+    const LANDSCAPE = [
+      { src: 'gallery-zachod.jpg',       alt: 'Zachód słońca nad jeziorem' },
+      { src: 'img-jezioro-kownatki.jpg', alt: 'Widok na jezioro Kownatki' },
+      { src: 'krajobraz-8.jpg',  alt: 'Kownatki' },
+      { src: 'krajobraz-2.jpg',  alt: 'Kownatki' },
+      { src: 'krajobraz-3.jpg',  alt: 'Kownatki' },
+      { src: 'krajobraz-4.jpg',  alt: 'Kownatki' },
+      { src: 'krajobraz-5.jpg',  alt: 'Kownatki' },
+      { src: 'krajobraz-6.jpg',  alt: 'Kownatki' },
+      { src: 'krajobraz-7.jpg',  alt: 'Kownatki' },
+      { src: 'krajobraz-1.jpg',  alt: 'Kownatki' },
+      { src: 'krajobraz-9.jpg',  alt: 'Kownatki' },
+      { src: 'krajobraz-10.jpg', alt: 'Kownatki' },
+      { src: 'krajobraz-11.jpg', alt: 'Kownatki' },
+    ];
+    let lbCurrent2 = 0;
+    const lb2      = document.getElementById('landscape-lb');
+    const lb2Img   = document.getElementById('landscape-lb-img');
+    const lb2Count = document.getElementById('landscape-lb-counter');
+
+    function openLandscapeBox(idx) {
+      lbCurrent2 = idx;
+      lb2Img.src = LANDSCAPE[idx].src;
+      lb2Count.textContent = (idx + 1) + ' / ' + LANDSCAPE.length;
+      lb2.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+    function closeLandscapeBox() {
+      lb2.style.display = 'none';
+      document.body.style.overflow = '';
+    }
+    function lb2Go(dir) {
+      lbCurrent2 = (lbCurrent2 + dir + LANDSCAPE.length) % LANDSCAPE.length;
+      lb2Img.src = LANDSCAPE[lbCurrent2].src;
+      lb2Count.textContent = (lbCurrent2 + 1) + ' / ' + LANDSCAPE.length;
+    }
+    document.getElementById('lb2-prev').addEventListener('click', () => lb2Go(-1));
+    document.getElementById('lb2-next').addEventListener('click', () => lb2Go(1));
+    lb2.addEventListener('click', (e) => { if (e.target === lb2) closeLandscapeBox(); });
+    document.addEventListener('keydown', (e) => {
+      if (lb2.style.display !== 'flex') return;
+      if (e.key === 'ArrowLeft')  lb2Go(-1);
+      if (e.key === 'ArrowRight') lb2Go(1);
+      if (e.key === 'Escape')     closeLandscapeBox();
+    });
+  </script>
 
   <script>
     const GALLERY = [
