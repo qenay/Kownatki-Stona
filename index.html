@@ -2119,25 +2119,28 @@
           </div>
 
           <div class="event-cards reveal reveal-delay-2">
-            <div class="event-card">
+            <div class="event-card event-card--clickable" id="cardWieczor" onclick="toggleWieczorPanel()" style="cursor:pointer; position:relative;">
               <div class="event-icon">💍</div>
-              <div>
+              <div style="flex:1;">
                 <h3>Wieczór panieński / kawalerski</h3>
                 <p>Pakiety grupowe z atrakcjami, animacjami i dekoracjami na życzenie.</p>
+                <span id="wieczorHint" style="display:inline-block; margin-top:6px; font-size:0.75rem; color:var(--gold); letter-spacing:0.06em; font-weight:600;">Kliknij po więcej informacji →</span>
               </div>
             </div>
-            <div class="event-card">
+            <div class="event-card event-card--clickable" id="cardUrodziny" onclick="toggleUrodzinyPanel()" style="cursor:pointer;">
               <div class="event-icon">🎂</div>
-              <div>
+              <div style="flex:1;">
                 <h3>Urodziny i rocznice</h3>
                 <p>Wyjątkowe obchody w mazurskiej scenerii z indywidualnym programem.</p>
+                <span id="urodzinyHint" style="display:inline-block; margin-top:6px; font-size:0.75rem; color:var(--gold); letter-spacing:0.06em; font-weight:600;">Kliknij po więcej informacji →</span>
               </div>
             </div>
-            <div class="event-card">
+            <div class="event-card event-card--clickable" id="cardFirmowe" onclick="toggleFirmowePanel()" style="cursor:pointer;">
               <div class="event-icon">💼</div>
-              <div>
-                <h3>Integracje firmowe</h3>
+              <div style="flex:1;">
+                <h3>Integracje firmowe / Wyjazdy firmowe</h3>
                 <p>Team building, szkolenia i wyjazdy integracyjne z pełną obsługą.</p>
+                <span id="firmoweHint" style="display:inline-block; margin-top:6px; font-size:0.75rem; color:var(--gold); letter-spacing:0.06em; font-weight:600;">Kliknij po więcej informacji →</span>
               </div>
             </div>
             <div class="event-card">
@@ -2147,11 +2150,114 @@
                 <p>Nowy Rok nad mazurskim jeziorem.</p>
               </div>
             </div>
+            <div class="event-card event-card--clickable" id="cardEventy" onclick="toggleEventyPanel()" style="cursor:pointer;">
+              <div class="event-icon">🎉</div>
+              <div style="flex:1;">
+                <h3>Eventy tematyczne i imprezy</h3>
+                <p>Organizacja imprez okolicznościowych z pełną oprawą tematyczną.</p>
+                <span id="eventyHint" style="display:inline-block; margin-top:6px; font-size:0.75rem; color:var(--gold); letter-spacing:0.06em; font-weight:600;">Kliknij po więcej informacji →</span>
+              </div>
+            </div>
           </div>
 
           <div class="reveal reveal-delay-3" style="margin-top:32px;">
             <a href="#contact" class="btn btn-primary">Zapytaj o ofertę grupową</a>
           </div>
+        </div>
+
+        <div id="eventsRightCol" style="position:relative; min-height:400px;">
+        <!-- Eventy info panel -->
+        <div id="eventyPanel" style="display:none; flex-direction:column; justify-content:flex-start; background:var(--navy); border-radius:24px; padding:36px 40px; border-left:4px solid var(--gold); position:relative; overflow-y:auto; max-height:100%;">
+          <div style="position:absolute;top:0;right:0;width:220px;height:220px;background:radial-gradient(circle,rgba(188,150,117,0.1) 0%,transparent 70%);pointer-events:none;"></div>
+          <button onclick="closeEventyPanel(event)" style="position:absolute;top:16px;right:20px;background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.4rem;cursor:pointer;line-height:1;" aria-label="Zamknij">✕</button>
+          <p style="font-size:0.72rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">Eventy tematyczne i imprezy</p>
+          <h3 style="font-family:'Marcellus',serif;font-size:1.4rem;color:var(--white);margin-bottom:16px;line-height:1.3;">Wyjątkowe miejsce<br/>na każdy event</h3>
+          <div style="width:40px;height:2px;background:var(--gold);margin-bottom:20px;opacity:0.6;"></div>
+          <p style="color:rgba(255,255,255,0.78);font-size:0.86rem;line-height:1.75;margin-bottom:12px;">Nasz ośrodek to wyjątkowe miejsce stworzone do organizacji eventów tematycznych, imprez plenerowych, koncertów oraz wydarzeń dla osób indywidualnych, grup zorganizowanych i firm.</p>
+          <p style="color:rgba(255,255,255,0.78);font-size:0.86rem;line-height:1.75;margin-bottom:12px;">Dzięki przestronnemu terenowi nad samym jeziorem możemy organizować zarówno kameralne wydarzenia, jak i duże imprezy na wysokim poziomie. Główną atrakcją ośrodka jest nowoczesna <strong style="color:var(--white);">muszla koncertowa o powierzchni 1000 m²</strong>, mogąca pomieścić nawet do <strong style="color:var(--white);">1000 osób</strong>. Obiekt wyposażony jest w profesjonalną scenę, nagłośnienie oraz efektowne oświetlenie koncertowe, co pozwala na organizację koncertów, wydarzeń muzycznych, pokazów, festiwali oraz wieczornych eventów tematycznych.</p>
+          <p style="color:rgba(255,255,255,0.6);font-size:0.78rem;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;">Na terenie ośrodka możemy zorganizować:</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 16px;margin-bottom:16px;">
+            <div style="display:flex;align-items:center;gap:7px;"><span style="color:var(--gold);font-size:0.6rem;">●</span><span style="color:rgba(255,255,255,0.75);font-size:0.83rem;">Koncerty i imprezy plenerowe</span></div>
+            <div style="display:flex;align-items:center;gap:7px;"><span style="color:var(--gold);font-size:0.6rem;">●</span><span style="color:rgba(255,255,255,0.75);font-size:0.83rem;">Strefy chillout i relaksu</span></div>
+            <div style="display:flex;align-items:center;gap:7px;"><span style="color:var(--gold);font-size:0.6rem;">●</span><span style="color:rgba(255,255,255,0.75);font-size:0.83rem;">Eventy tematyczne</span></div>
+            <div style="display:flex;align-items:center;gap:7px;"><span style="color:var(--gold);font-size:0.6rem;">●</span><span style="color:rgba(255,255,255,0.75);font-size:0.83rem;">Catering i strefy gastronomiczne</span></div>
+            <div style="display:flex;align-items:center;gap:7px;"><span style="color:var(--gold);font-size:0.6rem;">●</span><span style="color:rgba(255,255,255,0.75);font-size:0.83rem;">Wieczory taneczne</span></div>
+            <div style="display:flex;align-items:center;gap:7px;"><span style="color:var(--gold);font-size:0.6rem;">●</span><span style="color:rgba(255,255,255,0.75);font-size:0.83rem;">Atrakcje wodne i sportowe</span></div>
+            <div style="display:flex;align-items:center;gap:7px;"><span style="color:var(--gold);font-size:0.6rem;">●</span><span style="color:rgba(255,255,255,0.75);font-size:0.83rem;">Imprezy integracyjne</span></div>
+            <div style="display:flex;align-items:center;gap:7px;"><span style="color:var(--gold);font-size:0.6rem;">●</span><span style="color:rgba(255,255,255,0.75);font-size:0.83rem;">Animacje i dodatkowe atrakcje</span></div>
+            <div style="display:flex;align-items:center;gap:7px;"><span style="color:var(--gold);font-size:0.6rem;">●</span><span style="color:rgba(255,255,255,0.75);font-size:0.83rem;">Wydarzenia okolicznościowe</span></div>
+          </div>
+          <p style="color:rgba(255,255,255,0.78);font-size:0.86rem;line-height:1.75;margin-bottom:12px;">Nasi goście mają również dostęp do <strong style="color:var(--white);">prywatnej plaży</strong> oraz możliwości korzystania ze sprzętu wodnego — kajaki, rowerki wodne, SUP-y, łódki. Na miejscu znajduje się także boisko do <strong style="color:var(--white);">siatkówki plażowej</strong> oraz przestrzeń idealna do aktywności na świeżym powietrzu.</p>
+          <p style="color:rgba(255,255,255,0.55);font-size:0.82rem;line-height:1.65;font-style:italic;margin-bottom:20px;">Każde wydarzenie przygotowujemy indywidualnie, dbając o wyjątkową atmosferę, profesjonalną organizację oraz niezapomniane doświadczenia. Jeśli szukasz miejsca z klimatem i nieograniczonymi możliwościami — nasz ośrodek będzie idealnym wyborem.</p>
+          <a href="#contact" style="display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:50px;background:linear-gradient(135deg,var(--gold),#a07850);color:var(--white);font-size:0.85rem;font-weight:600;letter-spacing:0.04em;text-decoration:none;width:fit-content;" onclick="closeEventyPanel(event)">Zapytaj o ofertę →</a>
+        </div>
+
+        <!-- Firmowe info panel -->
+        <div id="firmowePanel" style="display:none; flex-direction:column; justify-content:flex-start; background:var(--navy); border-radius:24px; padding:36px 40px; border-left:4px solid var(--gold); position:relative; overflow-y:auto; max-height:100%;">
+          <div style="position:absolute;top:0;right:0;width:220px;height:220px;background:radial-gradient(circle,rgba(188,150,117,0.1) 0%,transparent 70%);pointer-events:none;"></div>
+          <button onclick="closeFirmowePanel(event)" style="position:absolute;top:16px;right:20px;background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.4rem;cursor:pointer;line-height:1;" aria-label="Zamknij">✕</button>
+          <p style="font-size:0.72rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">Integracje i wyjazdy firmowe</p>
+          <h3 style="font-family:'Marcellus',serif;font-size:1.4rem;color:var(--white);margin-bottom:16px;line-height:1.3;">Idealne miejsce<br/>na event firmowy</h3>
+          <div style="width:40px;height:2px;background:var(--gold);margin-bottom:20px;opacity:0.6;"></div>
+          <p style="color:rgba(255,255,255,0.78);font-size:0.86rem;line-height:1.75;margin-bottom:12px;">Nasz ośrodek to idealne miejsce do organizacji integracji firmowych, wyjazdów biznesowych oraz eventów firmowych w wyjątkowej atmosferze nad jeziorem.</p>
+          <p style="color:rgba(255,255,255,0.78);font-size:0.86rem;line-height:1.75;margin-bottom:12px;">Dysponujemy <strong style="color:var(--white);">8 komfortowymi domami</strong>, które łącznie mogą pomieścić do <strong style="color:var(--white);">70 osób</strong>. Każdy domek znajduje się na prywatnej, ogrodzonej działce o powierzchni około <strong style="color:var(--white);">1500 m²</strong>, wyposażony w <strong style="color:var(--white);">jacuzzi oraz grill</strong>, tworząc doskonałe warunki do relaksu i integracji zespołu.</p>
+          <p style="color:rgba(255,255,255,0.78);font-size:0.86rem;line-height:1.75;margin-bottom:12px;">Na terenie ośrodka znajduje się imponująca <strong style="color:var(--white);">muszla koncertowa o powierzchni 1000 m²</strong>, mogąca pomieścić nawet <strong style="color:var(--white);">1000 osób</strong>. Obiekt wyposażony jest w profesjonalną scenę, nagłośnienie oraz oświetlenie sceniczne — idealna na gale, prezentacje i wieczorne wydarzenia integracyjne.</p>
+          <p style="color:rgba(255,255,255,0.6);font-size:0.78rem;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px;">Dodatkowo oferujemy:</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 16px;margin-bottom:16px;">
+            <div style="display:flex;align-items:center;gap:7px;"><span style="color:var(--gold);font-size:0.6rem;">●</span><span style="color:rgba(255,255,255,0.75);font-size:0.83rem;">Catering</span></div>
+            <div style="display:flex;align-items:center;gap:7px;"><span style="color:var(--gold);font-size:0.6rem;">●</span><span style="color:rgba(255,255,255,0.75);font-size:0.83rem;">Atrakcje integracyjne</span></div>
+            <div style="display:flex;align-items:center;gap:7px;"><span style="color:var(--gold);font-size:0.6rem;">●</span><span style="color:rgba(255,255,255,0.75);font-size:0.83rem;">Eventy tematyczne</span></div>
+            <div style="display:flex;align-items:center;gap:7px;"><span style="color:var(--gold);font-size:0.6rem;">●</span><span style="color:rgba(255,255,255,0.75);font-size:0.83rem;">Aktywności sportowe i rekreacyjne</span></div>
+            <div style="display:flex;align-items:center;gap:7px;"><span style="color:var(--gold);font-size:0.6rem;">●</span><span style="color:rgba(255,255,255,0.75);font-size:0.83rem;">Indywidualne atrakcje na życzenie</span></div>
+          </div>
+          <p style="color:rgba(255,255,255,0.78);font-size:0.86rem;line-height:1.75;margin-bottom:8px;">Nasz ośrodek posiada <strong style="color:var(--white);">prywatną plażę</strong> nad jeziorem. Goście mają możliwość wypożyczenia sprzętu wodnego:</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px 16px;margin-bottom:12px;">
+            <div style="display:flex;align-items:center;gap:7px;"><span style="color:var(--gold);font-size:0.6rem;">●</span><span style="color:rgba(255,255,255,0.75);font-size:0.83rem;">Kajaki</span></div>
+            <div style="display:flex;align-items:center;gap:7px;"><span style="color:var(--gold);font-size:0.6rem;">●</span><span style="color:rgba(255,255,255,0.75);font-size:0.83rem;">Rowerki wodne</span></div>
+            <div style="display:flex;align-items:center;gap:7px;"><span style="color:var(--gold);font-size:0.6rem;">●</span><span style="color:rgba(255,255,255,0.75);font-size:0.83rem;">SUP-y</span></div>
+            <div style="display:flex;align-items:center;gap:7px;"><span style="color:var(--gold);font-size:0.6rem;">●</span><span style="color:rgba(255,255,255,0.75);font-size:0.83rem;">Łódki</span></div>
+          </div>
+          <p style="color:rgba(255,255,255,0.78);font-size:0.86rem;line-height:1.75;margin-bottom:12px;">Na miejscu znajduje się także boisko do <strong style="color:var(--white);">siatkówki plażowej</strong>, doskonałe podczas firmowych turniejów i aktywności integracyjnych.</p>
+          <p style="color:rgba(255,255,255,0.55);font-size:0.82rem;line-height:1.65;font-style:italic;margin-bottom:20px;">Każdy wyjazd oraz event firmowy przygotowujemy indywidualnie, dopasowując ofertę do potrzeb i oczekiwań naszych klientów. Zapraszamy do kontaktu w celu przygotowania spersonalizowanej oferty.</p>
+          <a href="#contact" style="display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:50px;background:linear-gradient(135deg,var(--gold),#a07850);color:var(--white);font-size:0.85rem;font-weight:600;letter-spacing:0.04em;text-decoration:none;width:fit-content;" onclick="closeFirmowePanel(event)">Zapytaj o ofertę →</a>
+        </div>
+
+        <!-- Urodziny info panel -->
+        <div id="urodzinyPanel" style="display:none; flex-direction:column; justify-content:center; background:var(--navy); border-radius:24px; padding:44px 40px; border-left:4px solid var(--gold); position:relative; overflow:hidden;">
+          <div style="position:absolute;top:0;right:0;width:220px;height:220px;background:radial-gradient(circle,rgba(188,150,117,0.1) 0%,transparent 70%);pointer-events:none;"></div>
+          <button onclick="closeUrodzinyPanel(event)" style="position:absolute;top:16px;right:20px;background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.4rem;cursor:pointer;line-height:1;" aria-label="Zamknij">✕</button>
+          <p style="font-size:0.72rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">Urodziny i rocznice</p>
+          <h3 style="font-family:'Marcellus',serif;font-size:1.5rem;color:var(--white);margin-bottom:20px;line-height:1.3;">Wyjątkowe urodziny<br/>dla Twojego dziecka</h3>
+          <div style="width:40px;height:2px;background:var(--gold);margin-bottom:24px;opacity:0.6;"></div>
+          <p style="color:rgba(255,255,255,0.78);font-size:0.88rem;line-height:1.75;margin-bottom:14px;">Oferujemy organizację urodzin z atrakcjami dopasowanymi do wieku i zainteresowań najmłodszych — <strong style="color:var(--white);">dmuchańce, gry ruchowe, rzuty do celu, skakanie w workach</strong> i wiele więcej.</p>
+          <p style="color:rgba(255,255,255,0.78);font-size:0.85rem;line-height:1.6;margin-bottom:8px;">Sala gier na miejscu:</p>
+          <ul style="list-style:none;padding:0;margin:0 0 14px;display:flex;flex-direction:column;gap:6px;">
+            <li style="color:rgba(255,255,255,0.75);font-size:0.85rem;display:flex;align-items:center;gap:8px;"><span style="color:var(--gold);font-size:0.65rem;">●</span> Bilard</li>
+            <li style="color:rgba(255,255,255,0.75);font-size:0.85rem;display:flex;align-items:center;gap:8px;"><span style="color:var(--gold);font-size:0.65rem;">●</span> Piłkarzyki</li>
+            <li style="color:rgba(255,255,255,0.75);font-size:0.85rem;display:flex;align-items:center;gap:8px;"><span style="color:var(--gold);font-size:0.65rem;">●</span> Ping pong</li>
+          </ul>
+          <p style="color:rgba(255,255,255,0.78);font-size:0.88rem;line-height:1.75;margin-bottom:14px;">Możliwość zorganizowania <strong style="color:var(--white);">animatorki</strong>, która zadba o zabawy, konkursy i świetną atmosferę przez całe wydarzenie.</p>
+          <p style="color:rgba(255,255,255,0.55);font-size:0.82rem;line-height:1.65;font-style:italic;">Każde przyjęcie przygotowujemy indywidualnie — zadbamy o każdy szczegół, aby dzieci bawiły się jak najlepiej.</p>
+          <a href="#contact" style="margin-top:24px;display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:50px;background:linear-gradient(135deg,var(--gold),#a07850);color:var(--white);font-size:0.85rem;font-weight:600;letter-spacing:0.04em;text-decoration:none;width:fit-content;" onclick="closeUrodzinyPanel(event)">Zapytaj o ofertę →</a>
+        </div>
+
+        <!-- Wieczor info panel -->
+        <div id="wieczorPanel" style="display:none; flex-direction:column; justify-content:center; background:var(--navy); border-radius:24px; padding:44px 40px; border-left:4px solid var(--gold); position:relative; overflow:hidden;">
+          <div style="position:absolute;top:0;right:0;width:220px;height:220px;background:radial-gradient(circle,rgba(188,150,117,0.1) 0%,transparent 70%);pointer-events:none;"></div>
+          <button onclick="closeWieczorPanel(event)" style="position:absolute;top:16px;right:20px;background:none;border:none;color:rgba(255,255,255,0.4);font-size:1.4rem;cursor:pointer;line-height:1;" aria-label="Zamknij">✕</button>
+          <p style="font-size:0.72rem;font-weight:600;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px;">Wieczór panieński / kawalerski</p>
+          <h3 style="font-family:'Marcellus',serif;font-size:1.5rem;color:var(--white);margin-bottom:20px;line-height:1.3;">Niezapomniany wieczór<br/>nad jeziorem</h3>
+          <div style="width:40px;height:2px;background:var(--gold);margin-bottom:24px;opacity:0.6;"></div>
+          <p style="color:rgba(255,255,255,0.78);font-size:0.88rem;line-height:1.75;margin-bottom:14px;">Oferujemy komfortowe domy dla <strong style="color:var(--white);">8–10 oraz 10–12 osób</strong>, położone na prywatnych, ogrodzonych działkach o powierzchni około 1500&nbsp;m², które zapewniają swobodę i prywatność.</p>
+          <p style="color:rgba(255,255,255,0.78);font-size:0.88rem;line-height:1.75;margin-bottom:14px;">Każdy domek posiada przestronny <strong style="color:var(--white);">taras z jacuzzi oraz grill</strong>. Goście mogą bezpłatnie korzystać z <strong style="color:var(--white);">prywatnej plaży</strong> i darmowo wypożyczyć sprzęt wodny.</p>
+          <p style="color:rgba(255,255,255,0.78);font-size:0.85rem;line-height:1.6;margin-bottom:8px;">Dostępne atrakcje na życzenie:</p>
+          <ul style="list-style:none;padding:0;margin:0 0 20px;display:flex;flex-direction:column;gap:6px;">
+            <li style="color:rgba(255,255,255,0.75);font-size:0.85rem;display:flex;align-items:center;gap:8px;"><span style="color:var(--gold);font-size:0.65rem;">●</span> Sesja zdjęciowa</li>
+            <li style="color:rgba(255,255,255,0.75);font-size:0.85rem;display:flex;align-items:center;gap:8px;"><span style="color:var(--gold);font-size:0.65rem;">●</span> Masaż</li>
+            <li style="color:rgba(255,255,255,0.75);font-size:0.85rem;display:flex;align-items:center;gap:8px;"><span style="color:var(--gold);font-size:0.65rem;">●</span> Catering</li>
+          </ul>
+          <p style="color:rgba(255,255,255,0.55);font-size:0.82rem;line-height:1.65;font-style:italic;">Każdy wieczór organizujemy indywidualnie, dbając o wyjątkową atmosferę i niezapomniane wspomnienia.</p>
+          <a href="#contact" style="margin-top:24px;display:inline-flex;align-items:center;gap:8px;padding:12px 28px;border-radius:50px;background:linear-gradient(135deg,var(--gold),#a07850);color:var(--white);font-size:0.85rem;font-weight:600;letter-spacing:0.04em;text-decoration:none;width:fit-content;" onclick="closeWieczorPanel(event)">Zapytaj o ofertę →</a>
         </div>
 
         <div class="events-image reveal" id="videoWrapper" onclick="toggleVideo()" style="cursor:pointer;">
@@ -2165,6 +2271,7 @@
             </div>
           </div>
         </div>
+        </div><!-- /eventsRightCol -->
       </div>
     </div>
   </section>
@@ -2799,6 +2906,50 @@
     <button id="klb-next" style="position:absolute; right:20px; background:rgba(255,255,255,0.1); border:none; color:#fff; font-size:2rem; width:52px; height:52px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center;">›</button>
     <div id="komfort-lb-counter" style="position:absolute; bottom:24px; left:50%; transform:translateX(-50%); color:rgba(255,255,255,0.5); font-size:0.85rem; letter-spacing:0.1em;"></div>
   </div>
+
+  <script>
+    function closeAllEventPanels() {
+      ['wieczorPanel','urodzinyPanel','firmowePanel','eventyPanel'].forEach(id => {
+        document.getElementById(id).style.display = 'none';
+      });
+      document.getElementById('videoWrapper').style.display = '';
+      [['cardWieczor','wieczorHint'],['cardUrodziny','urodzinyHint'],['cardFirmowe','firmoweHint'],['cardEventy','eventyHint']].forEach(([cId,hId]) => {
+        document.getElementById(cId).style.background = '';
+        document.getElementById(cId).style.borderColor = '';
+        document.getElementById(hId).textContent = 'Kliknij po więcej informacji →';
+      });
+    }
+    function openEventPanel(panelId, cardId, hintId) {
+      closeAllEventPanels();
+      document.getElementById('videoWrapper').style.display = 'none';
+      const panel = document.getElementById(panelId);
+      panel.style.display = 'flex';
+      panel.style.height = '100%';
+      document.getElementById(cardId).style.background = 'rgba(188,150,117,0.12)';
+      document.getElementById(cardId).style.borderColor = 'rgba(188,150,117,0.4)';
+      document.getElementById(hintId).textContent = 'Kliknij, aby zamknąć ✕';
+    }
+    function toggleWieczorPanel() {
+      const isOpen = document.getElementById('wieczorPanel').style.display === 'flex';
+      isOpen ? closeAllEventPanels() : openEventPanel('wieczorPanel','cardWieczor','wieczorHint');
+    }
+    function closeWieczorPanel(e) { e && e.stopPropagation(); closeAllEventPanels(); }
+    function toggleUrodzinyPanel() {
+      const isOpen = document.getElementById('urodzinyPanel').style.display === 'flex';
+      isOpen ? closeAllEventPanels() : openEventPanel('urodzinyPanel','cardUrodziny','urodzinyHint');
+    }
+    function closeUrodzinyPanel(e) { e && e.stopPropagation(); closeAllEventPanels(); }
+    function toggleFirmowePanel() {
+      const isOpen = document.getElementById('firmowePanel').style.display === 'flex';
+      isOpen ? closeAllEventPanels() : openEventPanel('firmowePanel','cardFirmowe','firmoweHint');
+    }
+    function closeFirmowePanel(e) { e && e.stopPropagation(); closeAllEventPanels(); }
+    function toggleEventyPanel() {
+      const isOpen = document.getElementById('eventyPanel').style.display === 'flex';
+      isOpen ? closeAllEventPanels() : openEventPanel('eventyPanel','cardEventy','eventyHint');
+    }
+    function closeEventyPanel(e) { e && e.stopPropagation(); closeAllEventPanels(); }
+  </script>
 
   <script>
     const KOMFORT = [
