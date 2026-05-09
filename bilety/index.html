@@ -660,26 +660,37 @@
         <h2 style="font-family:'Marcellus',serif; font-size:2.2rem; color:var(--white); letter-spacing:-0.01em;">Galeria z poprzednich koncertów</h2>
       </div>
 
-      <div style="display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:auto auto; gap:12px;">
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px;">
 
-        <div style="grid-column:1/2; grid-row:1/2; border-radius:14px; overflow:hidden; aspect-ratio:3/2; cursor:pointer;" onclick="openLightbox(0)">
+        <div style="border-radius:14px; overflow:hidden; aspect-ratio:3/2; cursor:pointer;" onclick="openLightbox(0)">
           <img src="gallery/concert-1.jpg" alt="Koncert 1" style="width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
         </div>
-
-        <div style="grid-column:2/3; grid-row:1/3; border-radius:14px; overflow:hidden; cursor:pointer;" onclick="openLightbox(1)">
+        <div style="border-radius:14px; overflow:hidden; aspect-ratio:3/2; cursor:pointer;" onclick="openLightbox(1)">
           <img src="gallery/concert-2.jpg" alt="Koncert 2" style="width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
         </div>
-
-        <div style="grid-column:3/4; grid-row:1/2; border-radius:14px; overflow:hidden; aspect-ratio:3/2; cursor:pointer;" onclick="openLightbox(2)">
+        <div style="border-radius:14px; overflow:hidden; aspect-ratio:3/2; cursor:pointer;" onclick="openLightbox(2)">
           <img src="gallery/concert-3.jpg" alt="Koncert 3" style="width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
         </div>
-
-        <div style="grid-column:1/2; grid-row:2/3; border-radius:14px; overflow:hidden; aspect-ratio:3/2; cursor:pointer;" onclick="openLightbox(3)">
+        <div style="border-radius:14px; overflow:hidden; aspect-ratio:3/2; cursor:pointer;" onclick="openLightbox(3)">
           <img src="gallery/concert-4.jpg" alt="Koncert 4" style="width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
         </div>
-
-        <div style="grid-column:3/4; grid-row:2/3; border-radius:14px; overflow:hidden; aspect-ratio:3/2; cursor:pointer;" onclick="openLightbox(4)">
+        <div style="border-radius:14px; overflow:hidden; aspect-ratio:3/2; cursor:pointer;" onclick="openLightbox(4)">
           <img src="gallery/concert-5.jpg" alt="Koncert 5" style="width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
+        </div>
+        <div style="border-radius:14px; overflow:hidden; aspect-ratio:3/2; cursor:pointer;" onclick="openLightbox(5)">
+          <img src="gallery/concert-6.jpg" alt="Koncert 6" style="width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
+        </div>
+        <div style="border-radius:14px; overflow:hidden; aspect-ratio:3/2; cursor:pointer;" onclick="openLightbox(6)">
+          <img src="gallery/concert-7.jpg" alt="Koncert 7" style="width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
+        </div>
+        <div style="border-radius:14px; overflow:hidden; aspect-ratio:3/2; cursor:pointer;" onclick="openLightbox(7)">
+          <img src="gallery/concert-8.jpg" alt="Koncert 8" style="width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
+        </div>
+        <div style="border-radius:14px; overflow:hidden; aspect-ratio:3/2; cursor:pointer; position:relative;" onclick="openLightbox(8)">
+          <img src="gallery/concert-9.jpg" alt="Koncert 9" style="width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.4s cubic-bezier(0.25,0.46,0.45,0.94);" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'"/>
+          <div style="position:absolute; inset:0; background:rgba(8,25,46,0.65); display:flex; align-items:center; justify-content:center; pointer-events:none;">
+            <span style="color:#fff; font-family:'Marcellus',serif; font-size:1.1rem; letter-spacing:0.05em;">+62 zdjęcia →</span>
+          </div>
         </div>
 
       </div>
@@ -705,7 +716,7 @@
   </div>
 
   <script>
-    const galleryImgs = ['gallery/concert-1.jpg','gallery/concert-2.jpg','gallery/concert-3.jpg','gallery/concert-4.jpg','gallery/concert-5.jpg'];
+    const galleryImgs = ['gallery/concert-1.jpg','gallery/concert-2.jpg','gallery/concert-3.jpg','gallery/concert-4.jpg','gallery/concert-5.jpg','gallery/concert-6.jpg','gallery/concert-7.jpg','gallery/concert-8.jpg','gallery/concert-9.jpg','gallery/concert-10.jpg','gallery/concert-11.jpg','gallery/concert-12.jpg','gallery/concert-13.jpg','gallery/concert-14.jpg','gallery/concert-15.jpg','gallery/concert-16.jpg','gallery/concert-17.jpg','gallery/concert-18.jpg','gallery/concert-19.jpg','gallery/concert-20.jpg','gallery/concert-21.jpg','gallery/concert-22.jpg','gallery/concert-23.jpg','gallery/concert-24.jpg','gallery/concert-25.jpg','gallery/concert-26.jpg','gallery/concert-27.jpg','gallery/concert-28.jpg','gallery/concert-29.jpg','gallery/concert-30.jpg','gallery/concert-31.jpg','gallery/concert-32.jpg','gallery/concert-33.jpg','gallery/concert-34.jpg','gallery/concert-35.jpg','gallery/concert-36.jpg','gallery/concert-37.jpg','gallery/concert-38.jpg','gallery/concert-39.jpg','gallery/concert-40.jpg','gallery/concert-41.jpg','gallery/concert-42.jpg','gallery/concert-43.jpg','gallery/concert-44.jpg','gallery/concert-45.jpg','gallery/concert-46.jpg','gallery/concert-47.jpg','gallery/concert-48.jpg','gallery/concert-49.jpg','gallery/concert-50.jpg','gallery/concert-51.jpg','gallery/concert-52.jpg','gallery/concert-53.jpg','gallery/concert-54.jpg','gallery/concert-55.jpg','gallery/concert-56.jpg','gallery/concert-57.jpg','gallery/concert-58.jpg','gallery/concert-59.jpg','gallery/concert-60.jpg','gallery/concert-61.jpg','gallery/concert-62.jpg','gallery/concert-63.jpg','gallery/concert-64.jpg','gallery/concert-65.jpg','gallery/concert-66.jpg','gallery/concert-67.jpg','gallery/concert-68.jpg','gallery/concert-69.jpg','gallery/concert-70.jpg','gallery/concert-71.jpg'];
     let currentIdx = 0;
 
     function openLightbox(idx) {
