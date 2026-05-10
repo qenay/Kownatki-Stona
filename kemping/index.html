@@ -510,6 +510,93 @@
       color: #15803d; letter-spacing: 0.02em;
     }
 
+    /* ─── Send inquiry button ──────────────────────────────────────────── */
+    .cp-send-btn {
+      display: none; width: 100%; margin-top: 14px;
+      align-items: center; justify-content: center; gap: 9px;
+      padding: 13px 18px; border-radius: 12px;
+      background: var(--navy); color: var(--white);
+      border: none; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
+      font-weight: 700; letter-spacing: 0.04em;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 0 4px 20px rgba(14,36,68,0.25);
+    }
+    .cp-send-btn:hover { background: #0a1d3a; transform: translateY(-1px); box-shadow: 0 8px 28px rgba(14,36,68,0.32); }
+    .cp-send-btn:active { transform: translateY(0); }
+    .cp-send-btn svg { flex-shrink: 0; color: var(--gold); }
+
+    /* ─── Inquiry modal (desktop) ───────────────────────────────────────── */
+    #inquiryModal {
+      display: none; position: fixed; inset: 0; z-index: 9000;
+      background: rgba(10,20,40,0.65); backdrop-filter: blur(6px);
+      align-items: center; justify-content: center; padding: 24px;
+    }
+    #inquiryModal.open { display: flex; }
+    .inq-card {
+      background: var(--white); border-radius: 24px; width: 100%; max-width: 500px;
+      box-shadow: 0 24px 80px rgba(14,36,68,0.35), 0 4px 16px rgba(14,36,68,0.12);
+      overflow: hidden; animation: inqIn 0.3s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes inqIn {
+      from { opacity: 0; transform: scale(0.92) translateY(16px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+    .inq-head {
+      background: var(--navy); padding: 22px 26px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .inq-head-title {
+      font-family: 'Marcellus', serif; font-size: 1.05rem; color: var(--white);
+      display: flex; align-items: center; gap: 10px;
+    }
+    .inq-head-title svg { color: var(--gold); }
+    .inq-close {
+      background: none; border: none; cursor: pointer; color: rgba(255,255,255,0.35);
+      display: flex; padding: 4px; border-radius: 6px;
+      transition: color 0.2s, background 0.2s;
+    }
+    .inq-close:hover { color: var(--white); background: rgba(255,255,255,0.1); }
+    .inq-body { padding: 24px 26px; }
+    .inq-label {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 8px;
+    }
+    .inq-msg {
+      width: 100%; min-height: 180px; max-height: 260px; resize: none;
+      border: 1.5px solid rgba(14,36,68,0.15); border-radius: 12px;
+      padding: 14px 16px; font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem; color: var(--text); line-height: 1.7;
+      background: rgba(248,247,245,0.8); outline: none;
+    }
+    .inq-copy-btn {
+      width: 100%; margin-top: 10px; padding: 13px;
+      background: var(--navy); color: var(--white); border: none;
+      border-radius: 12px; cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 700;
+      letter-spacing: 0.04em; transition: background 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .inq-copy-btn:hover { background: #0a1d3a; }
+    .inq-copy-btn.copied { background: #15803d; }
+    .inq-divider { height: 1px; background: rgba(14,36,68,0.08); margin: 20px 0; }
+    .inq-contact-title {
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 12px;
+    }
+    .inq-contact-rows { display: flex; flex-direction: column; gap: 10px; }
+    .inq-contact-row {
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(248,247,245,0.8); border-radius: 10px;
+      padding: 10px 14px;
+    }
+    .inq-contact-row svg { color: var(--gold); flex-shrink: 0; }
+    .inq-contact-row a {
+      font-size: 0.88rem; font-weight: 600; color: var(--navy);
+      text-decoration: none;
+    }
+    .inq-contact-row a:hover { color: var(--gold); }
+
     .item-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
     .item-stepper {
       display: none; align-items: center;
@@ -811,6 +898,10 @@
               <span class="cp-total-val" id="cpTotal">0 zł</span>
             </div>
             <p class="cp-foot-note">* Orientacyjny koszt pobytu. Ostateczna cena jest ustalana w recepcji.</p>
+            <button class="cp-send-btn" id="cpSendBtn" onclick="sendInquiry()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              Wyślij zapytanie
+            </button>
           </div>
         </div>
       </div>
@@ -823,6 +914,41 @@
   <footer class="site-footer">
     <p>© 2025 Ośrodek Plaża Kownatki &nbsp;·&nbsp; Kownatki 19A, 13-124 Kozłowo &nbsp;·&nbsp; <a href="/">plazakownatki.pl</a></p>
   </footer>
+
+  <!-- ─── Inquiry modal ──────────────────────────────────────────────────── -->
+  <div id="inquiryModal" onclick="if(event.target===this)closeModal()">
+    <div class="inq-card">
+      <div class="inq-head">
+        <div class="inq-head-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Wyślij zapytanie
+        </div>
+        <button class="inq-close" onclick="closeModal()" aria-label="Zamknij">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="inq-body">
+        <div class="inq-label">Gotowa wiadomość — skopiuj i wyślij</div>
+        <textarea class="inq-msg" id="inqMsg" readonly></textarea>
+        <button class="inq-copy-btn" id="inqCopyBtn" onclick="copyMessage()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+          Kopiuj wiadomość
+        </button>
+        <div class="inq-divider"></div>
+        <div class="inq-contact-title">Skontaktuj się z nami</div>
+        <div class="inq-contact-rows">
+          <div class="inq-contact-row">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.16 6.16l.95-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <a href="tel:+48604104405">604 104 405</a>
+          </div>
+          <div class="inq-contact-row">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            <a href="mailto:osrodekplazakownatki@gmail.com">osrodekplazakownatki@gmail.com</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <script>
     // ─── Calculator ────────────────────────────────────────────────────────
@@ -918,7 +1044,85 @@
       }
 
       totalEl.textContent = total + ' zł';
+
+      // Show/hide send button
+      const sendBtn = document.getElementById('cpSendBtn');
+      sendBtn.style.display = (rows.length > 0) ? 'flex' : 'none';
     }
+
+    // ─── Inquiry message ──────────────────────────────────────────────────
+    function generateMessage() {
+      const rows = [];
+      let perDay = 0;
+      document.querySelectorAll('#cennik li[data-price]').forEach(li => {
+        const price = parseInt(li.dataset.price) || 0;
+        const name = li.dataset.name;
+        const qty = parseInt(li.querySelector('.step-val').textContent) || 0;
+        if (qty > 0) { perDay += price * qty; rows.push({ name, qty, price, sub: price * qty }); }
+      });
+
+      const hasDiscount = calcDays >= 7;
+      const gross = perDay * calcDays;
+      const discountAmt = hasDiscount ? Math.round(gross * 0.05) : 0;
+      const total = gross - discountAmt;
+
+      let msg = 'Dzień dobry,\n\nChciałbym/Chciałabym zarezerwować miejsce kempingowe w Ośrodku Plaża Kownatki.\n\n';
+      msg += 'Kosztorys pobytu:\n';
+      msg += '• Liczba dni: ' + calcDays + '\n';
+      rows.forEach(r => {
+        if (r.price === 0) {
+          msg += '• ' + r.name + ': ' + r.qty + ' szt. (bezpłatnie)\n';
+        } else {
+          msg += '• ' + r.name + ': ' + r.qty + ' × ' + r.price + ' zł = ' + r.sub + ' zł/dobę\n';
+        }
+      });
+      msg += '\nKoszt za dobę: ' + perDay + ' zł\n';
+      if (calcDays > 1) {
+        msg += 'Łącznie za ' + calcDays + ' dni: ' + gross + ' zł\n';
+      }
+      if (hasDiscount) {
+        msg += 'Zniżka 5% (pobyt 7+ dni): −' + discountAmt + ' zł\n';
+      }
+      msg += 'Do zapłaty: ' + total + ' zł\n';
+      msg += '\nProszę o potwierdzenie dostępności i szczegóły rezerwacji.\n\nPozdrawiam';
+      return msg;
+    }
+
+    function sendInquiry() {
+      const msg = generateMessage();
+      const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+      if (isMobile) {
+        window.location.href = 'sms:+48604104405?body=' + encodeURIComponent(msg);
+      } else {
+        document.getElementById('inqMsg').value = msg;
+        const btn = document.getElementById('inqCopyBtn');
+        btn.classList.remove('copied');
+        btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Kopiuj wiadomość';
+        document.getElementById('inquiryModal').classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeModal() {
+      document.getElementById('inquiryModal').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    function copyMessage() {
+      const ta = document.getElementById('inqMsg');
+      navigator.clipboard.writeText(ta.value).catch(() => {
+        ta.select(); document.execCommand('copy');
+      });
+      const btn = document.getElementById('inqCopyBtn');
+      btn.classList.add('copied');
+      btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg> Skopiowano!';
+      setTimeout(() => {
+        btn.classList.remove('copied');
+        btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Kopiuj wiadomość';
+      }, 2500);
+    }
+
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 
     // Hamburger
     const hamburger = document.getElementById('hamburger');
