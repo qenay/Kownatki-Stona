@@ -597,6 +597,24 @@
     }
     .inq-contact-row a:hover { color: var(--gold); }
 
+    /* Season offer add button */
+    .sezon-add-btn {
+      margin-top: 32px; display: inline-flex; align-items: center; gap: 9px;
+      padding: 13px 28px; border-radius: 50px;
+      border: 1.5px solid rgba(188,150,117,0.5); background: transparent;
+      color: var(--gold); cursor: pointer;
+      font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 700;
+      letter-spacing: 0.04em;
+      transition: background 0.25s, border-color 0.25s, color 0.25s, transform 0.15s;
+      position: relative; z-index: 1;
+    }
+    .sezon-add-btn:hover { background: rgba(188,150,117,0.12); border-color: var(--gold); transform: translateY(-1px); }
+    .sezon-add-btn.active { background: var(--gold); border-color: var(--gold); color: var(--navy); }
+    .sezon-add-btn.active:hover { background: var(--gold-lt); border-color: var(--gold-lt); }
+    .sezon-btn-icon-check { display: none; }
+    .sezon-add-btn.active .sezon-btn-icon-add { display: none; }
+    .sezon-add-btn.active .sezon-btn-icon-check { display: block; }
+
     .item-right { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
     .item-stepper {
       display: none; align-items: center;
@@ -821,18 +839,11 @@
         <p class="cennik-sezon-desc">Maj – Wrzesień &nbsp;·&nbsp; Miejsce pod przyczepę &nbsp;·&nbsp; Samochód &nbsp;·&nbsp; Prąd &nbsp;·&nbsp; 4 osoby</p>
         <div class="cennik-sezon-price">6 000 zł</div>
         <p class="cennik-sezon-unit">za sezon</p>
-        <div class="cennik-sezon-divider"></div>
-        <div class="cennik-sezon-daily">
-          <div class="cennik-daily-item">
-            <span>Pobyt dzienny</span>
-            <span><strong>10 zł</strong> / os.</span>
-          </div>
-          <div class="cennik-daily-sep"></div>
-          <div class="cennik-daily-item">
-            <span>Dziecko pow. 3 lat</span>
-            <span><strong>5 zł</strong></span>
-          </div>
-        </div>
+        <button class="sezon-add-btn" id="sezonAddBtn" onclick="toggleSeason()">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sezon-btn-icon-add"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sezon-btn-icon-check"><polyline points="20 6 9 17 4 12"/></svg>
+          <span class="sezon-btn-text">Dodaj do kosztorysu</span>
+        </button>
       </div>
 
       <!-- Contact strip -->
@@ -954,6 +965,7 @@
     // ─── Calculator ────────────────────────────────────────────────────────
     let calcActive = false;
     let calcDays = 1;
+    let seasonActive = false;
 
     function toggleCalc() {
       calcActive = !calcActive;
@@ -965,7 +977,20 @@
         });
         calcDays = 1;
         document.getElementById('cpDaysVal').textContent = '1';
+        seasonActive = false;
+        const sb = document.getElementById('sezonAddBtn');
+        sb.classList.remove('active');
+        sb.querySelector('.sezon-btn-text').textContent = 'Dodaj do kosztorysu';
       }
+      renderCalcPanel();
+    }
+
+    function toggleSeason() {
+      seasonActive = !seasonActive;
+      const btn = document.getElementById('sezonAddBtn');
+      btn.classList.toggle('active', seasonActive);
+      btn.querySelector('.sezon-btn-text').textContent = seasonActive ? 'Dodano do kosztorysu' : 'Dodaj do kosztorysu';
+      if (seasonActive && !calcActive) { calcActive = true; document.getElementById('calcToggleBtn').classList.add('active'); document.getElementById('cennik').classList.add('calc-mode'); }
       renderCalcPanel();
     }
 
@@ -989,6 +1014,10 @@
       });
       calcDays = 1;
       document.getElementById('cpDaysVal').textContent = '1';
+      seasonActive = false;
+      const sb = document.getElementById('sezonAddBtn');
+      sb.classList.remove('active');
+      sb.querySelector('.sezon-btn-text').textContent = 'Dodaj do kosztorysu';
       renderCalcPanel();
     }
 
@@ -1001,7 +1030,8 @@
 
       let perDay = 0;
       const rows = [];
-      document.querySelectorAll('#cennik li[data-price]').forEach(li => {
+      if (seasonActive) rows.push({ name: 'Wynajem parceli na cały sezon', qty: 1, price: 6000, sub: 6000, fixed: true });
+      document.querySelectorAll('#cennik [data-price]').forEach(li => {
         const price = parseInt(li.dataset.price) || 0;
         const name = li.dataset.name;
         const qty = parseInt(li.querySelector('.step-val').textContent) || 0;
@@ -1016,7 +1046,7 @@
           <div class="cp-row">
             <div class="cp-row-left">
               <div class="cp-row-name">${r.name}</div>
-              <div class="cp-row-detail">${r.qty} × ${r.price === 0 ? 'bezpłatnie' : r.price + ' zł'}</div>
+              <div class="cp-row-detail">${r.fixed ? 'oferta sezonowa' : (r.qty + ' × ' + (r.price === 0 ? 'bezpłatnie' : r.price + ' zł'))}</div>
             </div>
             ${r.price === 0
               ? '<span class="cp-row-free">bezpłatnie</span>'
@@ -1024,23 +1054,23 @@
           </div>`).join('');
       }
 
-      // Discount and total
+      // Discount and total (discount only on per-day items)
       const hasDiscount = calcDays >= 7;
       discountBanner.style.display = hasDiscount ? 'flex' : 'none';
 
       const gross = perDay * calcDays;
       const discountAmt = hasDiscount ? Math.round(gross * 0.05) : 0;
-      const total = gross - discountAmt;
+      const total = (seasonActive ? 6000 : 0) + gross - discountAmt;
 
       if (calcDays > 1 && perDay > 0) {
         let txt = perDay + ' zł/dobę × ' + calcDays + ' dni = ' + gross + ' zł';
         if (hasDiscount) txt += '<br><span style="color:#15803d;font-weight:700;">− ' + discountAmt + ' zł (zniżka 5%)</span>';
         breakdown.innerHTML = txt;
         breakdown.style.display = 'block';
-        totalLbl.textContent = 'Łącznie za ' + calcDays + ' dni';
+        totalLbl.textContent = seasonActive ? 'Łącznie' : 'Łącznie za ' + calcDays + ' dni';
       } else {
         breakdown.style.display = 'none';
-        totalLbl.textContent = calcDays === 1 ? 'Łącznie / dobę' : 'Łącznie za ' + calcDays + ' dni';
+        totalLbl.textContent = (calcDays === 1 && !seasonActive) ? 'Łącznie / dobę' : 'Łącznie';
       }
 
       totalEl.textContent = total + ' zł';
@@ -1052,9 +1082,10 @@
 
     // ─── Inquiry message ──────────────────────────────────────────────────
     function generateMessage() {
-      const rows = [];
       let perDay = 0;
-      document.querySelectorAll('#cennik li[data-price]').forEach(li => {
+      const rows = [];
+      if (seasonActive) rows.push({ name: 'Wynajem parceli na cały sezon', qty: 1, price: 6000, sub: 6000, fixed: true });
+      document.querySelectorAll('#cennik [data-price]').forEach(li => {
         const price = parseInt(li.dataset.price) || 0;
         const name = li.dataset.name;
         const qty = parseInt(li.querySelector('.step-val').textContent) || 0;
@@ -1064,25 +1095,24 @@
       const hasDiscount = calcDays >= 7;
       const gross = perDay * calcDays;
       const discountAmt = hasDiscount ? Math.round(gross * 0.05) : 0;
-      const total = gross - discountAmt;
+      const total = (seasonActive ? 6000 : 0) + gross - discountAmt;
 
       let msg = 'Dzień dobry,\n\nChciałbym/Chciałabym zarezerwować miejsce kempingowe w Ośrodku Plaża Kownatki.\n\n';
       msg += 'Kosztorys pobytu:\n';
-      msg += '• Liczba dni: ' + calcDays + '\n';
-      rows.forEach(r => {
+      if (seasonActive) msg += '• Wynajem parceli na cały sezon: 6000 zł\n';
+      if (!seasonActive) msg += '• Liczba dni: ' + calcDays + '\n';
+      rows.filter(r => !r.fixed).forEach(r => {
         if (r.price === 0) {
           msg += '• ' + r.name + ': ' + r.qty + ' szt. (bezpłatnie)\n';
         } else {
           msg += '• ' + r.name + ': ' + r.qty + ' × ' + r.price + ' zł = ' + r.sub + ' zł/dobę\n';
         }
       });
-      msg += '\nKoszt za dobę: ' + perDay + ' zł\n';
-      if (calcDays > 1) {
+      if (!seasonActive && calcDays > 1 && perDay > 0) {
+        msg += '\nKoszt za dobę: ' + perDay + ' zł\n';
         msg += 'Łącznie za ' + calcDays + ' dni: ' + gross + ' zł\n';
       }
-      if (hasDiscount) {
-        msg += 'Zniżka 5% (pobyt 7+ dni): −' + discountAmt + ' zł\n';
-      }
+      if (hasDiscount) msg += 'Zniżka 5% (pobyt 7+ dni): −' + discountAmt + ' zł\n';
       msg += 'Do zapłaty: ' + total + ' zł\n';
       msg += '\nProszę o potwierdzenie dostępności i szczegóły rezerwacji.\n\nPozdrawiam';
       return msg;
