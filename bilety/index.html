@@ -73,14 +73,15 @@
       border: 2px solid rgba(255,255,255,0.38); border-radius: 9999px; padding: 4px;
     }
     .navbar-nav a {
-      display: block; font-size: 0.875rem; font-weight: 500; color: #fff;
-      padding: 8px 18px; border-radius: 9999px; white-space: nowrap;
+      display: block; font-size: 0.8rem; font-weight: 500; color: #fff;
+      padding: 7px 13px; border-radius: 9999px; white-space: nowrap;
       transition: background var(--transition);
     }
     .navbar-nav a:hover { background: rgba(255,255,255,0.12); }
     .navbar-nav a.active { background: var(--gold); }
 
-    .navbar-cta { margin-left: 16px; display: flex; gap: 10px; align-items: center; }
+    .navbar-cta { margin-left: 10px; display: flex; gap: 6px; align-items: center; }
+    .navbar-cta .btn { padding: 8px 13px; font-size: 0.75rem; }
 
     .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; }
     .hamburger span { display: block; width: 26px; height: 2px; background: var(--white); border-radius: 2px; transition: var(--transition); }
@@ -373,6 +374,7 @@
 
         <div class="navbar-cta">
           <a href="/#contact" class="btn btn-primary">Zarezerwuj pobyt</a>
+          <a href="/kemping/" class="btn btn-primary">Zarezerwuj kemping</a>
           <a href="/bilety/" class="btn btn-outline-white active" style="white-space:nowrap;">🎟 Kup bilety</a>
         </div>
 
@@ -394,6 +396,7 @@
     <a href="/#contact" class="nav-link-mobile">Kontakt</a>
     <a href="/bilety/" class="nav-link-mobile" style="color:var(--gold);font-weight:700;">🎟 Kup bilety</a>
     <a href="/#contact" class="btn btn-primary">Zarezerwuj pobyt</a>
+    <a href="/kemping/" class="btn btn-primary">Zarezerwuj kemping</a>
   </div>
 
   <!-- ─── PAGE HERO ─────────────────────────────────────────────────────── -->
