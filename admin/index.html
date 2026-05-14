@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel administracyjny | Plaża Kownatki</title>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --navy:#0e2444; --navy2:#162f57;
+  --gold:#bc9675; --gold-lt:#d4b08f;
+  --cream:#f8f5f2; --cream2:#e8e0d8;
+  --green:#16a34a; --green-dk:#15803d;
+  --red:#dc2626;   --red-dk:#b91c1c;
+  --text:#1a1a1a;  --muted:#6b7280;
+  --radius:14px;
+  --shadow:0 4px 24px rgba(14,36,68,.10);
+  --shadow-lg:0 12px 48px rgba(14,36,68,.18);
+}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--text);min-height:100vh;}
+
+/* ── LOGIN ── */
+#login-screen{
+  position:fixed;inset:0;background:var(--navy);
+  display:flex;align-items:center;justify-content:center;z-index:999;
+}
+#login-screen.hidden{display:none;}
+.login-box{
+  background:#fff;border-radius:20px;padding:52px 44px;
+  box-shadow:var(--shadow-lg);text-align:center;width:min(400px,92vw);
+}
+.login-logo{font-family:'Marcellus',serif;font-size:1.4rem;color:var(--navy);margin-bottom:6px;}
+.login-logo span{color:var(--gold);}
+.login-sub{font-size:.82rem;color:var(--muted);margin-bottom:32px;}
+.login-field{margin-bottom:12px;text-align:left;}
+.login-field label{display:block;font-size:.78rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;}
+.login-field input{
+  width:100%;padding:12px 14px;border:1.5px solid var(--cream2);
+  border-radius:10px;font-family:'DM Sans',sans-serif;font-size:.95rem;outline:none;
+  transition:border-color .2s;
+}
+.login-field input:focus{border-color:var(--gold);}
+.login-btn{
+  width:100%;margin-top:8px;padding:14px;background:var(--navy);color:#fff;
+  border:none;border-radius:10px;font-family:'DM Sans',sans-serif;
+  font-size:.95rem;font-weight:600;cursor:pointer;transition:background .2s;
+}
+.login-btn:hover{background:var(--navy2);}
+.login-err{color:var(--red);font-size:.82rem;margin-top:10px;min-height:18px;}
+
+/* ── LAYOUT ── */
+header{
+  background:var(--navy);padding:16px 32px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.hdr-logo{font-family:'Marcellus',serif;font-size:1.1rem;color:#fff;}
+.hdr-logo span{color:var(--gold);}
+.hdr-tag{font-size:.78rem;color:rgba(255,255,255,.5);letter-spacing:.08em;text-transform:uppercase;}
+.hdr-logout{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  color:rgba(255,255,255,.8);padding:7px 16px;border-radius:8px;
+  font-family:'DM Sans',sans-serif;font-size:.82rem;cursor:pointer;transition:background .2s;
+}
+.hdr-logout:hover{background:rgba(255,255,255,.18);}
+
+main{max-width:960px;margin:0 auto;padding:40px 24px;}
+
+h1{font-family:'Marcellus',serif;font-size:1.6rem;color:var(--navy);margin-bottom:6px;}
+.page-sub{color:var(--muted);font-size:.88rem;margin-bottom:32px;}
+
+/* ── CARDS ── */
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;}
+@media(max-width:640px){.grid{grid-template-columns:1fr;}}
+.card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+.card-head{background:var(--navy);padding:14px 20px;color:#fff;font-family:'Marcellus',serif;font-size:.95rem;display:flex;align-items:center;gap:10px;}
+.card-body{padding:20px;}
+
+/* ── FORM ── */
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:.78rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;}
+.field select,.field input[type=date]{
+  width:100%;padding:9px 12px;border:1.5px solid var(--cream2);
+  border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.88rem;
+  background:var(--cream);outline:none;transition:border-color .2s;
+}
+.field select:focus,.field input:focus{border-color:var(--gold);}
+.btn-row{display:flex;gap:10px;margin-top:6px;flex-wrap:wrap;}
+.btn-confirm{flex:1;padding:11px 16px;background:var(--green);color:#fff;border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;transition:filter .18s;}
+.btn-cancel {flex:1;padding:11px 16px;background:var(--red);  color:#fff;border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;transition:filter .18s;}
+.btn-confirm:hover,.btn-cancel:hover{filter:brightness(.9);}
+
+/* ── RESERVATION LIST ── */
+.res-list{max-height:260px;overflow-y:auto;border:1px solid var(--cream2);border-radius:9px;background:var(--cream);}
+.res-item{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid var(--cream2);font-size:.84rem;color:var(--navy);}
+.res-item:last-child{border-bottom:none;}
+.res-item strong{font-weight:600;}
+.res-del{background:none;border:none;color:var(--red);font-size:1rem;cursor:pointer;padding:2px 6px;border-radius:5px;transition:background .15s;line-height:1;}
+.res-del:hover{background:rgba(220,38,38,.08);}
+.res-empty{padding:14px;color:var(--muted);font-size:.84rem;text-align:center;}
+
+/* ── BACKUP ── */
+.backup-row{display:flex;gap:12px;flex-wrap:wrap;}
+.btn-backup{
+  flex:1;padding:11px 16px;background:#fff;color:var(--navy);
+  border:1.5px solid var(--cream2);border-radius:9px;font-family:'DM Sans',sans-serif;
+  font-size:.84rem;font-weight:600;cursor:pointer;transition:border-color .2s,background .2s;
+  display:flex;align-items:center;justify-content:center;gap:7px;
+}
+.btn-backup:hover{border-color:var(--gold);background:var(--cream);}
+
+/* ── TOAST ── */
+.toast-wrap{position:fixed;bottom:28px;right:28px;display:flex;flex-direction:column;gap:10px;z-index:9999;}
+.toast{background:var(--navy);color:#fff;padding:12px 20px;border-radius:10px;font-size:.88rem;font-weight:500;box-shadow:var(--shadow-lg);animation:toastIn .22s ease;max-width:320px;}
+@keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">Plaża <span>Kownatki</span></div>
+    <div class="login-sub">Panel administracyjny — zaloguj się</div>
+    <div class="login-field">
+      <label>Adres e-mail</label>
+      <input type="email" id="l-email" placeholder="twoj@email.pl" autocomplete="email">
+    </div>
+    <div class="login-field">
+      <label>Hasło</label>
+      <input type="password" id="l-pw" placeholder="••••••" autocomplete="current-password">
+    </div>
+    <button class="login-btn" id="l-btn">Zaloguj się</button>
+    <div class="login-err" id="l-err"></div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div>
+    <div class="hdr-logo">Plaża <span>Kownatki</span></div>
+    <div class="hdr-tag">Panel administracyjny</div>
+  </div>
+  <button class="hdr-logout" id="btn-logout">Wyloguj</button>
+</header>
+
+<!-- MAIN -->
+<main>
+  <h1>Zarządzanie rezerwacjami</h1>
+  <p class="page-sub">Zaznaczaj zajęte i wolne terminy dla każdego domku.</p>
+
+  <div class="grid">
+    <!-- Dodaj / anuluj -->
+    <div class="card">
+      <div class="card-head">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="7" width="12" height="8" rx="2" stroke="rgba(255,255,255,.8)" stroke-width="1.6"/><path d="M5 7V5a3 3 0 016 0v2" stroke="rgba(255,255,255,.8)" stroke-width="1.6" stroke-linecap="round"/></svg>
+        Dodaj / anuluj rezerwację
+      </div>
+      <div class="card-body">
+        <div class="field">
+          <label>Domek</label>
+          <select id="cabin-sel">
+            <option value="1">Domek 1 — Komfort</option>
+            <option value="2">Domek 2 — Komfort</option>
+            <option value="3">Domek 3 — Komfort</option>
+            <option value="4">Domek 4 — Komfort</option>
+            <option value="5">Domek 5 — Komfort</option>
+            <option value="6">Domek 6 — VIP</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Data przyjazdu</label>
+          <input type="date" id="date-from">
+        </div>
+        <div class="field">
+          <label>Data wyjazdu (włącznie)</label>
+          <input type="date" id="date-to">
+        </div>
+        <div class="btn-row">
+          <button class="btn-confirm" id="btn-confirm">✅ Zatwierdź rezerwację</button>
+          <button class="btn-cancel"  id="btn-cancel" >❌ Anuluj rezerwację</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lista rezerwacji -->
+    <div class="card">
+      <div class="card-head">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 4h10M3 8h10M3 12h6" stroke="rgba(255,255,255,.8)" stroke-width="1.6" stroke-linecap="round"/></svg>
+        Lista rezerwacji
+      </div>
+      <div class="card-body">
+        <div class="field">
+          <label>Pokaż domek</label>
+          <select id="view-cabin">
+            <option value="1">Domek 1</option>
+            <option value="2">Domek 2</option>
+            <option value="3">Domek 3</option>
+            <option value="4">Domek 4</option>
+            <option value="5">Domek 5</option>
+            <option value="6">Domek 6</option>
+          </select>
+        </div>
+        <div class="res-list" id="res-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Kopia zapasowa -->
+  <div class="card">
+    <div class="card-head">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 7l3 3 3-3" stroke="rgba(255,255,255,.8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12h12" stroke="rgba(255,255,255,.8)" stroke-width="1.6" stroke-linecap="round"/></svg>
+      Kopia zapasowa danych
+    </div>
+    <div class="card-body">
+      <p style="font-size:.84rem;color:var(--muted);margin-bottom:16px;">Pobierz kopię danych rezerwacji lub wczytaj wcześniej zapisany plik, aby przywrócić dane.</p>
+      <div class="backup-row">
+        <button class="btn-backup" id="btn-export">💾 Pobierz kopię zapasową</button>
+        <button class="btn-backup" id="btn-import-trigger">📂 Wczytaj kopię zapasową</button>
+        <input type="file" id="import-file" accept=".json" style="display:none;">
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script>
+'use strict';
+
+const ADMIN_EMAIL    = 'janek.bialy2000@gmail.com';
+const ADMIN_PASSWORD = 'fado';
+const STORAGE_KEY    = 'pk-reservations';
+const CABIN_COUNT    = 6;
+
+/* ── AUTH ── */
+const loginScreen = document.getElementById('login-screen');
+const lEmail = document.getElementById('l-email');
+const lPw    = document.getElementById('l-pw');
+const lErr   = document.getElementById('l-err');
+
+function checkSession(){
+  if(sessionStorage.getItem('pk_admin')==='1') showPanel();
+}
+function showPanel(){
+  loginScreen.classList.add('hidden');
+  lEmail.value=''; lPw.value='';
+  renderList();
+}
+function doLogin(){
+  const email=lEmail.value.trim().toLowerCase();
+  const pw=lPw.value;
+  if(email===ADMIN_EMAIL && pw===ADMIN_PASSWORD){
+    sessionStorage.setItem('pk_admin','1');
+    showPanel();
+    toast('✅ Zalogowano.');
+  } else {
+    lErr.textContent='❌ Nieprawidłowy e-mail lub hasło.';
+    lPw.value='';
+    setTimeout(()=>lErr.textContent='',3000);
+  }
+}
+document.getElementById('l-btn').addEventListener('click',doLogin);
+lPw.addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
+lEmail.addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
+document.getElementById('btn-logout').addEventListener('click',()=>{
+  sessionStorage.removeItem('pk_admin');
+  loginScreen.classList.remove('hidden');
+  lEmail.focus();
+  toast('Wylogowano.');
+});
+
+/* ── DATA ── */
+let reservations = {};
+for(let i=1;i<=CABIN_COUNT;i++) reservations[i]=new Set();
+
+function loadData(){
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    const obj=JSON.parse(raw);
+    for(let i=1;i<=CABIN_COUNT;i++){
+      if(obj[i]) reservations[i]=new Set(obj[i]);
+    }
+  } catch(e){}
+}
+function saveData(){
+  const o={};
+  for(let i=1;i<=CABIN_COUNT;i++) o[i]=[...reservations[i]].sort();
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(o));
+}
+loadData();
+
+/* ── HELPERS ── */
+function datesBetween(s,e){
+  const out=[]; const d=new Date(s);
+  while(d.toISOString().slice(0,10)<=e){
+    out.push(d.toISOString().slice(0,10));
+    d.setDate(d.getDate()+1);
+  }
+  return out;
+}
+function fmtPL(k){
+  if(!k) return '';
+  const [y,m,d]=k.split('-');
+  return `${d}.${m}.${y}`;
+}
+function toast(msg){
+  const w=document.getElementById('toast-wrap');
+  const t=document.createElement('div'); t.className='toast'; t.textContent=msg;
+  w.appendChild(t); setTimeout(()=>t.remove(),3200);
+}
+
+/* ── MARK ── */
+document.getElementById('btn-confirm').addEventListener('click',()=>mark(true));
+document.getElementById('btn-cancel').addEventListener('click',()=>mark(false));
+function mark(occ){
+  const id=parseInt(document.getElementById('cabin-sel').value);
+  const s=document.getElementById('date-from').value;
+  const e=document.getElementById('date-to').value;
+  if(!s||!e){ toast('⚠️ Uzupełnij obie daty.'); return; }
+  if(s>e){ toast('⚠️ Data przyjazdu musi być wcześniejsza.'); return; }
+  const dates=datesBetween(s,e);
+  dates.forEach(k=>occ?reservations[id].add(k):reservations[id].delete(k));
+  saveData();
+  renderList();
+  toast(occ
+    ? `✅ Rezerwacja zatwierdzona — Domek ${id} (${dates.length} dni)`
+    : `❌ Rezerwacja anulowana — Domek ${id} (${dates.length} dni)`
+  );
+}
+
+/* ── LIST ── */
+document.getElementById('view-cabin').addEventListener('change', renderList);
+function renderList(){
+  const id=parseInt(document.getElementById('view-cabin').value);
+  const list=document.getElementById('res-list');
+  list.innerHTML='';
+  const dates=[...reservations[id]].sort();
+  if(!dates.length){
+    list.innerHTML='<div class="res-empty">Brak rezerwacji dla tego domku.</div>';
+    return;
+  }
+  const ranges=[]; let rs=dates[0],prev=dates[0];
+  for(let i=1;i<dates.length;i++){
+    const diff=Math.round((new Date(dates[i])-new Date(prev))/86400000);
+    if(diff===1){ prev=dates[i]; }
+    else{ ranges.push([rs,prev]); rs=dates[i]; prev=dates[i]; }
+  }
+  ranges.push([rs,prev]);
+  ranges.forEach(([s,e])=>{
+    const lbl=s===e?fmtPL(s):`${fmtPL(s)} — ${fmtPL(e)}`;
+    const el=document.createElement('div'); el.className='res-item';
+    el.innerHTML=`<span><strong>Domek ${id}:</strong> ${lbl}</span><button class="res-del" title="Usuń rezerwację">✕</button>`;
+    el.querySelector('.res-del').addEventListener('click',()=>{
+      datesBetween(s,e).forEach(k=>reservations[id].delete(k));
+      saveData(); renderList();
+      toast(`❌ Usunięto rezerwację: ${lbl}`);
+    });
+    list.appendChild(el);
+  });
+}
+
+/* ── BACKUP ── */
+document.getElementById('btn-export').addEventListener('click',()=>{
+  const o={};
+  for(let i=1;i<=CABIN_COUNT;i++) o[i]=[...reservations[i]].sort();
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(o,null,2)],{type:'application/json'}));
+  a.download='pk-reservations.json'; a.click();
+  toast('💾 Plik pobrany.');
+});
+document.getElementById('btn-import-trigger').addEventListener('click',()=>document.getElementById('import-file').click());
+document.getElementById('import-file').addEventListener('change',function(){
+  const f=this.files[0]; if(!f) return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const obj=JSON.parse(ev.target.result);
+      for(let i=1;i<=CABIN_COUNT;i++){
+        if(obj[i]) reservations[i]=new Set(obj[i]);
+      }
+      saveData(); renderList();
+      toast('📂 Dane wczytane.');
+    } catch(e){ toast('⚠️ Błąd pliku JSON.'); }
+  };
+  r.readAsText(f); this.value='';
+});
+
+/* ── INIT ── */
+checkSession();
+if(!loginScreen.classList.contains('hidden')) lEmail.focus();
+</script>
+</body>
+</html>
