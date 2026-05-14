@@ -1,0 +1,1689 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rezerwacje | Ośrodek Plaża Kownatki</title>
+<style>
+#pw-gate{position:fixed;inset:0;z-index:99999;background:#0e2444;display:flex;align-items:center;justify-content:center;font-family:'DM Sans',sans-serif;}
+#pw-gate.hidden{display:none;}
+.pw-box{background:#fff;border-radius:20px;padding:48px 40px;box-shadow:0 24px 64px rgba(0,0,0,.35);text-align:center;max-width:360px;width:90%;}
+.pw-logo{font-family:Georgia,serif;font-size:1.3rem;color:#0e2444;margin-bottom:24px;letter-spacing:.04em;}
+.pw-logo span{color:#bc9675;}
+.pw-title{font-size:1.05rem;color:#1a1a1a;margin-bottom:6px;font-weight:600;}
+.pw-sub{font-size:.82rem;color:#6b7280;margin-bottom:24px;}
+.pw-input{width:100%;padding:12px 16px;border:2px solid #e8e0d8;border-radius:10px;font-size:1rem;outline:none;text-align:center;letter-spacing:.15em;font-family:inherit;transition:border-color .2s;}
+.pw-input:focus{border-color:#bc9675;}
+.pw-btn{margin-top:14px;width:100%;padding:13px;background:#0e2444;color:#fff;border:none;border-radius:10px;font-size:.95rem;font-weight:600;cursor:pointer;transition:background .2s;}
+.pw-btn:hover{background:#162f57;}
+.pw-err{color:#dc2626;font-size:.82rem;margin-top:10px;min-height:18px;}
+</style>
+<script>
+(function(){
+  if(sessionStorage.getItem('kw_auth')==='1') return;
+  document.addEventListener('DOMContentLoaded',function(){
+    document.body.style.overflow='hidden';
+    var gate=document.getElementById('pw-gate');
+    var inp=document.getElementById('pw-input');
+    var err=document.getElementById('pw-err');
+    function check(){
+      if(inp.value.trim().toLowerCase()==='fado'){
+        gate.classList.add('hidden');
+        document.body.style.overflow='';
+        sessionStorage.setItem('kw_auth','1');
+      } else {
+        err.textContent='Nieprawidłowe hasło.';
+        inp.value=''; inp.focus();
+        setTimeout(function(){err.textContent='';},2500);
+      }
+    }
+    document.getElementById('pw-btn').addEventListener('click',check);
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter')check();});
+    inp.focus();
+  });
+})();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Marcellus&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&display=swap" rel="stylesheet">
+<style>
+
+/* ── VARIABLES ─────────────────────────────────────────── */
+:root {
+  --g-dark:    #0e2444;
+  --g-mid:     #162f57;
+  --g-light:   #d4b08f;
+  --g-pale:    #f5ede4;
+  --gold:      #bc9675;
+  --gold-lt:   #d4b08f;
+  --gold-dk:   #8b6040;
+  --cream:     #f8f5f2;
+  --cream2:    #e8e0d8;
+  --white:     #ffffff;
+  --text:      #1a1a1a;
+  --muted:     #6b7280;
+  --day-free-bg:  #ffffff;
+  --day-free-bd:  #d4b08f;
+  --day-occ-bg:   #ffcdd2;
+  --day-occ-bd:   #e57373;
+  --day-sel-bg:   #0e2444;
+  --day-sel-fg:   #ffffff;
+  --day-range-bg: rgba(188,150,117,.18);
+  --day-range-bd: #bc9675;
+  --radius:    16px;
+  --radius-sm: 10px;
+  --shadow:    0 4px 24px rgba(14,36,68,.08);
+  --shadow-md: 0 6px 32px rgba(14,36,68,.12);
+  --shadow-lg: 0 12px 48px rgba(14,36,68,.18);
+  --t:         .22s ease;
+}
+
+/* ── RESET ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+
+/* ── HERO ──────────────────────────────────────────────── */
+.hero {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: #0e2444;
+  overflow: hidden;
+}
+.hero-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 70%;
+  z-index: 0;
+  pointer-events: none;
+}
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(160deg, rgba(14,36,68,.82) 0%, rgba(14,36,68,.6) 45%, rgba(5,15,32,.9) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 30% 60%, rgba(188,150,117,.12) 0%, transparent 55%);
+  pointer-events: none;
+}
+
+/* ── NAVBAR ─────────────────────────────────────────────── */
+.navbar {
+  position: relative;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 48px;
+  gap: 24px;
+}
+.nav-logo {
+  font-family: 'Marcellus', serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: .02em;
+  white-space: nowrap;
+  text-decoration: none;
+}
+.nav-logo span { color: var(--gold); }
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 32px;
+  align-items: center;
+}
+.nav-links a {
+  color: rgba(255,255,255,.82);
+  text-decoration: none;
+  font-size: .9rem;
+  font-weight: 500;
+  letter-spacing: .02em;
+  transition: color var(--t);
+}
+.nav-links a:hover { color: var(--gold-lt); }
+.nav-cta {
+  background: var(--gold) !important;
+  color: var(--g-dark) !important;
+  padding: 9px 20px !important;
+  border-radius: 50px !important;
+  font-weight: 700 !important;
+  font-size: .85rem !important;
+  transition: background var(--t), transform var(--t), box-shadow var(--t) !important;
+  white-space: nowrap;
+}
+.nav-cta:hover { background: var(--gold-lt) !important; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(212,168,83,.4) !important; }
+.nav-burger {
+  display: none;
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.24);
+  color: #fff;
+  width: 42px; height: 42px;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--t);
+}
+.nav-burger:hover { background: rgba(255,255,255,.22); }
+.mobile-nav {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(14,36,68,.97);
+  z-index: 200;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+}
+.mobile-nav.open { display: flex; animation: fadeup .22s ease; }
+.mobile-nav a {
+  font-family: 'Marcellus', serif;
+  font-size: 2rem;
+  color: #fff;
+  text-decoration: none;
+  transition: color var(--t);
+}
+.mobile-nav a:hover { color: var(--gold-lt); }
+.mobile-nav-close {
+  position: absolute;
+  top: 24px; right: 32px;
+  background: none; border: none;
+  color: rgba(255,255,255,.7); font-size: 2rem;
+  cursor: pointer; line-height: 1;
+  transition: color var(--t);
+}
+.mobile-nav-close:hover { color: #fff; }
+
+/* ── HERO CONTENT ───────────────────────────────────────── */
+.hero-body {
+  flex: 1;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 24px 80px;
+  position: relative;
+  z-index: 1;
+}
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(212,168,83,.18);
+  border: 1px solid rgba(212,168,83,.4);
+  border-radius: 50px;
+  padding: 6px 18px;
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--gold-lt);
+  margin-bottom: 28px;
+}
+.hero-h1 {
+  font-family: 'Marcellus', serif;
+  font-size: clamp(2.6rem, 6vw, 4.8rem);
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.12;
+  margin-bottom: 20px;
+  text-shadow: 0 2px 24px rgba(0,0,0,.3);
+  max-width: 780px;
+}
+.hero-h1 em { font-style: italic; color: var(--gold-lt); }
+.hero-sub {
+  font-size: clamp(.95rem, 2.2vw, 1.2rem);
+  color: rgba(255,255,255,.8);
+  margin-bottom: 48px;
+  letter-spacing: .02em;
+  font-weight: 300;
+}
+.hero-features {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 52px;
+}
+.feat {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,.1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,.2);
+  border-radius: 50px;
+  padding: 10px 20px;
+  color: #fff;
+  font-size: .88rem;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background var(--t), transform var(--t);
+}
+.feat:hover { background: rgba(255,255,255,.18); transform: translateY(-2px); }
+.feat-icon { font-size: 1.1rem; }
+.hero-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--gold);
+  color: var(--g-dark);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  padding: 16px 40px;
+  border-radius: 50px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  letter-spacing: .02em;
+  transition: background var(--t), transform var(--t), box-shadow var(--t);
+  box-shadow: 0 6px 28px rgba(212,168,83,.4);
+}
+.hero-cta-btn:hover { background: var(--gold-lt); transform: translateY(-3px); box-shadow: 0 10px 36px rgba(212,168,83,.5); }
+.hero-cta-btn svg { transition: transform var(--t); }
+.hero-cta-btn:hover svg { transform: translateY(3px); }
+
+/* scroll hint */
+.hero-scroll {
+  position: absolute;
+  z-index: 2;
+  bottom: 32px; left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255,255,255,.5);
+  font-size: .72rem;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  animation: bounce 2.2s ease infinite;
+  cursor: pointer;
+  transition: color var(--t);
+}
+.hero-scroll:hover { color: rgba(255,255,255,.8); }
+@keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0);} 50%{transform:translateX(-50%) translateY(6px);} }
+
+/* ── MAIN WRAPPER ───────────────────────────────────────── */
+.main-wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 56px 20px 80px;
+}
+
+/* ── SECTION HEADING ───────────────────────────────────── */
+.sec-head {
+  text-align: center;
+  margin-bottom: 40px;
+}
+.sec-tag {
+  display: inline-block;
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--gold-dk);
+  margin-bottom: 10px;
+}
+.sec-h2 {
+  font-family: 'Marcellus', serif;
+  font-size: clamp(1.7rem, 3.5vw, 2.4rem);
+  font-weight: 600;
+  color: var(--g-dark);
+  line-height: 1.2;
+}
+.sec-h2 em { font-style: italic; color: var(--gold-dk); }
+.sec-rule {
+  width: 48px; height: 2px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+  margin: 14px auto 0;
+  border-radius: 2px;
+}
+
+/* ── FINDER ─────────────────────────────────────────────── */
+.finder {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px 24px;
+  margin-bottom: 36px;
+  border-left: 4px solid var(--gold);
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.finder-field { display: flex; flex-direction: column; gap: 5px; }
+.finder-label {
+  font-size: .78rem; font-weight: 600;
+  color: var(--g-dark); letter-spacing: .03em; text-transform: uppercase;
+}
+.finder input {
+  padding: 9px 13px;
+  border: 1.5px solid var(--cream2);
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: .9rem;
+  background: var(--cream);
+  color: var(--text);
+  outline: none;
+  transition: border-color var(--t);
+}
+.finder input:focus { border-color: var(--gold); }
+.finder input[type=number] { width: 82px; }
+.finder-btn {
+  background: var(--g-dark);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 10px 22px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: .88rem;
+  cursor: pointer;
+  transition: background var(--t), transform var(--t);
+  white-space: nowrap;
+}
+.finder-btn:hover { background: var(--g-mid); transform: translateY(-1px); }
+.finder-results {
+  width: 100%; font-size: .88rem;
+  color: var(--g-dark); min-height: 20px; margin-top: 2px;
+}
+.finder-chip {
+  display: inline-block;
+  background: var(--g-pale); border: 1px solid var(--day-free-bd);
+  border-radius: 20px; padding: 3px 13px; margin: 3px 3px 0 0;
+  font-size: .82rem; font-weight: 600; cursor: pointer;
+  transition: box-shadow var(--t);
+}
+.finder-chip:hover { box-shadow: 0 2px 8px rgba(188,150,117,.35); }
+
+/* ── CABIN TABS ─────────────────────────────────────────── */
+.cabin-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 32px;
+}
+@media (max-width: 640px) { .cabin-tabs { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 400px) { .cabin-tabs { grid-template-columns: 1fr; } }
+
+.cabin-tab {
+  background: var(--white);
+  border: 2px solid var(--cream2);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: border-color var(--t), box-shadow var(--t), transform var(--t);
+  position: relative;
+  overflow: hidden;
+}
+.cabin-tab::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--g-dark), var(--g-light));
+  opacity: 0;
+  transition: opacity var(--t);
+}
+.cabin-tab:hover { border-color: var(--gold); box-shadow: var(--shadow); transform: translateY(-2px); }
+.cabin-tab:hover::before, .cabin-tab.active::before { opacity: 1; }
+.cabin-tab.active { border-color: var(--g-mid); box-shadow: var(--shadow-md); }
+
+.ct-row { display: flex; align-items: flex-start; justify-content: space-between; }
+.ct-num {
+  font-family: 'Marcellus', serif;
+  font-size: 1.9rem; font-weight: 700;
+  color: var(--g-dark); line-height: 1;
+}
+.ct-badge {
+  font-size: .65rem; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: 2px 8px; border-radius: 20px;
+}
+.badge-komfort { background: #eaf0f8; color: #0e2444; }
+.badge-premium { background: #fdf6f0; color: #8b6040; }
+.badge-vip     { background: var(--g-dark); color: var(--gold-lt); }
+
+.ct-name {
+  font-size: .92rem; font-weight: 700;
+  color: var(--g-dark); margin: 6px 0 2px;
+}
+.ct-cap { font-size: .76rem; color: var(--muted); }
+.ct-status {
+  display: flex; align-items: center; gap: 5px;
+  font-size: .74rem; font-weight: 600;
+  margin-top: 10px;
+}
+.dot { width: 7px; height: 7px; border-radius: 50%; }
+.dot-free    { background: #52c47a; }
+.dot-partial { background: #f5a623; }
+.dot-busy    { background: #e05050; }
+.st-free    { color: #2d8a50; }
+.st-partial { color: #c07800; }
+.st-busy    { color: #c03030; }
+
+/* ── CALENDAR CARD ──────────────────────────────────────── */
+.cal-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  display: none;
+  margin-bottom: 24px;
+}
+.cal-card.visible { display: block; animation: fadeup .3s ease; }
+@keyframes fadeup {
+  from { opacity:0; transform:translateY(14px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* header */
+.cal-head {
+  background: linear-gradient(135deg, var(--g-dark) 0%, var(--g-mid) 100%);
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.cal-head-info { color: #fff; }
+.cal-head-label { font-size: .72rem; opacity: .65; margin-bottom: 2px; letter-spacing: .06em; text-transform: uppercase; }
+.cal-head-name  { font-family: 'Marcellus', serif; font-size: 1.25rem; font-weight: 600; line-height: 1.1; }
+.cal-head-type  { font-size: .8rem; opacity: .8; margin-top: 2px; }
+
+.cal-nav { display: flex; align-items: center; gap: 10px; }
+.cal-arr {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,.14);
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background var(--t), transform var(--t);
+  flex-shrink: 0;
+}
+.cal-arr:hover { background: rgba(255,255,255,.26); transform: scale(1.08); }
+.cal-arr:disabled { opacity: .25; cursor: not-allowed; transform: none; }
+
+.cal-month-display {
+  font-family: 'Marcellus', serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #fff;
+  min-width: 160px;
+  text-align: center;
+  position: relative;
+}
+.cal-month-btn {
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.25);
+  color: #fff;
+  font-family: 'Marcellus', serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background var(--t);
+  position: relative;
+  white-space: nowrap;
+}
+.cal-month-btn:hover { background: rgba(255,255,255,.22); }
+
+.month-dd {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%; transform: translateX(-50%);
+  background: var(--white);
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  z-index: 300;
+  min-width: 200px;
+  display: none;
+}
+.month-dd.open { display: block; animation: fadeup .16s ease; }
+.mdd-grid { display: grid; grid-template-columns: 1fr 1fr; }
+.mopt {
+  padding: 10px 12px;
+  font-size: .86rem;
+  font-weight: 500;
+  color: var(--g-dark);
+  text-align: center;
+  cursor: pointer;
+  border-bottom: 1px solid var(--cream2);
+  transition: background var(--t);
+}
+.mopt:hover { background: var(--cream); }
+.mopt.mact { background: var(--g-dark); color: #fff; font-weight: 700; }
+
+.cal-year-sel {
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.25);
+  color: #fff;
+  font-family: 'DM Sans', sans-serif;
+  font-size: .9rem; font-weight: 600;
+  padding: 8px 10px;
+  border-radius: 10px;
+  cursor: pointer; outline: none;
+}
+.cal-year-sel option { color: var(--g-dark); background: #fff; }
+
+/* body */
+.cal-body { padding: 20px 20px 0; }
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 8px;
+}
+.wd {
+  text-align: center;
+  font-size: .71rem; font-weight: 700;
+  color: #9CA3AF; text-transform: uppercase; letter-spacing: .06em;
+  padding: 4px 0;
+}
+.wd.wknd { color: #EF4444; }
+
+/* grid — always 6 rows, no scroll */
+.cal-grid-wrap {
+  overflow: hidden;
+  position: relative;
+}
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  gap: 3px;
+  min-height: 288px; /* 6 rows × 48px */
+}
+
+/* slide animations */
+.cal-grid.slide-out-left  { animation: slideOutLeft  .18s ease forwards; }
+.cal-grid.slide-out-right { animation: slideOutRight .18s ease forwards; }
+.cal-grid.slide-in-left   { animation: slideInLeft   .22s ease forwards; }
+.cal-grid.slide-in-right  { animation: slideInRight  .22s ease forwards; }
+@keyframes slideOutLeft  { to { opacity:0; transform: translateX(-28px); } }
+@keyframes slideOutRight { to { opacity:0; transform: translateX(28px); } }
+@keyframes slideInLeft   { from { opacity:0; transform: translateX(-28px); } to { opacity:1; transform:none; } }
+@keyframes slideInRight  { from { opacity:0; transform: translateX(28px); }  to { opacity:1; transform:none; } }
+
+/* day cells */
+.day {
+  aspect-ratio: 1;
+  min-height: 42px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 9px;
+  font-size: .88rem; font-weight: 500;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: background var(--t), border-color var(--t), transform .12s ease, color var(--t);
+  user-select: none;
+  position: relative;
+}
+.day-empty   { cursor: default; }
+.day-past    { color: #D1D5DB; cursor: not-allowed; background: #F9FAFB; }
+.day-free    { background: var(--day-free-bg); border-color: var(--day-free-bd); color: var(--g-dark); }
+.day-free:hover { background: #fdf6f0; transform: scale(1.07); border-color: var(--gold); z-index: 1; }
+.day-occ     { background: var(--day-occ-bg); border-color: var(--day-occ-bd); color: #B91C1C; cursor: not-allowed; text-decoration: line-through; }
+.day-sel     { background: var(--day-sel-bg) !important; border-color: var(--day-sel-bg) !important; color: var(--day-sel-fg) !important; font-weight: 700 !important; }
+.day-fill    { background: var(--day-range-bg) !important; border-color: var(--day-range-bd) !important; color: var(--g-dark) !important; border-radius: 0 !important; }
+.day-r-start { border-radius: 9px 0 0 9px !important; }
+.day-r-end   { border-radius: 0 9px 9px 0 !important; }
+.day-hover   { background: rgba(188,150,117,.12) !important; border-color: rgba(188,150,117,.5) !important; }
+.day-today::after {
+  content: '';
+  position: absolute; bottom: 4px; left: 50%;
+  transform: translateX(-50%);
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--gold);
+}
+.day-sel.day-today::after { background: rgba(255,255,255,.6); }
+
+/* footer */
+.cal-foot {
+  padding: 14px 20px 18px;
+  display: flex; align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap; gap: 10px;
+  border-top: 1px solid var(--cream2);
+  margin-top: 14px;
+}
+.cal-reset {
+  background: none;
+  border: 1.5px solid var(--cream2);
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: .82rem; font-weight: 600;
+  padding: 6px 14px; border-radius: 8px;
+  cursor: pointer;
+  transition: background var(--t), border-color var(--t), color var(--t);
+}
+.cal-reset:hover { background: var(--day-occ-bg); border-color: var(--day-occ-bd); color: #B91C1C; }
+.legend {
+  display: flex; gap: 14px; flex-wrap: wrap; align-items: center;
+}
+.leg-item {
+  display: flex; align-items: center; gap: 5px;
+  font-size: .76rem; color: var(--muted);
+}
+.leg-dot {
+  width: 13px; height: 13px;
+  border-radius: 4px; border: 1.5px solid transparent;
+}
+.leg-free  { background: var(--day-free-bg); border-color: var(--day-free-bd); }
+.leg-occ   { background: var(--day-occ-bg);  border-color: var(--day-occ-bd); }
+.leg-sel   { background: var(--day-sel-bg); }
+.leg-range { background: var(--day-range-bg); border-color: var(--day-range-bd); }
+
+.min-nights-hint {
+  width: 100%;
+  font-size: .78rem;
+  color: var(--muted);
+  display: flex; align-items: center; gap: 6px;
+  padding-top: 4px;
+}
+
+/* ── SUMMARY CARD ──────────────────────────────────────── */
+.summary-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  display: none;
+  margin-bottom: 24px;
+}
+.summary-card.visible { display: block; animation: fadeup .3s ease; }
+
+.sum-head {
+  background: linear-gradient(135deg, var(--g-dark) 0%, var(--g-mid) 100%);
+  padding: 18px 24px;
+  color: #fff;
+}
+.sum-head h2 {
+  font-family: 'Marcellus', serif;
+  font-size: 1.2rem; font-weight: 600;
+  margin-bottom: 3px;
+}
+.sum-head p { font-size: .8rem; opacity: .75; }
+
+.sum-body { padding: 22px 24px; }
+
+.sum-dates {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 16px;
+  background: var(--cream);
+  border-radius: 12px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+  border: 1px solid var(--cream2);
+}
+.sum-date-box { text-align: center; }
+.sum-date-label { font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 4px; }
+.sum-date-val { font-family: 'Marcellus', serif; font-size: 1.05rem; font-weight: 600; color: var(--g-dark); }
+.sum-date-day { font-size: .78rem; color: var(--muted); margin-top: 2px; }
+.sum-sep { text-align: center; }
+.sum-nights-badge {
+  background: var(--g-dark);
+  color: #fff;
+  border-radius: 50px;
+  padding: 6px 14px;
+  font-size: .8rem;
+  font-weight: 700;
+  white-space: nowrap;
+  text-align: center;
+}
+
+.sum-price {
+  background: linear-gradient(135deg, rgba(14,36,68,.06), rgba(188,150,117,.08));
+  border: 1px solid rgba(212,168,83,.3);
+  border-radius: 12px;
+  padding: 16px 20px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.sum-price-detail {
+  font-size: .82rem;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.sum-price-total {
+  text-align: right;
+}
+.sum-price-total-label { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.sum-price-total-val {
+  font-family: 'Marcellus', serif;
+  font-size: 1.8rem; font-weight: 700;
+  color: var(--g-dark); line-height: 1.1;
+}
+
+.sum-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 20px;
+  margin-bottom: 20px;
+}
+@media (max-width: 560px) { .sum-form-grid { grid-template-columns: 1fr; } }
+.form-grp { display: flex; flex-direction: column; gap: 5px; }
+.form-grp.full { grid-column: 1 / -1; }
+.form-grp label { font-size: .78rem; font-weight: 600; color: var(--g-dark); text-transform: uppercase; letter-spacing: .04em; }
+.form-grp input, .form-grp textarea {
+  padding: 10px 13px;
+  border: 1.5px solid var(--cream2);
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: .9rem; background: var(--cream); color: var(--text);
+  outline: none;
+  transition: border-color var(--t), box-shadow var(--t);
+}
+.form-grp input:focus, .form-grp textarea:focus {
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(188,150,117,.14);
+}
+.form-grp textarea { resize: vertical; min-height: 72px; }
+
+.msg-preview { margin-bottom: 20px; }
+.msg-preview h3 {
+  font-family: 'Marcellus', serif;
+  font-size: .95rem; font-weight: 600;
+  color: var(--g-dark); margin-bottom: 8px;
+}
+.msg-box {
+  background: var(--cream); border: 1px solid var(--cream2);
+  border-radius: 10px; padding: 14px 16px;
+  font-size: .82rem; line-height: 1.75; color: var(--text);
+  white-space: pre-wrap; max-height: 230px; overflow-y: auto;
+}
+
+.action-btns { display: flex; flex-wrap: wrap; gap: 10px; }
+.act-btn {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 10px 18px; border-radius: 10px; border: none;
+  font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: .86rem;
+  cursor: pointer; text-decoration: none;
+  transition: transform var(--t), box-shadow var(--t), filter var(--t);
+  white-space: nowrap;
+}
+.act-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); filter: brightness(1.06); }
+.btn-book  { background: var(--g-dark); color: #fff; }
+.btn-sms   { background: var(--g-mid); color: #fff; }
+.btn-email { background: var(--gold); color: var(--g-dark); }
+.btn-copy  { background: var(--cream); color: var(--g-dark); border: 1.5px solid var(--g-dark) !important; }
+.btn-wa    { background: #25D366; color: #fff; }
+
+/* ── ADMIN ──────────────────────────────────────────────── */
+.admin-wrap { margin-top: 48px; text-align: center; }
+.admin-toggle {
+  background: none;
+  border: 1.5px solid var(--cream2);
+  color: var(--muted);
+  font-family: 'DM Sans', sans-serif;
+  font-size: .84rem; font-weight: 600;
+  padding: 8px 22px; border-radius: 50px;
+  cursor: pointer;
+  transition: background var(--t), border-color var(--t), color var(--t);
+}
+.admin-toggle:hover { background: var(--cream2); border-color: var(--g-dark); color: var(--g-dark); }
+.admin-panel { margin-top: 14px; display: none; }
+.admin-panel.open { display: block; animation: fadeup .24s ease; }
+.admin-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; text-align: left; }
+.admin-head { background: var(--g-dark); padding: 14px 20px; color: #fff; display: flex; align-items: center; gap: 9px; }
+.admin-head-title { font-family: 'Marcellus', serif; font-size: 1rem; font-weight: 600; }
+.admin-login { padding: 28px; text-align: center; }
+.admin-login h3 { font-family: 'Marcellus', serif; color: var(--g-dark); margin-bottom: 14px; font-size: 1rem; }
+.admin-pw-row { display: flex; gap: 8px; justify-content: center; max-width: 320px; margin: 0 auto; }
+.admin-pw-row input { flex:1; padding: 9px 12px; border: 1.5px solid var(--cream2); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: .9rem; outline: none; }
+.admin-pw-row input:focus { border-color: var(--gold); }
+.admin-pw-btn { background: var(--gold); color: var(--g-dark); border: none; border-radius: 8px; padding: 9px 18px; font-family: 'DM Sans', sans-serif; font-weight: 700; cursor: pointer; transition: background var(--t); }
+.admin-pw-btn:hover { background: var(--gold-lt); }
+.admin-pw-err { color: #DC2626; font-size: .82rem; margin-top: 7px; min-height: 18px; }
+.admin-body { padding: 20px 24px; display: none; }
+.admin-body.open { display: block; }
+.admin-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+@media (max-width: 600px) { .admin-grid { grid-template-columns: 1fr; } }
+.admin-sec { font-family: 'Marcellus', serif; font-size: .95rem; color: var(--g-dark); margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid var(--cream2); }
+.admin-field { margin-bottom: 10px; }
+.admin-field label { display: block; font-size: .78rem; font-weight: 600; color: var(--g-dark); margin-bottom: 4px; }
+.admin-field select, .admin-field input { width: 100%; padding: 8px 10px; border: 1.5px solid var(--cream2); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: .88rem; background: var(--cream); outline: none; }
+.admin-field select:focus, .admin-field input:focus { border-color: var(--gold); }
+.admin-btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.admin-mark { padding: 8px 16px; border-radius: 8px; border: none; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: .84rem; cursor: pointer; transition: filter var(--t); }
+.admin-mark:hover { filter: brightness(.93); }
+.admin-occ  { background: var(--day-occ-bg); color: #B91C1C; border: 1.5px solid var(--day-occ-bd) !important; }
+.admin-free { background: var(--g-pale); color: #15803D; border: 1.5px solid var(--day-free-bd) !important; }
+.admin-dates-list { max-height: 200px; overflow-y: auto; border: 1px solid var(--cream2); border-radius: 8px; background: var(--cream); }
+.admin-date-entry { display: flex; align-items: center; justify-content: space-between; padding: 7px 12px; border-bottom: 1px solid var(--cream2); font-size: .84rem; color: var(--g-dark); }
+.admin-date-entry:last-child { border-bottom: none; }
+.admin-del { background: none; border: none; color: #FCA5A5; cursor: pointer; font-size: .95rem; padding: 0 3px; transition: color var(--t); }
+.admin-del:hover { color: #DC2626; }
+.admin-io-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+.admin-io { padding: 8px 16px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: .84rem; cursor: pointer; transition: filter var(--t); }
+.admin-io:hover { filter: brightness(.93); }
+.admin-export { background: var(--gold); color: var(--g-dark); border: none; }
+.admin-import { background: var(--cream); color: var(--g-dark); border: 1.5px solid var(--cream2); }
+#admin-import-file { display: none; }
+
+/* ── TOAST ──────────────────────────────────────────────── */
+.toast-wrap { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; align-items: center; gap: 7px; pointer-events: none; }
+.toast { background: var(--g-dark); color: #fff; padding: 10px 22px; border-radius: 50px; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: .88rem; box-shadow: 0 4px 20px rgba(14,36,68,.35); animation: tin .28s ease, tout .28s ease 2.4s forwards; white-space: nowrap; pointer-events: none; }
+@keyframes tin  { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+@keyframes tout { from { opacity:1; } to { opacity:0; transform:translateY(-8px); } }
+
+/* ── FOOTER ─────────────────────────────────────────────── */
+footer {
+  background: var(--g-dark);
+  color: rgba(255,255,255,.6);
+  text-align: center;
+  padding: 36px 20px 28px;
+  font-size: .82rem;
+}
+footer strong { color: #fff; }
+footer a { color: var(--gold-lt); text-decoration: none; }
+
+/* ── SCROLLBAR ──────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--cream); }
+::-webkit-scrollbar-thumb { background: #C4C9C2; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--g-mid); }
+
+/* ── RESPONSIVE ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .navbar { padding: 16px 20px; }
+  .nav-links { display: none; }
+  .nav-burger { display: flex; }
+  .hero-h1 { font-size: 2.4rem; }
+  .hero-body { padding: 24px 16px 60px; }
+  .cal-head { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .cal-nav { width: 100%; justify-content: space-between; }
+}
+@media (max-width: 480px) {
+  .day { font-size: .8rem; min-height: 36px; }
+  .cal-body { padding: 12px 10px 0; }
+  .cal-grid { min-height: 252px; }
+  .sum-dates { grid-template-columns: 1fr; gap: 8px; }
+  .sum-sep { display: none; }
+}
+
+</style>
+</head>
+<body>
+
+<div id="pw-gate">
+  <div class="pw-box">
+    <div class="pw-logo">Plaża <span>Kownatki</span></div>
+    <div class="pw-title">System rezerwacji</div>
+    <div class="pw-sub">Wpisz hasło aby kontynuować</div>
+    <input class="pw-input" id="pw-input" type="password" placeholder="••••••">
+    <button class="pw-btn" id="pw-btn">Wejdź</button>
+    <div class="pw-err" id="pw-err"></div>
+  </div>
+</div>
+
+<!-- ══ HERO ══════════════════════════════════════════════ -->
+<section class="hero" id="top">
+  <video class="hero-video" autoplay muted loop playsinline>
+    <source src="IMG_0811.mov" type="video/mp4">
+  </video>
+  <div class="hero-overlay"></div>
+  <nav class="navbar">
+    <a href="index.html" class="nav-logo">Plaża <span>Kownatki</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">O nas</a></li>
+      <li><a href="index.html#domki">Domki</a></li>
+      <li><a href="index.html#cennik">Cennik</a></li>
+      <li><a href="index.html#kontakt">Kontakt</a></li>
+      <li><a href="#dostepnosc" class="nav-cta">Sprawdź dostępność</a></li>
+    </ul>
+    <button class="nav-burger" id="nav-burger" aria-label="Menu">
+      <svg width="20" height="14" viewBox="0 0 20 14" fill="none"><path d="M0 1h20M0 7h20M0 13h20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </nav>
+
+  <div class="hero-body">
+    <div class="hero-eyebrow">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="5" stroke="currentColor" stroke-width="1.5"/><circle cx="6" cy="6" r="2" fill="currentColor"/></svg>
+      Mazury · Warmia
+    </div>
+    <h1 class="hero-h1">Twoje miejsce<br><em>na Mazurach</em></h1>
+    <p class="hero-sub">Domki letniskowe&nbsp;·&nbsp;Prywatna plaża&nbsp;·&nbsp;Spokój natury</p>
+    <div class="hero-features">
+      <div class="feat"><span class="feat-icon">🏠</span> 6 domków</div>
+      <div class="feat"><span class="feat-icon">🏖️</span> Prywatna plaża</div>
+      <div class="feat"><span class="feat-icon">🛶</span> Sporty wodne</div>
+      <div class="feat"><span class="feat-icon">🌲</span> Las i natura</div>
+    </div>
+    <a href="#dostepnosc" class="hero-cta-btn">
+      Sprawdź dostępność
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v12M3 9l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </a>
+  </div>
+
+  <div class="hero-scroll" id="hero-scroll" aria-hidden="true">
+    <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 6l6 6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>Przewiń</span>
+  </div>
+</section>
+
+<!-- mobile nav overlay -->
+<div class="mobile-nav" id="mobile-nav">
+  <button class="mobile-nav-close" id="mobile-nav-close" aria-label="Zamknij">×</button>
+  <a href="index.html">O nas</a>
+  <a href="index.html#domki">Domki</a>
+  <a href="index.html#cennik">Cennik</a>
+  <a href="index.html#kontakt">Kontakt</a>
+  <a href="#dostepnosc" id="mobile-cta" style="color:var(--gold-lt)">Sprawdź dostępność</a>
+</div>
+
+<!-- ══ MAIN ═══════════════════════════════════════════════ -->
+<main id="dostepnosc" class="main-wrap">
+
+  <div class="sec-head">
+    <div class="sec-tag">Rezerwacje online</div>
+    <h2 class="sec-h2">Sprawdź <em>dostępność</em> domków</h2>
+    <div class="sec-rule"></div>
+  </div>
+
+  <!-- Finder -->
+  <div class="finder" id="finder">
+    <div class="finder-field">
+      <span class="finder-label">Przyjazd</span>
+      <input type="date" id="finder-checkin">
+    </div>
+    <div class="finder-field">
+      <span class="finder-label">Odjazd</span>
+      <input type="date" id="finder-checkout">
+    </div>
+    <div class="finder-field">
+      <span class="finder-label">Nocy</span>
+      <input type="number" id="finder-nights" min="2" max="60" value="7">
+    </div>
+    <button class="finder-btn" id="finder-btn">Szukaj wolnych domków</button>
+    <div class="finder-results" id="finder-results"></div>
+  </div>
+
+  <!-- Cabin tabs -->
+  <div class="cabin-tabs" id="cabin-tabs"></div>
+
+  <!-- Calendar -->
+  <div class="cal-card" id="cal-card">
+    <div class="cal-head">
+      <div class="cal-head-info">
+        <div class="cal-head-label">Kalendarz dostępności</div>
+        <div class="cal-head-name" id="cal-head-name">—</div>
+        <div class="cal-head-type" id="cal-head-type">—</div>
+      </div>
+      <div class="cal-nav">
+        <button class="cal-arr" id="cal-prev" aria-label="Poprzedni miesiąc">&#8592;</button>
+        <div style="position:relative;">
+          <button class="cal-month-btn" id="cal-month-btn">Styczeń 2026</button>
+          <div class="month-dd" id="month-dd">
+            <div class="mdd-grid" id="mdd-grid"></div>
+          </div>
+        </div>
+        <select class="cal-year-sel" id="cal-year-sel"></select>
+        <button class="cal-arr" id="cal-next" aria-label="Następny miesiąc">&#8594;</button>
+      </div>
+    </div>
+    <div class="cal-body">
+      <div class="weekdays">
+        <div class="wd">Pn</div><div class="wd">Wt</div><div class="wd">Śr</div>
+        <div class="wd">Czw</div><div class="wd wknd">Pt</div>
+        <div class="wd wknd">Sb</div><div class="wd wknd">Nd</div>
+      </div>
+      <div class="cal-grid-wrap">
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+    </div>
+    <div class="cal-foot">
+      <button class="cal-reset" id="cal-reset">✕ Wyczyść wybór</button>
+      <div class="legend">
+        <div class="leg-item"><span class="leg-dot leg-free"></span>Wolne</div>
+        <div class="leg-item"><span class="leg-dot leg-occ"></span>Zajęte</div>
+        <div class="leg-item"><span class="leg-dot leg-range"></span>Wybrany zakres</div>
+        <div class="leg-item"><span class="leg-dot leg-sel"></span>Check-in/out</div>
+      </div>
+      <div class="min-nights-hint">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.5"/><path d="M7 6v4M7 4.5v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        Minimalny pobyt: 2 noce
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary-card" id="summary-card">
+    <div class="sum-head">
+      <h2>Podsumowanie rezerwacji</h2>
+      <p>Uzupełnij dane i wyślij zapytanie wybranym kanałem</p>
+    </div>
+    <div class="sum-body">
+      <div class="sum-dates">
+        <div class="sum-date-box">
+          <div class="sum-date-label">Przyjazd</div>
+          <div class="sum-date-val" id="s-checkin-val">—</div>
+          <div class="sum-date-day" id="s-checkin-day"></div>
+        </div>
+        <div class="sum-sep">
+          <div class="sum-nights-badge" id="s-nights">— nocy</div>
+        </div>
+        <div class="sum-date-box">
+          <div class="sum-date-label">Wyjazd</div>
+          <div class="sum-date-val" id="s-checkout-val">—</div>
+          <div class="sum-date-day" id="s-checkout-day"></div>
+        </div>
+      </div>
+
+      <div class="sum-price">
+        <div class="sum-price-detail" id="s-price-detail">—</div>
+        <div class="sum-price-total">
+          <div class="sum-price-total-label">Szacunkowy koszt</div>
+          <div class="sum-price-total-val" id="s-price-total">—</div>
+        </div>
+      </div>
+
+      <div class="sum-form-grid">
+        <div class="form-grp"><label>Imię i nazwisko *</label><input type="text" id="f-name" placeholder="np. Anna Kowalska" autocomplete="name"></div>
+        <div class="form-grp"><label>Telefon *</label><input type="tel" id="f-phone" placeholder="+48 500 000 000" autocomplete="tel"></div>
+        <div class="form-grp full"><label>Email *</label><input type="email" id="f-email" placeholder="anna@email.pl" autocomplete="email"></div>
+        <div class="form-grp full"><label>Uwagi</label><textarea id="f-notes" placeholder="liczba osób, zwierzęta, życzenia..."></textarea></div>
+      </div>
+
+      <div class="msg-preview">
+        <h3>Podgląd wiadomości</h3>
+        <div class="msg-box" id="msg-box"></div>
+      </div>
+
+      <div class="action-btns">
+        <button class="act-btn btn-book" id="btn-book">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="11" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M5 1v4M11 1v4M2 8h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Przejdź do rezerwacji
+        </button>
+        <a class="act-btn btn-sms" id="btn-sms" href="#">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="2" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M4 12l1 2h6l1-2" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+          SMS
+        </a>
+        <a class="act-btn btn-email" id="btn-email" href="#">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="10" rx="2" stroke="currentColor" stroke-width="1.7"/><path d="M1 5l7 5 7-5" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+          Email
+        </a>
+        <button class="act-btn btn-copy" id="btn-copy">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="5" y="1" width="10" height="12" rx="2" stroke="currentColor" stroke-width="1.7"/><rect x="1" y="4" width="10" height="12" rx="2" fill="white" stroke="currentColor" stroke-width="1.7"/></svg>
+          Kopiuj
+        </button>
+        <a class="act-btn btn-wa" id="btn-wa" href="#" target="_blank" rel="noopener">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1C4.1 1 1 4.1 1 8c0 1.3.4 2.6 1 3.6L1 15l3.4-1C5.4 14.6 6.7 15 8 15c3.9 0 7-3.1 7-7s-3.1-7-7-7z" stroke="currentColor" stroke-width="1.7" fill="none"/><path d="M5.5 6.5c0-.3.2-.4.3-.6l.8-.8c.2-.2.4-.2.6 0l.8.8c.2.2.2.4 0 .6l-.4.4c.4.7.9 1.2 1.6 1.6l.4-.4c.2-.2.4-.2.6 0l.8.8c.2.2.2.4 0 .6l-.8.8c-.2.2-.4.3-.6.3C7.3 11 5 8.7 5.5 6.5z" fill="currentColor"/></svg>
+          WhatsApp
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admin -->
+  <div class="admin-wrap">
+    <button class="admin-toggle" id="admin-toggle">Panel zarządzania 🔐</button>
+  </div>
+  <div class="admin-panel" id="admin-panel">
+    <div class="admin-card">
+      <div class="admin-head">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="8" width="12" height="9" rx="2" stroke="rgba(255,255,255,.8)" stroke-width="1.7"/><path d="M6 8V6a3 3 0 016 0v2" stroke="rgba(255,255,255,.8)" stroke-width="1.7" stroke-linecap="round"/></svg>
+        <span class="admin-head-title">Panel zarządzania rezerwacjami</span>
+      </div>
+      <div class="admin-login" id="admin-login">
+        <h3>Wprowadź hasło administratora</h3>
+        <div class="admin-pw-row">
+          <input type="password" id="admin-pw" placeholder="Hasło...">
+          <button class="admin-pw-btn" id="admin-pw-btn">Zaloguj</button>
+        </div>
+        <p class="admin-pw-err" id="admin-pw-err"></p>
+      </div>
+      <div class="admin-body" id="admin-body">
+        <div class="admin-grid">
+          <div>
+            <p class="admin-sec">Zarządzaj rezerwacjami</p>
+            <div class="admin-field"><label>Domek</label>
+              <select id="admin-cabin-sel">
+                <option value="1">Domek 1 — Komfort</option><option value="2">Domek 2 — Komfort</option>
+                <option value="3">Domek 3 — Premium</option><option value="4">Domek 4 — Premium</option>
+                <option value="5">Domek 5 — VIP</option><option value="6">Domek 6 — VIP</option>
+              </select>
+            </div>
+            <div class="admin-field"><label>Data od</label><input type="date" id="admin-start"></div>
+            <div class="admin-field"><label>Data do (włącznie)</label><input type="date" id="admin-end"></div>
+            <div class="admin-btn-row">
+              <button class="admin-mark admin-occ" id="admin-add-occ">🔴 Zajęte</button>
+              <button class="admin-mark admin-free" id="admin-add-free">🟢 Wolne</button>
+            </div>
+          </div>
+          <div>
+            <p class="admin-sec">Aktualne rezerwacje</p>
+            <div class="admin-field"><label>Pokaż domek</label>
+              <select id="admin-view-cabin">
+                <option value="1">Domek 1</option><option value="2">Domek 2</option>
+                <option value="3">Domek 3</option><option value="4">Domek 4</option>
+                <option value="5">Domek 5</option><option value="6">Domek 6</option>
+              </select>
+            </div>
+            <div class="admin-dates-list" id="admin-dates-list"></div>
+          </div>
+        </div>
+        <div class="admin-io-row">
+          <button class="admin-io admin-export" id="admin-export">⬇ Eksportuj JSON</button>
+          <button class="admin-io admin-import" id="admin-import-trigger">⬆ Importuj JSON</button>
+          <input type="file" id="admin-import-file" accept=".json">
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <strong>Ośrodek Plaża Kownatki</strong> &nbsp;·&nbsp; Kownatki 22, 13-100, Warmia i Mazury<br>
+  <span style="margin-top:5px;display:block;">Tel: +48 000 000 000 &nbsp;·&nbsp; <a href="mailto:rezerwacje@plazakownatki.pl">rezerwacje@plazakownatki.pl</a></span>
+</footer>
+
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script>
+'use strict';
+
+/* ── CONSTANTS ────────────────────────────────────────── */
+const STORAGE_KEY    = 'pk-reservations';
+const ADMIN_PASSWORD = 'kownatki2025';
+const PHONE          = '+48000000000';
+const PHONE_DISPLAY  = '+48 000 000 000';
+const EMAIL          = 'rezerwacje@plazakownatki.pl';
+const RESORT_NAME    = 'Ośrodek Plaża Kownatki';
+const MIN_NIGHTS     = 2;
+
+const CABINS = [
+  { id:1, name:'Domek 1', type:'Komfort', capacity:8,  pricePerNight:390 },
+  { id:2, name:'Domek 2', type:'Komfort', capacity:8,  pricePerNight:390 },
+  { id:3, name:'Domek 3', type:'Premium', capacity:10, pricePerNight:520 },
+  { id:4, name:'Domek 4', type:'Premium', capacity:10, pricePerNight:520 },
+  { id:5, name:'Domek 5', type:'VIP',     capacity:12, pricePerNight:690 },
+  { id:6, name:'Domek 6', type:'VIP',     capacity:12, pricePerNight:690 },
+];
+
+const MONTHS_PL = ['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec',
+                   'Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień'];
+const DAYS_PL   = ['niedziela','poniedziałek','wtorek','środa','czwartek','piątek','sobota'];
+
+/* ── STATE ────────────────────────────────────────────── */
+let reservations  = {};
+let activeCabinId = null;
+let calYear = null, calMonth = null;
+let selStart = null, selEnd = null;
+let hoverDate = null;
+let adminUnlocked = false;
+let isNavigating  = false;
+
+/* ── DATE HELPERS ─────────────────────────────────────── */
+function toKey(y,m,d){ return `${y}-${String(m+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`; }
+function keyFromDate(dt){ return `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`; }
+function dateFromKey(k){ const [y,m,d]=k.split('-').map(Number); return new Date(y,m-1,d); }
+function formatDatePL(k, long){
+  if(!k) return '—';
+  const [y,m,d]=k.split('-').map(Number);
+  if(long) return `${d} ${MONTHS_PL[m-1].toLowerCase()} ${y}`;
+  return `${String(d).padStart(2,'0')}.${String(m).padStart(2,'0')}.${y}`;
+}
+function dayNamePL(k){ if(!k) return ''; return DAYS_PL[dateFromKey(k).getDay()]; }
+function datesBetween(s,e){ const arr=[],sd=dateFromKey(s),ed=dateFromKey(e),cur=new Date(sd); while(cur<=ed){arr.push(keyFromDate(cur));cur.setDate(cur.getDate()+1);} return arr; }
+function countNights(s,e){ return Math.round((dateFromKey(e)-dateFromKey(s))/86400000); }
+function todayKey(){ return keyFromDate(new Date()); }
+
+/* ── STORAGE ──────────────────────────────────────────── */
+function loadReservations(){
+  try{
+    const raw=localStorage.getItem(STORAGE_KEY);
+    if(raw){ const p=JSON.parse(raw); CABINS.forEach(c=>{ reservations[c.id]=new Set(p[c.id]||[]); }); return; }
+  }catch(e){}
+  reservations={};
+  CABINS.forEach(c=>reservations[c.id]=new Set());
+  datesBetween('2026-07-05','2026-07-12').forEach(k=>reservations[1].add(k));
+  datesBetween('2026-07-20','2026-07-27').forEach(k=>reservations[1].add(k));
+  datesBetween('2026-07-01','2026-07-08').forEach(k=>reservations[2].add(k));
+  datesBetween('2026-08-15','2026-08-22').forEach(k=>reservations[2].add(k));
+  datesBetween('2026-07-10','2026-07-17').forEach(k=>reservations[3].add(k));
+  datesBetween('2026-07-25','2026-08-01').forEach(k=>reservations[5].add(k));
+  datesBetween('2026-08-03','2026-08-10').forEach(k=>reservations[6].add(k));
+  saveReservations();
+}
+function saveReservations(){ const o={}; CABINS.forEach(c=>{o[c.id]=[...reservations[c.id]];}); localStorage.setItem(STORAGE_KEY,JSON.stringify(o)); }
+function isOccupied(id,k){ return reservations[id]&&reservations[id].has(k); }
+
+/* ── TOAST ────────────────────────────────────────────── */
+function toast(msg){ const w=document.getElementById('toast-wrap'),t=document.createElement('div'); t.className='toast'; t.textContent=msg; w.appendChild(t); setTimeout(()=>t.remove(),2800); }
+
+/* ── CABIN STATUS ─────────────────────────────────────── */
+function cabinStatus(id){
+  const td=new Date(),y=td.getFullYear(),m=td.getMonth(),dim=new Date(y,m+1,0).getDate();
+  const today=new Date(y,m,td.getDate());
+  let occ=0,free=0;
+  for(let d=1;d<=dim;d++){
+    if(new Date(y,m,d)<today) continue;
+    isOccupied(id,toKey(y,m,d))?occ++:free++;
+  }
+  if(free===0) return 'busy';
+  if(occ===0) return 'free';
+  return 'partial';
+}
+
+/* ── CABIN TABS ───────────────────────────────────────── */
+function renderTabs(){
+  const wrap=document.getElementById('cabin-tabs'); wrap.innerHTML='';
+  CABINS.forEach(c=>{
+    const st=cabinStatus(c.id);
+    const stLbl=st==='busy'?'Zajęty':st==='partial'?'Częściowo wolny':'Wolny';
+    const dotCls=`dot dot-${st}`, stCls=`st-${st}`;
+    const badgeCls=c.type==='Komfort'?'badge-komfort':c.type==='Premium'?'badge-premium':'badge-vip';
+    const tab=document.createElement('div');
+    tab.className='cabin-tab'+(activeCabinId===c.id?' active':'');
+    tab.setAttribute('tabindex','0');
+    tab.setAttribute('role','button');
+    tab.setAttribute('aria-label',`${c.name} ${c.type}, do ${c.capacity} osób`);
+    tab.innerHTML=`
+      <div class="ct-row">
+        <div class="ct-num">${c.id}</div>
+        <span class="ct-badge ${badgeCls}">${c.type}</span>
+      </div>
+      <div class="ct-name">${c.name}</div>
+      <div class="ct-cap">do ${c.capacity} osób · ${c.pricePerNight} zł/noc</div>
+      <div class="ct-status ${stCls}"><span class="${dotCls}"></span>${stLbl}</div>`;
+    tab.addEventListener('click',()=>selectCabin(c.id));
+    tab.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();selectCabin(c.id);}});
+    wrap.appendChild(tab);
+  });
+}
+
+/* ── SELECT CABIN ─────────────────────────────────────── */
+function selectCabin(id){
+  activeCabinId=id; selStart=null; selEnd=null;
+  renderTabs(); openCalendar(id); hideSummary();
+  setTimeout(()=>document.getElementById('cal-card').scrollIntoView({behavior:'smooth',block:'start'}),80);
+}
+
+/* ── CALENDAR OPEN ────────────────────────────────────── */
+function openCalendar(id){
+  const c=CABINS.find(x=>x.id===id);
+  document.getElementById('cal-head-name').textContent=c.name;
+  document.getElementById('cal-head-type').textContent=`${c.type} · do ${c.capacity} osób · ${c.pricePerNight} zł/noc`;
+  document.getElementById('cal-card').classList.add('visible');
+  const td=new Date();
+  if(!calYear){calYear=td.getFullYear();calMonth=td.getMonth();}
+  populateYearSel(); buildCells(); updateMonthBtn(); updateNavArrows();
+}
+
+function populateYearSel(){
+  const sel=document.getElementById('cal-year-sel'); sel.innerHTML='';
+  const ty=new Date().getFullYear();
+  for(let y=ty;y<=ty+2;y++){
+    const o=document.createElement('option'); o.value=y; o.textContent=y;
+    if(y===calYear) o.selected=true; sel.appendChild(o);
+  }
+}
+
+function updateMonthBtn(){ document.getElementById('cal-month-btn').textContent=`${MONTHS_PL[calMonth]} ${calYear}`; document.getElementById('cal-year-sel').value=calYear; }
+function updateNavArrows(){
+  const td=new Date();
+  document.getElementById('cal-prev').disabled=(calYear===td.getFullYear()&&calMonth===td.getMonth());
+  document.getElementById('cal-next').disabled=new Date(calYear,calMonth+1,1)>new Date(td.getFullYear(),td.getMonth()+18,1);
+}
+
+/* ── BUILD CELLS — always 6 rows ──────────────────────── */
+function buildCells(){
+  const g=document.getElementById('cal-grid'); g.innerHTML='';
+  const td=new Date(), tdk=todayKey();
+  const dim=new Date(calYear,calMonth+1,0).getDate();
+  const fdow=new Date(calYear,calMonth,1).getDay();
+  const off=(fdow===0)?6:fdow-1;
+  const totalCells=42; // 6 rows × 7
+
+  for(let i=0;i<totalCells;i++){
+    const dayNum=i-off+1;
+    if(dayNum<1||dayNum>dim){
+      const e=document.createElement('div'); e.className='day day-empty'; e.setAttribute('aria-hidden','true'); g.appendChild(e); continue;
+    }
+    const k=toKey(calYear,calMonth,dayNum);
+    const isPast=new Date(calYear,calMonth,dayNum)<new Date(td.getFullYear(),td.getMonth(),td.getDate());
+    const isToday=k===tdk, isOcc=isOccupied(activeCabinId,k);
+    const isSel=isInSel(k);
+    const isPrev=!selEnd&&selStart&&hoverDate&&isInRange(k,selStart,hoverDate);
+
+    const cell=document.createElement('div'); cell.className='day'; cell.textContent=dayNum; cell.dataset.key=k;
+
+    if(isPast){ cell.classList.add('day-past'); }
+    else if(isOcc){ cell.classList.add('day-occ'); }
+    else if(isSel){
+      cell.classList.add('day-sel');
+      if(selStart&&selEnd){
+        if(k===selStart) cell.classList.add('day-r-start');
+        else if(k===selEnd) cell.classList.add('day-r-end');
+        else cell.classList.add('day-fill');
+      }
+    } else if(isPrev){ cell.classList.add('day-hover'); }
+    else { cell.classList.add('day-free'); }
+    if(isToday) cell.classList.add('day-today');
+
+    if(!isPast&&!isOcc){
+      cell.setAttribute('tabindex','0');
+      cell.addEventListener('click',()=>handleClick(k));
+      cell.addEventListener('mouseenter',()=>handleHover(k));
+      cell.addEventListener('mouseleave',()=>handleHoverLeave());
+      cell.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();handleClick(k);}});
+    }
+    g.appendChild(cell);
+  }
+}
+
+function isInSel(k){ if(!selStart) return false; if(!selEnd) return k===selStart; const s=selStart<selEnd?selStart:selEnd,e=selStart<selEnd?selEnd:selStart; return k>=s&&k<=e; }
+function isInRange(k,a,b){ const s=a<b?a:b,e=a<b?b:a; return k>=s&&k<=e; }
+
+/* hover — tylko klasy CSS, bez przebudowy DOM */
+function handleHover(k){
+  if(!selStart||selEnd) return;
+  if(k===hoverDate) return;
+  hoverDate=k;
+  applyHoverClasses();
+}
+function handleHoverLeave(){
+  if(!selStart||selEnd) return;
+  hoverDate=null;
+  applyHoverClasses();
+}
+function applyHoverClasses(){
+  document.querySelectorAll('#cal-grid .day[data-key]').forEach(cell=>{
+    const k=cell.dataset.key;
+    const should = selStart && !selEnd && hoverDate &&
+                   isInRange(k,selStart,hoverDate) &&
+                   !cell.classList.contains('day-past') &&
+                   !cell.classList.contains('day-occ');
+    if(should) cell.classList.add('day-hover');
+    else cell.classList.remove('day-hover');
+  });
+}
+
+function handleClick(k){
+  if(!selStart){
+    selStart=k; selEnd=null; hoverDate=null;
+    buildCells();
+    toast('Wybrano datę przyjazdu. Kliknij datę wyjazdu.');
+  } else if(!selEnd){
+    if(k===selStart){ selStart=null; hoverDate=null; buildCells(); return; }
+    if(k<selStart){selEnd=selStart;selStart=k;}else{selEnd=k;}
+    hoverDate=null;
+    const nights=countNights(selStart,selEnd);
+    if(nights<MIN_NIGHTS){
+      toast(`⚠️ Minimalny pobyt to ${MIN_NIGHTS} noce. Wybierz dłuższy termin.`);
+      selEnd=null; buildCells(); return;
+    }
+    const range=datesBetween(selStart,selEnd);
+    if(range.some(x=>isOccupied(activeCabinId,x))){
+      toast('⚠️ Zakres zawiera zajęte dni — zmień wybór.');
+      selEnd=null; buildCells(); return;
+    }
+    buildCells();
+    showSummary();
+    toast(`✅ Wybrano: ${formatDatePL(selStart)} — ${formatDatePL(selEnd)}`);
+    setTimeout(()=>document.getElementById('summary-card').scrollIntoView({behavior:'smooth',block:'start'}),200);
+  } else {
+    selStart=k; selEnd=null; hoverDate=null;
+    buildCells(); hideSummary();
+    toast('Wybrano datę przyjazdu. Kliknij datę wyjazdu.');
+  }
+}
+
+/* ── MONTH NAVIGATION WITH SLIDE ─────────────────────── */
+function navigateMonth(dir){
+  if(isNavigating) return;
+  isNavigating=true;
+  const g=document.getElementById('cal-grid');
+
+  g.classList.add(dir==='prev'?'slide-out-right':'slide-out-left');
+  setTimeout(()=>{
+    if(dir==='prev'){ calMonth--; if(calMonth<0){calMonth=11;calYear--;} }
+    else{ calMonth++; if(calMonth>11){calMonth=0;calYear++;} }
+    buildCells(); updateMonthBtn(); updateNavArrows();
+    g.classList.remove('slide-out-right','slide-out-left');
+    g.classList.add(dir==='prev'?'slide-in-left':'slide-in-right');
+    setTimeout(()=>{ g.classList.remove('slide-in-left','slide-in-right'); isNavigating=false; },220);
+  },180);
+}
+
+document.getElementById('cal-prev').addEventListener('click',()=>navigateMonth('prev'));
+document.getElementById('cal-next').addEventListener('click',()=>navigateMonth('next'));
+document.getElementById('cal-year-sel').addEventListener('change',function(){ calYear=parseInt(this.value); buildCells(); updateMonthBtn(); updateNavArrows(); });
+document.getElementById('cal-reset').addEventListener('click',()=>{ selStart=null;selEnd=null;hoverDate=null;buildCells();hideSummary();toast('Wybór dat wyczyszczony.'); });
+
+/* month dropdown */
+const mBtn=document.getElementById('cal-month-btn'), mDD=document.getElementById('month-dd'), mGrid=document.getElementById('mdd-grid');
+mBtn.addEventListener('click',e=>{e.stopPropagation();const o=mDD.classList.toggle('open');if(o)buildMDD();});
+document.addEventListener('click',()=>mDD.classList.remove('open'));
+function buildMDD(){
+  mGrid.innerHTML='';
+  MONTHS_PL.forEach((n,i)=>{
+    const d=document.createElement('div'); d.className='mopt'+(i===calMonth?' mact':''); d.textContent=n;
+    d.addEventListener('click',e=>{e.stopPropagation();calMonth=i;mDD.classList.remove('open');buildCells();updateMonthBtn();updateNavArrows();});
+    mGrid.appendChild(d);
+  });
+}
+
+/* ── SUMMARY ──────────────────────────────────────────── */
+function showSummary(){
+  if(!activeCabinId||!selStart||!selEnd) return;
+  const c=CABINS.find(x=>x.id===activeCabinId), nights=countNights(selStart,selEnd);
+  const total=c.pricePerNight*nights;
+  document.getElementById('s-checkin-val').textContent=formatDatePL(selStart,true);
+  document.getElementById('s-checkin-day').textContent=dayNamePL(selStart);
+  document.getElementById('s-checkout-val').textContent=formatDatePL(selEnd,true);
+  document.getElementById('s-checkout-day').textContent=dayNamePL(selEnd);
+  document.getElementById('s-nights').textContent=`${nights} ${nights===1?'noc':nights<5?'noce':'nocy'}`;
+  document.getElementById('s-price-detail').innerHTML=`<strong>${c.name}</strong> (${c.type})<br>${c.pricePerNight} zł/noc × ${nights} ${nights===1?'noc':nights<5?'noce':'nocy'}`;
+  document.getElementById('s-price-total').textContent=`${total.toLocaleString('pl-PL')} zł`;
+  document.getElementById('summary-card').classList.add('visible');
+  updateMsg();
+}
+function hideSummary(){ document.getElementById('summary-card').classList.remove('visible'); }
+
+function genMsg(){
+  if(!activeCabinId||!selStart||!selEnd) return '';
+  const c=CABINS.find(x=>x.id===activeCabinId), nights=countNights(selStart,selEnd);
+  const total=c.pricePerNight*nights;
+  const name=document.getElementById('f-name').value.trim()||'[Imię i nazwisko]';
+  const phone=document.getElementById('f-phone').value.trim()||'[Telefon]';
+  const email=document.getElementById('f-email').value.trim()||'[Email]';
+  const notes=document.getElementById('f-notes').value.trim()||'—';
+  return `Dzień dobry,\nChciałbym/am zarezerwować ${c.name} (${c.type}) w ${RESORT_NAME}.\n\n📅 Przyjazd: ${formatDatePL(selStart,true)} (${dayNamePL(selStart)})\n📅 Wyjazd: ${formatDatePL(selEnd,true)} (${dayNamePL(selEnd)})\n🌙 Liczba nocy: ${nights}\n💰 Szacunkowy koszt: ${total.toLocaleString('pl-PL')} zł\n\n👤 Imię i nazwisko: ${name}\n📞 Telefon: ${phone}\n📧 Email: ${email}\n\n💬 Uwagi: ${notes}\n\nProszę o potwierdzenie dostępności.\nPozdrawiam,\n${name}`;
+}
+function updateMsg(){
+  const msg=genMsg(); document.getElementById('msg-box').textContent=msg;
+  const c=activeCabinId?CABINS.find(x=>x.id===activeCabinId):null;
+  const subj=c?`Rezerwacja ${c.name} — ${RESORT_NAME}`:`Rezerwacja — ${RESORT_NAME}`;
+  document.getElementById('btn-sms').href=`sms:${PHONE}?body=${encodeURIComponent(msg)}`;
+  document.getElementById('btn-email').href=`mailto:${EMAIL}?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(msg)}`;
+  document.getElementById('btn-wa').href=`https://wa.me/${PHONE.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`;
+}
+['f-name','f-phone','f-email','f-notes'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{if(selStart&&selEnd)updateMsg();}));
+
+document.getElementById('btn-copy').addEventListener('click',()=>{
+  const msg=genMsg(); if(!msg){toast('Najpierw wybierz domek i daty.');return;}
+  navigator.clipboard.writeText(msg).then(()=>toast('✅ Skopiowano!')).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=msg;ta.style.cssText='position:fixed;opacity:0;';
+    document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);toast('✅ Skopiowano!');
+  });
+});
+
+document.getElementById('btn-book').addEventListener('click',()=>{
+  if(!selStart||!selEnd){toast('Wybierz daty pobytu.');return;}
+  const c=CABINS.find(x=>x.id===activeCabinId);
+  const nights=countNights(selStart,selEnd), total=c.pricePerNight*nights;
+  toast(`📩 Rezerwacja: ${c.name} · ${formatDatePL(selStart)} – ${formatDatePL(selEnd)} · ${total.toLocaleString('pl-PL')} zł`);
+  setTimeout(()=>document.getElementById('summary-card').querySelector('.btn-email').click(),600);
+});
+
+/* ── FINDER ───────────────────────────────────────────── */
+function finderDateStr(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+(function(){
+  const td=new Date();
+  document.getElementById('finder-checkin').value=finderDateStr(td);
+  const co=new Date(td); co.setDate(co.getDate()+7);
+  document.getElementById('finder-checkout').value=finderDateStr(co);
+})();
+
+document.getElementById('finder-checkin').addEventListener('change',()=>{
+  const ci=new Date(document.getElementById('finder-checkin').value);
+  if(isNaN(ci)) return;
+  const nights=parseInt(document.getElementById('finder-nights').value)||7;
+  const co=new Date(ci); co.setDate(co.getDate()+nights);
+  document.getElementById('finder-checkout').value=finderDateStr(co);
+});
+document.getElementById('finder-checkout').addEventListener('change',()=>{
+  const ci=new Date(document.getElementById('finder-checkin').value);
+  const co=new Date(document.getElementById('finder-checkout').value);
+  if(isNaN(ci)||isNaN(co)||co<=ci) return;
+  const nights=Math.round((co-ci)/(1000*60*60*24));
+  document.getElementById('finder-nights').value=nights;
+});
+document.getElementById('finder-nights').addEventListener('change',()=>{
+  const ci=new Date(document.getElementById('finder-checkin').value);
+  if(isNaN(ci)) return;
+  const nights=parseInt(document.getElementById('finder-nights').value)||7;
+  const co=new Date(ci); co.setDate(co.getDate()+nights);
+  document.getElementById('finder-checkout').value=finderDateStr(co);
+});
+
+document.getElementById('finder-btn').addEventListener('click',()=>{
+  const cv=document.getElementById('finder-checkin').value, nights=parseInt(document.getElementById('finder-nights').value)||7;
+  if(!cv){toast('Wybierz datę przyjazdu.');return;}
+  if(nights<MIN_NIGHTS){toast(`⚠️ Minimalna liczba nocy: ${MIN_NIGHTS}.`);return;}
+  const ci=new Date(cv),co=new Date(ci); co.setDate(co.getDate()+nights);
+  const sk=keyFromDate(ci),ek=keyFromDate(co);
+  const avail=CABINS.filter(c=>!datesBetween(sk,ek).some(k=>isOccupied(c.id,k)));
+  const res=document.getElementById('finder-results');
+  if(!avail.length){res.innerHTML='<span style="color:#DC2626">Brak wolnych domków w tym terminie.</span>';return;}
+  const chips=avail.map(c=>`<span class="finder-chip" tabindex="0" data-id="${c.id}">${c.name} (${c.type})</span>`).join('');
+  res.innerHTML=`<span style="color:var(--g-dark);font-weight:700;">Dostępne (${avail.length}):</span> ${chips}`;
+  res.querySelectorAll('.finder-chip').forEach(el=>{
+    const h=()=>{ const id=parseInt(el.dataset.id); selStart=sk;selEnd=ek;calYear=ci.getFullYear();calMonth=ci.getMonth(); selectCabin(id); setTimeout(()=>{showSummary();document.getElementById('summary-card').scrollIntoView({behavior:'smooth',block:'start'});},400); };
+    el.addEventListener('click',h); el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();h();}});
+  });
+});
+
+/* ── ADMIN ────────────────────────────────────────────── */
+document.getElementById('admin-toggle').addEventListener('click',()=>document.getElementById('admin-panel').classList.toggle('open'));
+document.getElementById('admin-pw-btn').addEventListener('click',adminLogin);
+document.getElementById('admin-pw').addEventListener('keydown',e=>{if(e.key==='Enter')adminLogin();});
+function adminLogin(){
+  const pw=document.getElementById('admin-pw').value,err=document.getElementById('admin-pw-err');
+  if(pw===ADMIN_PASSWORD){
+    adminUnlocked=true;
+    document.getElementById('admin-login').style.display='none';
+    document.getElementById('admin-body').classList.add('open');
+    renderAdminList(); toast('✅ Zalogowano.');
+  } else {
+    err.textContent='❌ Nieprawidłowe hasło.';
+    document.getElementById('admin-pw').value='';
+    setTimeout(()=>err.textContent='',3000);
+  }
+}
+document.getElementById('admin-add-occ').addEventListener('click',()=>adminMark(true));
+document.getElementById('admin-add-free').addEventListener('click',()=>adminMark(false));
+function adminMark(occ){
+  if(!adminUnlocked) return;
+  const id=parseInt(document.getElementById('admin-cabin-sel').value);
+  const s=document.getElementById('admin-start').value,e=document.getElementById('admin-end').value;
+  if(!s||!e){toast('⚠️ Uzupełnij obie daty.');return;}
+  if(s>e){toast('⚠️ Data od musi być wcześniejsza.');return;}
+  const dates=datesBetween(s,e);
+  dates.forEach(k=>occ?reservations[id].add(k):reservations[id].delete(k));
+  saveReservations(); renderTabs(); if(activeCabinId)buildCells(); renderAdminList();
+  toast(occ?`🔴 Oznaczono ${dates.length} dni (Domek ${id})`:`🟢 Zwolniono ${dates.length} dni (Domek ${id})`);
+}
+document.getElementById('admin-view-cabin').addEventListener('change',renderAdminList);
+function renderAdminList(){
+  if(!adminUnlocked) return;
+  const id=parseInt(document.getElementById('admin-view-cabin').value);
+  const list=document.getElementById('admin-dates-list'); list.innerHTML='';
+  const dates=[...reservations[id]].sort();
+  if(!dates.length){list.innerHTML='<div class="admin-date-entry" style="color:#9CA3AF">Brak zajętych terminów</div>';return;}
+  const ranges=[];let rs=dates[0],prev=dates[0];
+  for(let i=1;i<dates.length;i++){
+    const diff=Math.round((dateFromKey(dates[i])-dateFromKey(prev))/86400000);
+    if(diff===1){prev=dates[i];}else{ranges.push([rs,prev]);rs=dates[i];prev=dates[i];}
+  }
+  ranges.push([rs,prev]);
+  ranges.forEach(([s,e])=>{
+    const en=document.createElement('div');en.className='admin-date-entry';
+    const lbl=s===e?formatDatePL(s):`${formatDatePL(s)} — ${formatDatePL(e)}`;
+    en.innerHTML=`<span>${lbl}</span><button class="admin-del">✕</button>`;
+    en.querySelector('.admin-del').addEventListener('click',()=>{
+      datesBetween(s,e).forEach(k=>reservations[id].delete(k));
+      saveReservations();renderTabs();if(activeCabinId)buildCells();renderAdminList();toast(`🗑️ Usunięto: ${lbl}`);
+    });
+    list.appendChild(en);
+  });
+}
+document.getElementById('admin-export').addEventListener('click',()=>{
+  const o={}; CABINS.forEach(c=>{o[c.id]=[...reservations[c.id]].sort();});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([JSON.stringify(o,null,2)],{type:'application/json'}));
+  a.download='pk-reservations.json'; a.click(); toast('⬇ Plik JSON pobrany.');
+});
+document.getElementById('admin-import-trigger').addEventListener('click',()=>document.getElementById('admin-import-file').click());
+document.getElementById('admin-import-file').addEventListener('change',function(){
+  const f=this.files[0]; if(!f) return;
+  const r=new FileReader(); r.onload=e=>{
+    try{
+      const data=JSON.parse(e.target.result);
+      CABINS.forEach(c=>{if(data[c.id])reservations[c.id]=new Set(data[c.id]);});
+      saveReservations();renderTabs();if(activeCabinId)buildCells();renderAdminList();toast('✅ Dane zaimportowane.');
+    }catch{toast('❌ Błąd importu.');}
+  };
+  r.readAsText(f); this.value='';
+});
+
+/* ── HERO NAVIGATION ──────────────────────────────────── */
+document.getElementById('nav-burger').addEventListener('click',()=>document.getElementById('mobile-nav').classList.add('open'));
+document.getElementById('mobile-nav-close').addEventListener('click',()=>document.getElementById('mobile-nav').classList.remove('open'));
+document.getElementById('mobile-cta').addEventListener('click',()=>document.getElementById('mobile-nav').classList.remove('open'));
+document.getElementById('hero-scroll').addEventListener('click',()=>document.getElementById('dostepnosc').scrollIntoView({behavior:'smooth'}));
+
+/* ── INIT ─────────────────────────────────────────────── */
+function init(){
+  loadReservations();
+  const td=new Date(); calYear=td.getFullYear(); calMonth=td.getMonth();
+  renderTabs();
+}
+init();
+</script>
+</body>
+</html>
