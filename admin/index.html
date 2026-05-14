@@ -70,8 +70,8 @@ h1{font-family:'Marcellus',serif;font-size:1.6rem;color:var(--navy);margin-botto
 .page-sub{color:var(--muted);font-size:.88rem;margin-bottom:32px;}
 
 /* ── CARDS ── */
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;}
-@media(max-width:640px){.grid{grid-template-columns:1fr;}}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px;align-items:start;}
+@media(max-width:700px){.grid{grid-template-columns:1fr;}}
 .card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
 .card-head{background:var(--navy);padding:14px 20px;color:#fff;font-family:'Marcellus',serif;font-size:.95rem;display:flex;align-items:center;gap:10px;}
 .card-body{padding:20px;}
@@ -79,25 +79,31 @@ h1{font-family:'Marcellus',serif;font-size:1.6rem;color:var(--navy);margin-botto
 /* ── FORM ── */
 .field{margin-bottom:14px;}
 .field label{display:block;font-size:.78rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;}
-.field select,.field input[type=date]{
+.field select,.field input[type=date],.field input[type=text],.field input[type=tel],.field input[type=email]{
   width:100%;padding:9px 12px;border:1.5px solid var(--cream2);
   border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.88rem;
   background:var(--cream);outline:none;transition:border-color .2s;
 }
 .field select:focus,.field input:focus{border-color:var(--gold);}
+.field input[type=text],.field input[type=tel],.field input[type=email]{background:#fff;}
 .btn-row{display:flex;gap:10px;margin-top:6px;flex-wrap:wrap;}
 .btn-confirm{flex:1;padding:11px 16px;background:var(--green);color:#fff;border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;transition:filter .18s;}
 .btn-cancel {flex:1;padding:11px 16px;background:var(--red);  color:#fff;border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;transition:filter .18s;}
 .btn-confirm:hover,.btn-cancel:hover{filter:brightness(.9);}
 
 /* ── RESERVATION LIST ── */
-.res-list{max-height:260px;overflow-y:auto;border:1px solid var(--cream2);border-radius:9px;background:var(--cream);}
-.res-item{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;border-bottom:1px solid var(--cream2);font-size:.84rem;color:var(--navy);}
+.res-list{max-height:420px;overflow-y:auto;border:1px solid var(--cream2);border-radius:9px;background:var(--cream);}
+.res-item{padding:12px 14px;border-bottom:1px solid var(--cream2);}
 .res-item:last-child{border-bottom:none;}
-.res-item strong{font-weight:600;}
-.res-del{background:none;border:none;color:var(--red);font-size:1rem;cursor:pointer;padding:2px 6px;border-radius:5px;transition:background .15s;line-height:1;}
+.res-item-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
+.res-item-head strong{font-weight:700;font-size:.88rem;color:var(--navy);}
+.res-meta{display:flex;flex-direction:column;gap:3px;font-size:.8rem;color:var(--muted);}
+.res-meta span{display:flex;align-items:center;gap:5px;}
+.res-del{background:none;border:1px solid rgba(220,38,38,.3);color:var(--red);font-size:.78rem;font-weight:600;cursor:pointer;padding:3px 9px;border-radius:5px;transition:background .15s;white-space:nowrap;font-family:'DM Sans',sans-serif;}
 .res-del:hover{background:rgba(220,38,38,.08);}
-.res-empty{padding:14px;color:var(--muted);font-size:.84rem;text-align:center;}
+.res-empty{padding:16px;color:var(--muted);font-size:.84rem;text-align:center;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+@media(max-width:520px){.field-row{grid-template-columns:1fr;}}
 
 /* ── BACKUP ── */
 .backup-row{display:flex;gap:12px;flex-wrap:wrap;}
@@ -169,12 +175,28 @@ h1{font-family:'Marcellus',serif;font-size:1.6rem;color:var(--navy);margin-botto
           </select>
         </div>
         <div class="field">
-          <label>Data przyjazdu</label>
-          <input type="date" id="date-from">
+          <label>Imię i nazwisko gościa</label>
+          <input type="text" id="guest-name" placeholder="np. Jan Kowalski">
         </div>
-        <div class="field">
-          <label>Data wyjazdu (włącznie)</label>
-          <input type="date" id="date-to">
+        <div class="field-row">
+          <div class="field">
+            <label>Telefon</label>
+            <input type="tel" id="guest-phone" placeholder="+48 000 000 000">
+          </div>
+          <div class="field">
+            <label>E-mail</label>
+            <input type="email" id="guest-email" placeholder="email@domena.pl">
+          </div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Data przyjazdu</label>
+            <input type="date" id="date-from">
+          </div>
+          <div class="field">
+            <label>Data wyjazdu (włącznie)</label>
+            <input type="date" id="date-to">
+          </div>
         </div>
         <div class="btn-row">
           <button class="btn-confirm" id="btn-confirm">✅ Zatwierdź rezerwację</button>
@@ -191,8 +213,9 @@ h1{font-family:'Marcellus',serif;font-size:1.6rem;color:var(--navy);margin-botto
       </div>
       <div class="card-body">
         <div class="field">
-          <label>Pokaż domek</label>
+          <label>Filtruj po domku</label>
           <select id="view-cabin">
+            <option value="0">Wszystkie domki</option>
             <option value="1">Domek 1</option>
             <option value="2">Domek 2</option>
             <option value="3">Domek 3</option>
@@ -231,6 +254,7 @@ h1{font-family:'Marcellus',serif;font-size:1.6rem;color:var(--navy);margin-botto
 const ADMIN_EMAIL    = 'janek.bialy2000@gmail.com';
 const ADMIN_PASSWORD = 'fado';
 const STORAGE_KEY    = 'pk-reservations';
+const META_KEY       = 'pk-reservations-meta';
 const CABIN_COUNT    = 6;
 
 /* ── AUTH ── */
@@ -271,23 +295,31 @@ document.getElementById('btn-logout').addEventListener('click',()=>{
 });
 
 /* ── DATA ── */
-let reservations = {};
+let reservations = {};  // cabin -> Set of date strings (for calendar)
+let resMeta = [];       // [{id, cabinId, name, phone, email, from, to}]
+
 for(let i=1;i<=CABIN_COUNT;i++) reservations[i]=new Set();
 
 function loadData(){
   try{
     const raw=localStorage.getItem(STORAGE_KEY);
-    if(!raw) return;
-    const obj=JSON.parse(raw);
-    for(let i=1;i<=CABIN_COUNT;i++){
-      if(obj[i]) reservations[i]=new Set(obj[i]);
+    if(raw){
+      const obj=JSON.parse(raw);
+      for(let i=1;i<=CABIN_COUNT;i++){
+        if(obj[i]) reservations[i]=new Set(obj[i]);
+      }
     }
+  } catch(e){}
+  try{
+    const raw=localStorage.getItem(META_KEY);
+    if(raw) resMeta=JSON.parse(raw);
   } catch(e){}
 }
 function saveData(){
   const o={};
   for(let i=1;i<=CABIN_COUNT;i++) o[i]=[...reservations[i]].sort();
   localStorage.setItem(STORAGE_KEY,JSON.stringify(o));
+  localStorage.setItem(META_KEY,JSON.stringify(resMeta));
 }
 loadData();
 
@@ -315,45 +347,67 @@ function toast(msg){
 document.getElementById('btn-confirm').addEventListener('click',()=>mark(true));
 document.getElementById('btn-cancel').addEventListener('click',()=>mark(false));
 function mark(occ){
-  const id=parseInt(document.getElementById('cabin-sel').value);
+  const cabinId=parseInt(document.getElementById('cabin-sel').value);
   const s=document.getElementById('date-from').value;
   const e=document.getElementById('date-to').value;
+  const name=document.getElementById('guest-name').value.trim();
+  const phone=document.getElementById('guest-phone').value.trim();
+  const email=document.getElementById('guest-email').value.trim();
   if(!s||!e){ toast('⚠️ Uzupełnij obie daty.'); return; }
   if(s>e){ toast('⚠️ Data przyjazdu musi być wcześniejsza.'); return; }
   const dates=datesBetween(s,e);
-  dates.forEach(k=>occ?reservations[id].add(k):reservations[id].delete(k));
-  saveData();
-  renderList();
+  dates.forEach(k=>occ?reservations[cabinId].add(k):reservations[cabinId].delete(k));
+  if(occ){
+    resMeta.push({ id: Date.now(), cabinId, name, phone, email, from:s, to:e });
+  } else {
+    resMeta=resMeta.filter(r=>!(r.cabinId===cabinId && r.from===s && r.to===e));
+  }
+  saveData(); renderList();
   toast(occ
-    ? `✅ Rezerwacja zatwierdzona — Domek ${id} (${dates.length} dni)`
-    : `❌ Rezerwacja anulowana — Domek ${id} (${dates.length} dni)`
+    ? `✅ Rezerwacja zatwierdzona — Domek ${cabinId} (${dates.length} dni)`
+    : `❌ Rezerwacja anulowana — Domek ${cabinId} (${dates.length} dni)`
   );
+  if(occ){
+    document.getElementById('guest-name').value='';
+    document.getElementById('guest-phone').value='';
+    document.getElementById('guest-email').value='';
+    document.getElementById('date-from').value='';
+    document.getElementById('date-to').value='';
+  }
 }
 
 /* ── LIST ── */
 document.getElementById('view-cabin').addEventListener('change', renderList);
 function renderList(){
-  const id=parseInt(document.getElementById('view-cabin').value);
+  const filterCabin=parseInt(document.getElementById('view-cabin').value);
   const list=document.getElementById('res-list');
   list.innerHTML='';
-  const dates=[...reservations[id]].sort();
-  if(!dates.length){
-    list.innerHTML='<div class="res-empty">Brak rezerwacji dla tego domku.</div>';
+
+  let items = [...resMeta].sort((a,b)=>a.from.localeCompare(b.from));
+  if(filterCabin>0) items=items.filter(r=>r.cabinId===filterCabin);
+
+  if(!items.length){
+    list.innerHTML='<div class="res-empty">Brak rezerwacji.</div>';
     return;
   }
-  const ranges=[]; let rs=dates[0],prev=dates[0];
-  for(let i=1;i<dates.length;i++){
-    const diff=Math.round((new Date(dates[i])-new Date(prev))/86400000);
-    if(diff===1){ prev=dates[i]; }
-    else{ ranges.push([rs,prev]); rs=dates[i]; prev=dates[i]; }
-  }
-  ranges.push([rs,prev]);
-  ranges.forEach(([s,e])=>{
-    const lbl=s===e?fmtPL(s):`${fmtPL(s)} — ${fmtPL(e)}`;
+
+  items.forEach(res=>{
+    const lbl=res.from===res.to?fmtPL(res.from):`${fmtPL(res.from)} — ${fmtPL(res.to)}`;
     const el=document.createElement('div'); el.className='res-item';
-    el.innerHTML=`<span><strong>Domek ${id}:</strong> ${lbl}</span><button class="res-del" title="Usuń rezerwację">✕</button>`;
+    el.innerHTML=`
+      <div class="res-item-head">
+        <strong>Domek ${res.cabinId} &nbsp;·&nbsp; ${lbl}</strong>
+        <button class="res-del">✕ Usuń</button>
+      </div>
+      <div class="res-meta">
+        ${res.name  ? `<span>👤 ${res.name}</span>`  : ''}
+        ${res.phone ? `<span>📞 ${res.phone}</span>` : ''}
+        ${res.email ? `<span>✉️ ${res.email}</span>` : ''}
+        ${!res.name&&!res.phone&&!res.email?'<span style="color:#ccc">Brak danych gościa</span>':''}
+      </div>`;
     el.querySelector('.res-del').addEventListener('click',()=>{
-      datesBetween(s,e).forEach(k=>reservations[id].delete(k));
+      datesBetween(res.from,res.to).forEach(k=>reservations[res.cabinId].delete(k));
+      resMeta=resMeta.filter(r=>r.id!==res.id);
       saveData(); renderList();
       toast(`❌ Usunięto rezerwację: ${lbl}`);
     });
@@ -363,8 +417,8 @@ function renderList(){
 
 /* ── BACKUP ── */
 document.getElementById('btn-export').addEventListener('click',()=>{
-  const o={};
-  for(let i=1;i<=CABIN_COUNT;i++) o[i]=[...reservations[i]].sort();
+  const o={ dates:{}, meta: resMeta };
+  for(let i=1;i<=CABIN_COUNT;i++) o.dates[i]=[...reservations[i]].sort();
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([JSON.stringify(o,null,2)],{type:'application/json'}));
   a.download='pk-reservations.json'; a.click();
@@ -377,9 +431,11 @@ document.getElementById('import-file').addEventListener('change',function(){
   r.onload=ev=>{
     try{
       const obj=JSON.parse(ev.target.result);
+      const dates=obj.dates||obj;
       for(let i=1;i<=CABIN_COUNT;i++){
-        if(obj[i]) reservations[i]=new Set(obj[i]);
+        if(dates[i]) reservations[i]=new Set(dates[i]);
       }
+      if(obj.meta) resMeta=obj.meta;
       saveData(); renderList();
       toast('📂 Dane wczytane.');
     } catch(e){ toast('⚠️ Błąd pliku JSON.'); }
