@@ -1668,7 +1668,7 @@ init();
   var inp  = document.getElementById('pw-input');
   var err  = document.getElementById('pw-err');
 
-  if(sessionStorage.getItem('kw_auth') === '1'){
+  if(sessionStorage.getItem('kw_auth_v2') === '1'){
     gate.classList.add('hidden');
     return;
   }
@@ -1680,7 +1680,7 @@ init();
     if(inp.value.trim().toLowerCase() === 'fado'){
       gate.classList.add('hidden');
       document.body.style.overflow = '';
-      sessionStorage.setItem('kw_auth','1');
+      sessionStorage.setItem('kw_auth_v2','1');
     } else {
       err.textContent = 'Nieprawidłowe hasło.';
       inp.value = '';
