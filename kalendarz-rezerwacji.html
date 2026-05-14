@@ -18,31 +18,6 @@
 .pw-btn:hover{background:#162f57;}
 .pw-err{color:#dc2626;font-size:.82rem;margin-top:10px;min-height:18px;}
 </style>
-<script>
-(function(){
-  if(sessionStorage.getItem('kw_auth')==='1') return;
-  document.addEventListener('DOMContentLoaded',function(){
-    document.body.style.overflow='hidden';
-    var gate=document.getElementById('pw-gate');
-    var inp=document.getElementById('pw-input');
-    var err=document.getElementById('pw-err');
-    function check(){
-      if(inp.value.trim().toLowerCase()==='fado'){
-        gate.classList.add('hidden');
-        document.body.style.overflow='';
-        sessionStorage.setItem('kw_auth','1');
-      } else {
-        err.textContent='Nieprawidłowe hasło.';
-        inp.value=''; inp.focus();
-        setTimeout(function(){err.textContent='';},2500);
-      }
-    }
-    document.getElementById('pw-btn').addEventListener('click',check);
-    inp.addEventListener('keydown',function(e){if(e.key==='Enter')check();});
-    inp.focus();
-  });
-})();
-</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&display=swap" rel="stylesheet">
@@ -1684,6 +1659,39 @@ function init(){
   renderTabs();
 }
 init();
+</script>
+
+<script>
+/* ── PASSWORD GATE ───────────────────────────────────────── */
+(function(){
+  var gate = document.getElementById('pw-gate');
+  var inp  = document.getElementById('pw-input');
+  var err  = document.getElementById('pw-err');
+
+  if(sessionStorage.getItem('kw_auth') === '1'){
+    gate.classList.add('hidden');
+    return;
+  }
+
+  document.body.style.overflow = 'hidden';
+  inp.focus();
+
+  function check(){
+    if(inp.value.trim().toLowerCase() === 'fado'){
+      gate.classList.add('hidden');
+      document.body.style.overflow = '';
+      sessionStorage.setItem('kw_auth','1');
+    } else {
+      err.textContent = 'Nieprawidłowe hasło.';
+      inp.value = '';
+      inp.focus();
+      setTimeout(function(){ err.textContent = ''; }, 2500);
+    }
+  }
+
+  document.getElementById('pw-btn').addEventListener('click', check);
+  inp.addEventListener('keydown', function(e){ if(e.key === 'Enter') check(); });
+})();
 </script>
 </body>
 </html>
