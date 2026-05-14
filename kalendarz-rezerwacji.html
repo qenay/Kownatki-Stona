@@ -1133,10 +1133,13 @@ footer a { color: var(--gold-lt); text-decoration: none; }
         <span class="admin-head-title">Panel zarządzania rezerwacjami</span>
       </div>
       <div class="admin-login" id="admin-login">
-        <h3>Wprowadź hasło administratora</h3>
-        <div class="admin-pw-row">
-          <input type="password" id="admin-pw" placeholder="Hasło...">
-          <button class="admin-pw-btn" id="admin-pw-btn">Zaloguj</button>
+        <h3>Zaloguj się do panelu</h3>
+        <div class="admin-pw-row" style="flex-direction:column;gap:10px;max-width:320px;margin:0 auto;">
+          <input type="email" id="admin-email" placeholder="Adres e-mail..." style="width:100%;padding:9px 12px;border:1.5px solid var(--cream2);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.9rem;outline:none;">
+          <div style="display:flex;gap:8px;">
+            <input type="password" id="admin-pw" placeholder="Hasło..." style="flex:1;">
+            <button class="admin-pw-btn" id="admin-pw-btn">Zaloguj</button>
+          </div>
         </div>
         <p class="admin-pw-err" id="admin-pw-err"></p>
       </div>
@@ -1147,8 +1150,8 @@ footer a { color: var(--gold-lt); text-decoration: none; }
             <div class="admin-field"><label>Domek</label>
               <select id="admin-cabin-sel">
                 <option value="1">Domek 1 — Komfort</option><option value="2">Domek 2 — Komfort</option>
-                <option value="3">Domek 3 — Premium</option><option value="4">Domek 4 — Premium</option>
-                <option value="5">Domek 5 — VIP</option><option value="6">Domek 6 — VIP</option>
+                <option value="3">Domek 3 — Komfort</option><option value="4">Domek 4 — Komfort</option>
+                <option value="5">Domek 5 — Komfort</option><option value="6">Domek 6 — VIP</option>
               </select>
             </div>
             <div class="admin-field"><label>Data od</label><input type="date" id="admin-start"></div>
@@ -1193,7 +1196,8 @@ footer a { color: var(--gold-lt); text-decoration: none; }
 
 /* ── CONSTANTS ────────────────────────────────────────── */
 const STORAGE_KEY    = 'pk-reservations';
-const ADMIN_PASSWORD = 'kownatki2025';
+const ADMIN_EMAIL    = 'janek.bialy2000@gmail.com';
+const ADMIN_PASSWORD = 'fado';
 const PHONE          = '+48000000000';
 const PHONE_DISPLAY  = '+48 000 000 000';
 const EMAIL          = 'rezerwacje@plazakownatki.pl';
@@ -1578,15 +1582,18 @@ document.getElementById('finder-btn').addEventListener('click',()=>{
 document.getElementById('admin-toggle').addEventListener('click',()=>document.getElementById('admin-panel').classList.toggle('open'));
 document.getElementById('admin-pw-btn').addEventListener('click',adminLogin);
 document.getElementById('admin-pw').addEventListener('keydown',e=>{if(e.key==='Enter')adminLogin();});
+document.getElementById('admin-email').addEventListener('keydown',e=>{if(e.key==='Enter')adminLogin();});
 function adminLogin(){
-  const pw=document.getElementById('admin-pw').value,err=document.getElementById('admin-pw-err');
-  if(pw===ADMIN_PASSWORD){
+  const email=document.getElementById('admin-email').value.trim().toLowerCase();
+  const pw=document.getElementById('admin-pw').value;
+  const err=document.getElementById('admin-pw-err');
+  if(email===ADMIN_EMAIL && pw===ADMIN_PASSWORD){
     adminUnlocked=true;
     document.getElementById('admin-login').style.display='none';
     document.getElementById('admin-body').classList.add('open');
     renderAdminList(); toast('✅ Zalogowano.');
   } else {
-    err.textContent='❌ Nieprawidłowe hasło.';
+    err.textContent='❌ Nieprawidłowy e-mail lub hasło.';
     document.getElementById('admin-pw').value='';
     setTimeout(()=>err.textContent='',3000);
   }
