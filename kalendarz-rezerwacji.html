@@ -1146,7 +1146,7 @@ footer a { color: var(--gold-lt); text-decoration: none; }
       <div class="admin-body" id="admin-body">
         <div class="admin-grid">
           <div>
-            <p class="admin-sec">Zarządzaj rezerwacjami</p>
+            <p class="admin-sec">Dodaj / anuluj rezerwację</p>
             <div class="admin-field"><label>Domek</label>
               <select id="admin-cabin-sel">
                 <option value="1">Domek 1 — Komfort</option><option value="2">Domek 2 — Komfort</option>
@@ -1154,15 +1154,15 @@ footer a { color: var(--gold-lt); text-decoration: none; }
                 <option value="5">Domek 5 — Komfort</option><option value="6">Domek 6 — VIP</option>
               </select>
             </div>
-            <div class="admin-field"><label>Data od</label><input type="date" id="admin-start"></div>
-            <div class="admin-field"><label>Data do (włącznie)</label><input type="date" id="admin-end"></div>
+            <div class="admin-field"><label>Data przyjazdu</label><input type="date" id="admin-start"></div>
+            <div class="admin-field"><label>Data wyjazdu (włącznie)</label><input type="date" id="admin-end"></div>
             <div class="admin-btn-row">
-              <button class="admin-mark admin-occ" id="admin-add-occ">🔴 Zajęte</button>
-              <button class="admin-mark admin-free" id="admin-add-free">🟢 Wolne</button>
+              <button class="admin-mark admin-occ" id="admin-add-occ">✅ Zatwierdź rezerwację</button>
+              <button class="admin-mark admin-free" id="admin-add-free">❌ Anuluj rezerwację</button>
             </div>
           </div>
           <div>
-            <p class="admin-sec">Aktualne rezerwacje</p>
+            <p class="admin-sec">Lista rezerwacji (kliknij ✕ aby usunąć)</p>
             <div class="admin-field"><label>Pokaż domek</label>
               <select id="admin-view-cabin">
                 <option value="1">Domek 1</option><option value="2">Domek 2</option>
@@ -1174,8 +1174,8 @@ footer a { color: var(--gold-lt); text-decoration: none; }
           </div>
         </div>
         <div class="admin-io-row">
-          <button class="admin-io admin-export" id="admin-export">⬇ Eksportuj JSON</button>
-          <button class="admin-io admin-import" id="admin-import-trigger">⬆ Importuj JSON</button>
+          <button class="admin-io admin-export" id="admin-export">💾 Pobierz kopię zapasową</button>
+          <button class="admin-io admin-import" id="admin-import-trigger">📂 Wczytaj kopię zapasową</button>
           <input type="file" id="admin-import-file" accept=".json">
         </div>
       </div>
@@ -1609,7 +1609,7 @@ function adminMark(occ){
   const dates=datesBetween(s,e);
   dates.forEach(k=>occ?reservations[id].add(k):reservations[id].delete(k));
   saveReservations(); renderTabs(); if(activeCabinId)buildCells(); renderAdminList();
-  toast(occ?`🔴 Oznaczono ${dates.length} dni (Domek ${id})`:`🟢 Zwolniono ${dates.length} dni (Domek ${id})`);
+  toast(occ?`✅ Rezerwacja zatwierdzona — Domek ${id} (${dates.length} dni)`:`❌ Rezerwacja anulowana — Domek ${id} (${dates.length} dni)`);
 }
 document.getElementById('admin-view-cabin').addEventListener('change',renderAdminList);
 function renderAdminList(){
@@ -1630,7 +1630,7 @@ function renderAdminList(){
     en.innerHTML=`<span>${lbl}</span><button class="admin-del">✕</button>`;
     en.querySelector('.admin-del').addEventListener('click',()=>{
       datesBetween(s,e).forEach(k=>reservations[id].delete(k));
-      saveReservations();renderTabs();if(activeCabinId)buildCells();renderAdminList();toast(`🗑️ Usunięto: ${lbl}`);
+      saveReservations();renderTabs();if(activeCabinId)buildCells();renderAdminList();toast(`❌ Usunięto rezerwację: ${lbl}`);
     });
     list.appendChild(en);
   });
