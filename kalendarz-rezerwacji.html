@@ -18,6 +18,7 @@
 .pw-btn:hover{background:#162f57;}
 .pw-err{color:#dc2626;font-size:.82rem;margin-top:10px;min-height:18px;}
 </style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&display=swap" rel="stylesheet">
@@ -363,7 +364,42 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
   transition: border-color var(--t);
 }
 .finder input:focus { border-color: var(--gold); }
-.finder input[type=number] { width: 82px; }
+.finder input[type=number] {
+  width: 52px;
+  text-align: center;
+  border-left: none;
+  border-right: none;
+  border-radius: 0;
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+.finder input[type=number]::-webkit-inner-spin-button,
+.finder input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.nights-stepper {
+  display: flex;
+  align-items: stretch;
+  border: 1.5px solid var(--cream2);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  transition: border-color var(--t);
+}
+.nights-stepper:focus-within { border-color: var(--gold); }
+.nights-stepper input { border: none; background: var(--cream); }
+.nights-stepper input:focus { border-color: transparent; box-shadow: none; }
+.nights-btn {
+  background: var(--g-dark);
+  color: var(--gold);
+  border: none;
+  width: 34px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background var(--t), color var(--t);
+  line-height: 1;
+  padding: 0;
+  flex-shrink: 0;
+}
+.nights-btn:hover { background: var(--gold); color: #fff; }
 .finder-btn {
   background: var(--g-dark);
   color: #fff;
@@ -909,6 +945,80 @@ footer a { color: var(--gold-lt); text-decoration: none; }
   .sum-sep { display: none; }
 }
 
+/* ── FLATPICKR ──────────────────────────────────────────── */
+.flatpickr-calendar {
+  font-family: 'DM Sans', sans-serif !important;
+  background: #fff;
+  border: 1px solid #e8e0d8;
+  border-radius: 14px !important;
+  box-shadow: 0 10px 40px rgba(14,36,68,.18) !important;
+  padding: 4px;
+  width: 280px !important;
+}
+.flatpickr-months {
+  background: #0e2444;
+  border-radius: 10px 10px 0 0;
+  padding: 2px 2px;
+  margin: -4px -4px 4px;
+}
+.flatpickr-month { height: 36px; }
+.flatpickr-current-month {
+  color: #fff !important;
+  font-family: 'Marcellus', serif;
+  font-size: .85rem;
+  padding-top: 8px;
+}
+.flatpickr-current-month input.cur-year { color: #fff !important; font-weight: 600; }
+.flatpickr-current-month .flatpickr-monthDropdown-months {
+  color: #fff;
+  background: transparent;
+  font-family: 'Marcellus', serif;
+  font-size: .85rem;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.flatpickr-prev-month svg, .flatpickr-next-month svg { fill: rgba(255,255,255,.8) !important; }
+.flatpickr-prev-month:hover svg, .flatpickr-next-month:hover svg { fill: #bc9675 !important; }
+.flatpickr-weekdays { background: transparent; }
+span.flatpickr-weekday {
+  color: #8b6040;
+  font-size: .62rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  background: transparent;
+}
+.flatpickr-day {
+  border-radius: 7px !important;
+  font-size: .8rem;
+  color: #1a1a1a;
+  height: 32px;
+  line-height: 32px;
+  max-width: 38px !important;
+}
+.flatpickr-day:hover {
+  background: #f5ede4 !important;
+  border-color: #d4b08f !important;
+  color: #0e2444;
+}
+.flatpickr-day.today {
+  border-color: #bc9675 !important;
+  font-weight: 700;
+  color: #0e2444;
+}
+.flatpickr-day.selected, .flatpickr-day.selected:hover {
+  background: #0e2444 !important;
+  border-color: #0e2444 !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+.flatpickr-day.prevMonthDay, .flatpickr-day.nextMonthDay { color: #ccc; }
+.flatpickr-day.flatpickr-disabled, .flatpickr-day.flatpickr-disabled:hover {
+  color: #ddd !important;
+  cursor: not-allowed;
+}
+.numInputWrapper span { border-color: rgba(255,255,255,.15); }
+.numInputWrapper span svg { fill: rgba(255,255,255,.7) !important; }
 </style>
 </head>
 <body>
@@ -1000,7 +1110,11 @@ footer a { color: var(--gold-lt); text-decoration: none; }
     </div>
     <div class="finder-field">
       <span class="finder-label">Nocy</span>
-      <input type="number" id="finder-nights" min="2" max="60" value="7">
+      <div class="nights-stepper">
+        <button class="nights-btn" id="nights-dec" aria-label="Mniej nocy">−</button>
+        <input type="number" id="finder-nights" min="2" max="60" value="7">
+        <button class="nights-btn" id="nights-inc" aria-label="Więcej nocy">+</button>
+      </div>
     </div>
     <button class="finder-btn" id="finder-btn">Szukaj wolnych domków</button>
     <div class="finder-results" id="finder-results"></div>
@@ -1132,6 +1246,8 @@ footer a { color: var(--gold-lt); text-decoration: none; }
 
 <div class="toast-wrap" id="toast-wrap"></div>
 
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pl.js"></script>
 <script>
 'use strict';
 
@@ -1468,42 +1584,56 @@ document.getElementById('btn-book').addEventListener('click',()=>{
   setTimeout(()=>document.getElementById('summary-card').querySelector('.btn-email').click(),600);
 });
 
-/* ── FINDER ───────────────────────────────────────────── */
-function finderDateStr(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
-(function(){
-  const td=new Date();
-  document.getElementById('finder-checkin').value=finderDateStr(td);
-  const co=new Date(td); co.setDate(co.getDate()+7);
-  document.getElementById('finder-checkout').value=finderDateStr(co);
+/* ── FINDER (Flatpickr) ───────────────────────────────── */
+let fpIn, fpOut;
+(function initFP(){
+  const today=new Date();
+  const defOut=new Date(today); defOut.setDate(defOut.getDate()+7);
+
+  fpIn = flatpickr('#finder-checkin', {
+    locale:'pl', dateFormat:'d.m.Y', minDate:'today', defaultDate:today,
+    onChange([d]){
+      if(!d) return;
+      const nights=parseInt(document.getElementById('finder-nights').value)||7;
+      const out=new Date(d); out.setDate(out.getDate()+nights);
+      fpOut.setDate(out, false);
+      fpOut.set('minDate', new Date(d.getTime()+864e5));
+    }
+  });
+  fpOut = flatpickr('#finder-checkout', {
+    locale:'pl', dateFormat:'d.m.Y', minDate:defOut, defaultDate:defOut,
+    onChange([d]){
+      const ci=fpIn.selectedDates[0];
+      if(!d||!ci) return;
+      const nights=Math.round((d-ci)/864e5);
+      if(nights>=MIN_NIGHTS) document.getElementById('finder-nights').value=nights;
+    }
+  });
+  function applyNights(){
+    const ci=fpIn.selectedDates[0]; if(!ci) return;
+    const nights=Math.max(MIN_NIGHTS, parseInt(document.getElementById('finder-nights').value)||7);
+    document.getElementById('finder-nights').value=nights;
+    const out=new Date(ci); out.setDate(out.getDate()+nights);
+    fpOut.setDate(out, false);
+  }
+  document.getElementById('finder-nights').addEventListener('change', applyNights);
+  document.getElementById('nights-dec').addEventListener('click',()=>{
+    const inp=document.getElementById('finder-nights');
+    inp.value=Math.max(MIN_NIGHTS, (parseInt(inp.value)||7)-1);
+    applyNights();
+  });
+  document.getElementById('nights-inc').addEventListener('click',()=>{
+    const inp=document.getElementById('finder-nights');
+    inp.value=Math.min(60, (parseInt(inp.value)||7)+1);
+    applyNights();
+  });
 })();
 
-document.getElementById('finder-checkin').addEventListener('change',()=>{
-  const ci=new Date(document.getElementById('finder-checkin').value);
-  if(isNaN(ci)) return;
-  const nights=parseInt(document.getElementById('finder-nights').value)||7;
-  const co=new Date(ci); co.setDate(co.getDate()+nights);
-  document.getElementById('finder-checkout').value=finderDateStr(co);
-});
-document.getElementById('finder-checkout').addEventListener('change',()=>{
-  const ci=new Date(document.getElementById('finder-checkin').value);
-  const co=new Date(document.getElementById('finder-checkout').value);
-  if(isNaN(ci)||isNaN(co)||co<=ci) return;
-  const nights=Math.round((co-ci)/(1000*60*60*24));
-  document.getElementById('finder-nights').value=nights;
-});
-document.getElementById('finder-nights').addEventListener('change',()=>{
-  const ci=new Date(document.getElementById('finder-checkin').value);
-  if(isNaN(ci)) return;
-  const nights=parseInt(document.getElementById('finder-nights').value)||7;
-  const co=new Date(ci); co.setDate(co.getDate()+nights);
-  document.getElementById('finder-checkout').value=finderDateStr(co);
-});
-
 document.getElementById('finder-btn').addEventListener('click',()=>{
-  const cv=document.getElementById('finder-checkin').value, nights=parseInt(document.getElementById('finder-nights').value)||7;
-  if(!cv){toast('Wybierz datę przyjazdu.');return;}
+  const ci=fpIn.selectedDates[0], co=fpOut.selectedDates[0];
+  if(!ci||!co){toast('Wybierz datę przyjazdu i odjazdu.');return;}
+  const nights=Math.round((co-ci)/864e5);
   if(nights<MIN_NIGHTS){toast(`⚠️ Minimalna liczba nocy: ${MIN_NIGHTS}.`);return;}
-  const ci=new Date(cv),co=new Date(ci); co.setDate(co.getDate()+nights);
   const sk=keyFromDate(ci),ek=keyFromDate(co);
   const avail=CABINS.filter(c=>!datesBetween(sk,ek).some(k=>isOccupied(c.id,k)));
   const res=document.getElementById('finder-results');
