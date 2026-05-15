@@ -953,7 +953,7 @@ footer a { color: var(--gold-lt); text-decoration: none; }
   border-radius: 14px !important;
   box-shadow: 0 10px 40px rgba(14,36,68,.18) !important;
   padding: 4px;
-  width: 280px !important;
+  width: 285px !important;
 }
 .flatpickr-months {
   background: #0e2444;
@@ -979,7 +979,8 @@ footer a { color: var(--gold-lt); text-decoration: none; }
 }
 .flatpickr-prev-month svg, .flatpickr-next-month svg { fill: rgba(255,255,255,.8) !important; }
 .flatpickr-prev-month:hover svg, .flatpickr-next-month:hover svg { fill: #bc9675 !important; }
-.flatpickr-weekdays { background: transparent; }
+.flatpickr-days, .flatpickr-rContainer, .flatpickr-weekdaycontainer, .dayContainer { width: 100% !important; min-width: 0 !important; max-width: none !important; }
+.flatpickr-weekdays { background: transparent; width: 100% !important; }
 span.flatpickr-weekday {
   color: #8b6040;
   font-size: .62rem;
@@ -987,6 +988,8 @@ span.flatpickr-weekday {
   letter-spacing: .04em;
   text-transform: uppercase;
   background: transparent;
+  max-width: 39px !important;
+  text-align: center;
 }
 .flatpickr-day {
   border-radius: 7px !important;
@@ -994,7 +997,6 @@ span.flatpickr-weekday {
   color: #1a1a1a;
   height: 32px;
   line-height: 32px;
-  max-width: 38px !important;
 }
 .flatpickr-day:hover {
   background: #f5ede4 !important;
