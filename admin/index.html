@@ -90,6 +90,12 @@ h1{font-family:'Marcellus',serif;font-size:1.6rem;color:var(--navy);margin-botto
 .btn-confirm{flex:1;padding:11px 16px;background:var(--green);color:#fff;border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;transition:filter .18s;}
 .btn-cancel {flex:1;padding:11px 16px;background:var(--red);  color:#fff;border:none;border-radius:9px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:.88rem;cursor:pointer;transition:filter .18s;}
 .btn-confirm:hover,.btn-cancel:hover{filter:brightness(.9);}
+.jacuzzi-admin-lbl{display:flex;align-items:center;gap:10px;cursor:pointer;padding:9px 12px;border:1.5px solid var(--cream2);border-radius:9px;background:var(--cream);transition:border-color .2s;}
+.jacuzzi-admin-lbl:hover{border-color:var(--gold);}
+.jacuzzi-admin-lbl:has(input:checked){border-color:var(--navy);background:rgba(14,36,68,.05);}
+.jacuzzi-admin-lbl input[type=checkbox]{width:17px;height:17px;accent-color:var(--navy);cursor:pointer;flex-shrink:0;}
+.jacuzzi-admin-lbl span:first-of-type{flex:1;font-size:.9rem;font-weight:600;color:var(--navy);}
+#jacuzzi-admin-note{font-size:.8rem;font-weight:600;white-space:nowrap;}
 
 /* ── RESERVATION LIST ── */
 .res-list{max-height:420px;overflow-y:auto;border:1px solid var(--cream2);border-radius:9px;background:var(--cream);}
@@ -197,6 +203,13 @@ h1{font-family:'Marcellus',serif;font-size:1.6rem;color:var(--navy);margin-botto
             <label>Data wyjazdu (włącznie)</label>
             <input type="date" id="date-to">
           </div>
+        </div>
+        <div class="field">
+          <label class="jacuzzi-admin-lbl">
+            <input type="checkbox" id="admin-jacuzzi">
+            <span>🛁 Jacuzzi</span>
+            <span id="jacuzzi-admin-note"></span>
+          </label>
         </div>
         <div class="btn-row">
           <button class="btn-confirm" id="btn-confirm">✅ Zatwierdź rezerwację</button>
@@ -346,6 +359,15 @@ function toast(msg){
 /* ── MARK ── */
 document.getElementById('btn-confirm').addEventListener('click',()=>mark(true));
 document.getElementById('btn-cancel').addEventListener('click',()=>mark(false));
+function updateJacuzziNote(){
+  const id=parseInt(document.getElementById('cabin-sel').value);
+  const note=document.getElementById('jacuzzi-admin-note');
+  if(id===6){ note.textContent='gratis'; note.style.color='var(--green)'; }
+  else { note.textContent='+200 zł'; note.style.color='#8b6040'; }
+}
+document.getElementById('cabin-sel').addEventListener('change', updateJacuzziNote);
+updateJacuzziNote();
+
 function mark(occ){
   const cabinId=parseInt(document.getElementById('cabin-sel').value);
   const s=document.getElementById('date-from').value;
@@ -353,12 +375,13 @@ function mark(occ){
   const name=document.getElementById('guest-name').value.trim();
   const phone=document.getElementById('guest-phone').value.trim();
   const email=document.getElementById('guest-email').value.trim();
+  const jacuzzi=document.getElementById('admin-jacuzzi').checked;
   if(!s||!e){ toast('⚠️ Uzupełnij obie daty.'); return; }
   if(s>e){ toast('⚠️ Data przyjazdu musi być wcześniejsza.'); return; }
   const dates=datesBetween(s,e);
   dates.forEach(k=>occ?reservations[cabinId].add(k):reservations[cabinId].delete(k));
   if(occ){
-    resMeta.push({ id: Date.now(), cabinId, name, phone, email, from:s, to:e });
+    resMeta.push({ id: Date.now(), cabinId, name, phone, email, from:s, to:e, jacuzzi });
   } else {
     resMeta=resMeta.filter(r=>!(r.cabinId===cabinId && r.from===s && r.to===e));
   }
@@ -373,6 +396,7 @@ function mark(occ){
     document.getElementById('guest-email').value='';
     document.getElementById('date-from').value='';
     document.getElementById('date-to').value='';
+    document.getElementById('admin-jacuzzi').checked=false;
   }
 }
 
@@ -403,6 +427,7 @@ function renderList(){
         ${res.name  ? `<span>👤 ${res.name}</span>`  : ''}
         ${res.phone ? `<span>📞 ${res.phone}</span>` : ''}
         ${res.email ? `<span>✉️ ${res.email}</span>` : ''}
+        ${res.jacuzzi ? `<span>🛁 Jacuzzi${res.cabinId===6?' (gratis)':' (+200 zł)'}</span>` : ''}
         ${!res.name&&!res.phone&&!res.email?'<span style="color:#ccc">Brak danych gościa</span>':''}
       </div>`;
     el.querySelector('.res-del').addEventListener('click',()=>{
