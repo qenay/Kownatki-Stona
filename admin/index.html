@@ -106,6 +106,9 @@ h1{font-family:'Marcellus',serif;font-size:1.6rem;color:var(--navy);margin-botto
 .res-meta span{display:flex;align-items:center;gap:5px;}
 .res-del{background:none;border:1px solid rgba(220,38,38,.3);color:var(--red);font-size:.78rem;font-weight:600;cursor:pointer;padding:3px 9px;border-radius:5px;transition:background .15s;white-space:nowrap;font-family:'DM Sans',sans-serif;}
 .res-del:hover{background:rgba(220,38,38,.08);}
+.res-edit{background:none;border:1px solid rgba(14,36,68,.25);color:var(--navy);font-size:.78rem;font-weight:600;cursor:pointer;padding:3px 9px;border-radius:5px;transition:background .15s;white-space:nowrap;font-family:'DM Sans',sans-serif;}
+.res-edit:hover{background:rgba(14,36,68,.07);}
+.res-actions{display:flex;gap:6px;}
 .res-empty{padding:16px;color:var(--muted);font-size:.84rem;text-align:center;}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 @media(max-width:520px){.field-row{grid-template-columns:1fr;}}
@@ -411,7 +414,10 @@ function renderList(){
     el.innerHTML=`
       <div class="res-item-head">
         <strong>Domek ${res.cabinId} &nbsp;·&nbsp; ${lbl}</strong>
-        <button class="res-del">✕ Usuń</button>
+        <div class="res-actions">
+          <button class="res-edit">✎ Edytuj</button>
+          <button class="res-del">✕ Usuń</button>
+        </div>
       </div>
       <div class="res-meta">
         ${res.name  ? `<span>👤 ${res.name}</span>`  : ''}
@@ -420,6 +426,20 @@ function renderList(){
         ${res.jacuzzi ? `<span>Jacuzzi</span>` : ''}
         ${!res.name&&!res.phone&&!res.email?'<span style="color:#ccc">Brak danych gościa</span>':''}
       </div>`;
+    el.querySelector('.res-edit').addEventListener('click',()=>{
+      document.getElementById('cabin-sel').value=res.cabinId;
+      document.getElementById('guest-name').value=res.name||'';
+      document.getElementById('guest-phone').value=res.phone||'';
+      document.getElementById('guest-email').value=res.email||'';
+      document.getElementById('date-from').value=res.from;
+      document.getElementById('date-to').value=res.to;
+      document.getElementById('admin-jacuzzi').checked=!!res.jacuzzi;
+      datesBetween(res.from,res.to).forEach(k=>reservations[res.cabinId].delete(k));
+      resMeta=resMeta.filter(r=>r.id!==res.id);
+      saveData(); renderList();
+      document.querySelector('.card').scrollIntoView({behavior:'smooth',block:'start'});
+      toast(`✎ Wczytano rezerwację do edycji`);
+    });
     el.querySelector('.res-del').addEventListener('click',()=>{
       datesBetween(res.from,res.to).forEach(k=>reservations[res.cabinId].delete(k));
       resMeta=resMeta.filter(r=>r.id!==res.id);
