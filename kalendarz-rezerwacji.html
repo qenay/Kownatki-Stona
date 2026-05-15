@@ -792,6 +792,48 @@ body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(
   text-align: right;
 }
 .sum-price-total-label { font-size: .72rem; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+/* ── JACUZZI ROW ────────────────────────────────────────── */
+.sum-jacuzzi-row { margin: 14px 0 4px; }
+.jacuzzi-komfort {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 16px;
+  border: 1.5px solid var(--cream2);
+  border-radius: 10px;
+  cursor: pointer;
+  background: var(--cream);
+  transition: border-color var(--t), background var(--t);
+  user-select: none;
+}
+.jacuzzi-komfort:hover { border-color: var(--gold); }
+.jacuzzi-komfort:has(input:checked) { border-color: var(--g-dark); background: rgba(14,36,68,.05); }
+.jacuzzi-komfort input[type=checkbox] { width: 17px; height: 17px; accent-color: var(--g-dark); cursor: pointer; flex-shrink: 0; }
+.jacuzzi-lbl { flex: 1; font-size: .9rem; font-weight: 600; color: var(--g-dark); }
+.jacuzzi-price-tag { font-size: .8rem; color: #8b6040; font-weight: 500; white-space: nowrap; }
+.jacuzzi-vip-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border: 1.5px solid #b7dcb7;
+  border-radius: 10px;
+  background: #f0faf0;
+  font-size: .9rem;
+  font-weight: 600;
+  color: #1e6b1e;
+}
+.jacuzzi-free-badge {
+  background: #22a722;
+  color: #fff;
+  font-size: .68rem;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+}
+
 .sum-price-total-val {
   font-family: 'Marcellus', serif;
   font-size: 1.8rem; font-weight: 700;
@@ -1196,6 +1238,17 @@ span.flatpickr-weekday {
         </div>
       </div>
 
+      <div class="sum-jacuzzi-row" id="sum-jacuzzi-row" style="display:none">
+        <label class="jacuzzi-komfort" id="jacuzzi-komfort-row">
+          <input type="checkbox" id="f-jacuzzi">
+          <span class="jacuzzi-lbl">🛁 Jacuzzi</span>
+          <span class="jacuzzi-price-tag">+200 zł jednorazowo</span>
+        </label>
+        <div class="jacuzzi-vip-row" id="jacuzzi-vip-row" style="display:none">
+          🛁 Jacuzzi <span class="jacuzzi-free-badge">gratis</span>
+        </div>
+      </div>
+
       <div class="sum-form-grid">
         <div class="form-grp"><label>Imię i nazwisko *</label><input type="text" id="f-name" placeholder="np. Anna Kowalska" autocomplete="name"></div>
         <div class="form-grp"><label>Telefon *</label><input type="tel" id="f-phone" placeholder="+48 500 000 000" autocomplete="tel"></div>
@@ -1529,17 +1582,45 @@ function buildMDD(){
 }
 
 /* ── SUMMARY ──────────────────────────────────────────── */
+function getJacuzziExtra(c){
+  if(!c) return 0;
+  if(c.type==='VIP') return 0;
+  const jac=document.getElementById('f-jacuzzi');
+  return (jac&&jac.checked)?200:0;
+}
+
+function updatePriceDisplay(){
+  if(!activeCabinId||!selStart||!selEnd) return;
+  const c=CABINS.find(x=>x.id===activeCabinId), nights=countNights(selStart,selEnd);
+  const jacExtra=getJacuzziExtra(c);
+  const total=c.pricePerNight*nights+jacExtra;
+  let detail=`<strong>${c.name}</strong> (${c.type})<br>${c.pricePerNight.toLocaleString('pl-PL')} zł/noc × ${nights} ${nights===1?'noc':nights<5?'noce':'nocy'}`;
+  if(jacExtra>0) detail+=`<br><span style="color:#8b6040">+ Jacuzzi 200 zł</span>`;
+  document.getElementById('s-price-detail').innerHTML=detail;
+  document.getElementById('s-price-total').textContent=`${total.toLocaleString('pl-PL')} zł`;
+}
+
 function showSummary(){
   if(!activeCabinId||!selStart||!selEnd) return;
   const c=CABINS.find(x=>x.id===activeCabinId), nights=countNights(selStart,selEnd);
-  const total=c.pricePerNight*nights;
   document.getElementById('s-checkin-val').textContent=formatDatePL(selStart,true);
   document.getElementById('s-checkin-day').textContent=dayNamePL(selStart);
   document.getElementById('s-checkout-val').textContent=formatDatePL(selEnd,true);
   document.getElementById('s-checkout-day').textContent=dayNamePL(selEnd);
   document.getElementById('s-nights').textContent=`${nights} ${nights===1?'noc':nights<5?'noce':'nocy'}`;
-  document.getElementById('s-price-detail').innerHTML=`<strong>${c.name}</strong> (${c.type})<br>${c.pricePerNight} zł/noc × ${nights} ${nights===1?'noc':nights<5?'noce':'nocy'}`;
-  document.getElementById('s-price-total').textContent=`${total.toLocaleString('pl-PL')} zł`;
+  const jacRow=document.getElementById('sum-jacuzzi-row');
+  const jacKomfort=document.getElementById('jacuzzi-komfort-row');
+  const jacVip=document.getElementById('jacuzzi-vip-row');
+  jacRow.style.display='';
+  if(c.type==='VIP'){
+    jacKomfort.style.display='none';
+    jacVip.style.display='flex';
+    document.getElementById('f-jacuzzi').checked=false;
+  } else {
+    jacKomfort.style.display='flex';
+    jacVip.style.display='none';
+  }
+  updatePriceDisplay();
   document.getElementById('summary-card').classList.add('visible');
   updateMsg();
 }
@@ -1548,12 +1629,16 @@ function hideSummary(){ document.getElementById('summary-card').classList.remove
 function genMsg(){
   if(!activeCabinId||!selStart||!selEnd) return '';
   const c=CABINS.find(x=>x.id===activeCabinId), nights=countNights(selStart,selEnd);
-  const total=c.pricePerNight*nights;
+  const jacExtra=getJacuzziExtra(c);
+  const total=c.pricePerNight*nights+jacExtra;
   const name=document.getElementById('f-name').value.trim()||'[Imię i nazwisko]';
   const phone=document.getElementById('f-phone').value.trim()||'[Telefon]';
   const email=document.getElementById('f-email').value.trim()||'[Email]';
   const notes=document.getElementById('f-notes').value.trim()||'—';
-  return `Dzień dobry,\nChciałbym/am zarezerwować ${c.name} (${c.type}) w ${RESORT_NAME}.\n\n📅 Przyjazd: ${formatDatePL(selStart,true)} (${dayNamePL(selStart)})\n📅 Wyjazd: ${formatDatePL(selEnd,true)} (${dayNamePL(selEnd)})\n🌙 Liczba nocy: ${nights}\n💰 Szacunkowy koszt: ${total.toLocaleString('pl-PL')} zł\n\n👤 Imię i nazwisko: ${name}\n📞 Telefon: ${phone}\n📧 Email: ${email}\n\n💬 Uwagi: ${notes}\n\nProszę o potwierdzenie dostępności.\nPozdrawiam,\n${name}`;
+  let jacLine='';
+  if(c.type==='VIP') jacLine='\n🛁 Jacuzzi: gratis';
+  else if(jacExtra>0) jacLine='\n🛁 Jacuzzi: +200 zł jednorazowo';
+  return `Dzień dobry,\nChciałbym/am zarezerwować ${c.name} (${c.type}) w ${RESORT_NAME}.\n\n📅 Przyjazd: ${formatDatePL(selStart,true)} (${dayNamePL(selStart)})\n📅 Wyjazd: ${formatDatePL(selEnd,true)} (${dayNamePL(selEnd)})\n🌙 Liczba nocy: ${nights}${jacLine}\n💰 Szacunkowy koszt: ${total.toLocaleString('pl-PL')} zł\n\n👤 Imię i nazwisko: ${name}\n📞 Telefon: ${phone}\n📧 Email: ${email}\n\n💬 Uwagi: ${notes}\n\nProszę o potwierdzenie dostępności.\nPozdrawiam,\n${name}`;
 }
 function updateMsg(){
   const msg=genMsg(); document.getElementById('msg-box').textContent=msg;
@@ -1564,6 +1649,7 @@ function updateMsg(){
   document.getElementById('btn-wa').href=`https://wa.me/${PHONE.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}`;
 }
 ['f-name','f-phone','f-email','f-notes'].forEach(id=>document.getElementById(id).addEventListener('input',()=>{if(selStart&&selEnd)updateMsg();}));
+document.getElementById('f-jacuzzi').addEventListener('change',()=>{if(selStart&&selEnd){updatePriceDisplay();updateMsg();}});
 
 document.getElementById('btn-copy').addEventListener('click',()=>{
   const msg=genMsg(); if(!msg){toast('Najpierw wybierz domek i daty.');return;}
