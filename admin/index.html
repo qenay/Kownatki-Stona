@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Panel administracyjny | Plaża Kownatki</title>
 <link href="https://fonts.googleapis.com/css2?family=Marcellus&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{
@@ -127,6 +128,26 @@ h1{font-family:'Marcellus',serif;font-size:1.6rem;color:var(--navy);margin-botto
 .toast-wrap{position:fixed;bottom:28px;right:28px;display:flex;flex-direction:column;gap:10px;z-index:9999;}
 .toast{background:var(--navy);color:#fff;padding:12px 20px;border-radius:10px;font-size:.88rem;font-weight:500;box-shadow:var(--shadow-lg);animation:toastIn .22s ease;max-width:320px;}
 @keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ── FLATPICKR THEME ── */
+.flatpickr-calendar{font-family:'DM Sans',sans-serif!important;background:#fff;border:1px solid #e8e0d8;border-radius:14px!important;box-shadow:0 10px 40px rgba(14,36,68,.18)!important;}
+.flatpickr-months{background:#0e2444;border-radius:10px 10px 0 0;}
+.flatpickr-month{height:38px;}
+.flatpickr-current-month{color:#fff!important;font-family:'Marcellus',serif;font-size:.9rem;padding-top:9px;}
+.flatpickr-current-month input.cur-year{color:#fff!important;font-weight:600;}
+.flatpickr-current-month .flatpickr-monthDropdown-months{color:#fff;background:transparent;font-family:'Marcellus',serif;font-size:.9rem;appearance:none;-webkit-appearance:none;}
+.flatpickr-prev-month svg,.flatpickr-next-month svg{fill:rgba(255,255,255,.8)!important;}
+.flatpickr-prev-month:hover svg,.flatpickr-next-month:hover svg{fill:#bc9675!important;}
+.flatpickr-weekdays{background:transparent;}
+span.flatpickr-weekday{color:#8b6040;font-size:.63rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;background:transparent;line-height:28px;height:28px;}
+.flatpickr-day{border-radius:7px!important;font-size:.82rem;color:#1a1a1a;height:34px;line-height:34px;}
+.flatpickr-day:hover{background:#f5ede4!important;border-color:#d4b08f!important;color:#0e2444;}
+.flatpickr-day.today{border-color:#bc9675!important;font-weight:700;color:#0e2444;}
+.flatpickr-day.selected,.flatpickr-day.selected:hover{background:#0e2444!important;border-color:#0e2444!important;color:#fff!important;font-weight:600;}
+.flatpickr-day.prevMonthDay,.flatpickr-day.nextMonthDay{visibility:hidden!important;}
+.flatpickr-day.flatpickr-disabled,.flatpickr-day.flatpickr-disabled:hover{color:#ddd!important;cursor:not-allowed;}
+.numInputWrapper span{border-color:rgba(255,255,255,.15);}
+.numInputWrapper span svg{fill:rgba(255,255,255,.7)!important;}
 </style>
 </head>
 <body>
@@ -199,11 +220,11 @@ h1{font-family:'Marcellus',serif;font-size:1.6rem;color:var(--navy);margin-botto
         <div class="field-row">
           <div class="field">
             <label>Data przyjazdu</label>
-            <input type="date" id="date-from">
+            <input type="text" id="date-from" placeholder="dd.mm.rrrr" readonly>
           </div>
           <div class="field">
             <label>Data wyjazdu (włącznie)</label>
-            <input type="date" id="date-to">
+            <input type="text" id="date-to" placeholder="dd.mm.rrrr" readonly>
           </div>
         </div>
         <div class="field">
@@ -358,8 +379,7 @@ function toast(msg){
 }
 
 /* ── MARK ── */
-document.getElementById('btn-confirm').addEventListener('click',()=>mark(true));
-document.getElementById('btn-cancel').addEventListener('click',()=>mark(false));
+// listeners added by Flatpickr init script below
 
 function mark(occ){
   const cabinId=parseInt(document.getElementById('cabin-sel').value);
@@ -431,8 +451,8 @@ function renderList(){
       document.getElementById('guest-name').value=res.name||'';
       document.getElementById('guest-phone').value=res.phone||'';
       document.getElementById('guest-email').value=res.email||'';
-      document.getElementById('date-from').value=res.from;
-      document.getElementById('date-to').value=res.to;
+      if(window._fpFrom&&res.from){ const [y,m,d]=res.from.split('-').map(Number); window._fpFrom.setDate(new Date(y,m-1,d),false); }
+      if(window._fpTo&&res.to){   const [y,m,d]=res.to.split('-').map(Number);   window._fpTo.setDate(new Date(y,m-1,d),false); }
       document.getElementById('admin-jacuzzi').checked=!!res.jacuzzi;
       datesBetween(res.from,res.to).forEach(k=>reservations[res.cabinId].delete(k));
       resMeta=resMeta.filter(r=>r.id!==res.id);
@@ -481,6 +501,77 @@ document.getElementById('import-file').addEventListener('change',function(){
 /* ── INIT ── */
 checkSession();
 if(!loginScreen.classList.contains('hidden')) lEmail.focus();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pl.js"></script>
+<script>
+(function(){
+  let fpFrom, fpTo;
+  fpFrom = flatpickr('#date-from', {
+    locale:'pl', dateFormat:'d.m.Y',
+    onChange([d]){
+      if(d && fpTo) fpTo.set('minDate', d);
+    }
+  });
+  fpTo = flatpickr('#date-to', {
+    locale:'pl', dateFormat:'d.m.Y'
+  });
+
+  // patch mark() to read dates from flatpickr
+  const _origMark = window.mark || null;
+  function fpDateToKey(fp){
+    const d = fp.selectedDates[0];
+    if(!d) return '';
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+  function keyToFlatpickr(key, fp){
+    if(!key) return;
+    const [y,m,d]=key.split('-').map(Number);
+    fp.setDate(new Date(y,m-1,d), false);
+  }
+
+  // Override mark to use flatpickr dates
+  document.getElementById('btn-confirm').removeEventListener('click', window._markConfirm);
+  document.getElementById('btn-cancel').removeEventListener('click', window._markCancel);
+
+  function markFP(occ){
+    const cabinId=parseInt(document.getElementById('cabin-sel').value);
+    const s=fpDateToKey(fpFrom);
+    const e=fpDateToKey(fpTo);
+    const name=document.getElementById('guest-name').value.trim();
+    const phone=document.getElementById('guest-phone').value.trim();
+    const email=document.getElementById('guest-email').value.trim();
+    const jacuzzi=document.getElementById('admin-jacuzzi').checked;
+    if(!s||!e){ toast('⚠️ Uzupełnij obie daty.'); return; }
+    if(s>e){ toast('⚠️ Data przyjazdu musi być wcześniejsza.'); return; }
+    const dates=datesBetween(s,e);
+    dates.forEach(k=>occ?reservations[cabinId].add(k):reservations[cabinId].delete(k));
+    if(occ){
+      resMeta.push({id:Date.now(),cabinId,name,phone,email,from:s,to:e,jacuzzi});
+    } else {
+      resMeta=resMeta.filter(r=>!(r.cabinId===cabinId&&r.from===s&&r.to===e));
+    }
+    saveData(); renderList();
+    toast(occ
+      ?`✅ Rezerwacja zatwierdzona — Domek ${cabinId} (${dates.length} dni)`
+      :`❌ Rezerwacja anulowana — Domek ${cabinId} (${dates.length} dni)`
+    );
+    if(occ){
+      document.getElementById('guest-name').value='';
+      document.getElementById('guest-phone').value='';
+      document.getElementById('guest-email').value='';
+      document.getElementById('admin-jacuzzi').checked=false;
+      fpFrom.clear(); fpTo.clear();
+    }
+  }
+  document.getElementById('btn-confirm').addEventListener('click',()=>markFP(true));
+  document.getElementById('btn-cancel').addEventListener('click',()=>markFP(false));
+
+  // patch edit button to restore dates into flatpickr
+  const _origRenderList = renderList;
+  window._fpFrom = fpFrom; window._fpTo = fpTo;
+})();
 </script>
 </body>
 </html>
