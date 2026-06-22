@@ -156,6 +156,7 @@
       font-size: clamp(2.6rem, 5vw, 4.2rem);
       color: var(--white); line-height: 1.08; margin-bottom: 18px;
       text-shadow: 0 4px 32px rgba(0,0,0,0.5);
+      text-align: center;
     }
     #drone-hero .hero-sub {
       color: rgba(255,255,255,0.65); font-size: 1rem; margin-bottom: 36px;
@@ -278,6 +279,29 @@
     .cennik-list .price-note {
       font-size: 0.72rem; color: var(--muted);
       font-style: italic; margin-left: 4px;
+    }
+
+    /* Zwierzęta card */
+    .cennik-card-pets { grid-column: 1 / -1; }
+    .cennik-card-pets::before {
+      background: linear-gradient(to right, #15803d, #4ade80);
+    }
+    .cennik-card-pets .cennik-card-icon {
+      background: linear-gradient(135deg, rgba(21,128,61,0.16), rgba(21,128,61,0.08));
+      border-color: rgba(21,128,61,0.28);
+      color: #15803d;
+    }
+    .cennik-pets-msg {
+      display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
+    }
+    .cennik-pets-free {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 1.05rem; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      color: #15803d;
+    }
+    .cennik-pets-sub {
+      font-size: 0.95rem; color: var(--muted);
     }
 
     /* Season offer */
@@ -476,6 +500,13 @@
     .cp-total-lbl { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
     .cp-total-val { font-family: 'Marcellus', serif; font-size: 2rem; color: var(--navy); line-height: 1; }
     .cp-foot-note { font-size: 0.7rem; color: var(--muted); line-height: 1.55; }
+    .cp-no-booking {
+      display: flex; align-items: flex-start; gap: 8px;
+      margin-top: 12px; padding: 10px 12px;
+      background: rgba(14,36,68,0.04); border-radius: 10px;
+      font-size: 0.74rem; font-weight: 600; color: var(--navy); line-height: 1.5;
+    }
+    .cp-no-booking svg { color: var(--gold); flex-shrink: 0; margin-top: 1px; }
     .cp-total-breakdown {
       font-size: 0.76rem; color: var(--muted); margin-bottom: 8px; line-height: 1.7;
     }
@@ -717,7 +748,7 @@
     <div class="drone-content">
       <div class="container">
         <span class="drone-label">Kemping · Plaża Kownatki</span>
-        <h1>Rezerwacja miejsca<br>kempingowego</h1>
+        <h1>Sprawdź, ile<br>zapłacisz</h1>
         <p class="hero-sub">Kownatki 19A, 13-124 Kozłowo &nbsp;·&nbsp; Mazury</p>
         <div class="drone-scroll">
           <span>Rezerwuj</span>
@@ -830,14 +861,31 @@
           </ul>
         </div>
 
+        <!-- Zwierzęta -->
+        <div class="cennik-card cennik-card-pets">
+          <div class="cennik-card-top">
+            <div class="cennik-card-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                <circle cx="5.5" cy="11" r="2.2"/><circle cx="10" cy="6.5" r="2.2"/><circle cx="14" cy="6.5" r="2.2"/><circle cx="18.5" cy="11" r="2.2"/>
+                <path d="M12 12c-2.6 0-4.8 1.7-5.7 4.1-.6 1.6.6 3.2 2.3 3.2.9 0 1.7-.4 2.4-.7.6-.3 1.4-.3 2 0 .7.3 1.5.7 2.4.7 1.7 0 2.9-1.6 2.3-3.2C16.8 13.7 14.6 12 12 12z"/>
+              </svg>
+            </div>
+            <h3 class="cennik-card-title">Zwierzęta</h3>
+          </div>
+          <div class="cennik-pets-msg">
+            <span class="cennik-pets-free">Darmowe</span>
+            <span class="cennik-pets-sub">Kochamy zwierzęta 🐾</span>
+          </div>
+        </div>
+
       </div>
 
       <!-- Full season offer -->
       <div class="cennik-sezon">
         <div class="cennik-sezon-badge">Oferta sezonowa</div>
         <h3>Wynajem parceli na cały sezon</h3>
-        <p class="cennik-sezon-desc">Maj – Wrzesień &nbsp;·&nbsp; Miejsce pod przyczepę &nbsp;·&nbsp; Samochód &nbsp;·&nbsp; Prąd &nbsp;·&nbsp; 4 osoby</p>
-        <div class="cennik-sezon-price">6 000 zł</div>
+        <p class="cennik-sezon-desc">Lipiec – Sierpień &nbsp;·&nbsp; Miejsce pod przyczepę &nbsp;·&nbsp; Samochód &nbsp;·&nbsp; 4 osoby</p>
+        <div class="cennik-sezon-price">4 000 zł</div>
         <p class="cennik-sezon-unit">za sezon</p>
         <button class="sezon-add-btn" id="sezonAddBtn" onclick="toggleSeason()">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="sezon-btn-icon-add"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -918,10 +966,10 @@
               <span class="cp-total-val" id="cpTotal">0 zł</span>
             </div>
             <p class="cp-foot-note">* Orientacyjny koszt pobytu. Ostateczna cena jest ustalana w recepcji.</p>
-            <button class="cp-send-btn" id="cpSendBtn" onclick="sendInquiry()">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-              Wyślij zapytanie
-            </button>
+            <div class="cp-no-booking">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+              <span>Nie prowadzimy rezerwacji — miejsca dostępne są w kolejności przyjazdu.</span>
+            </div>
           </div>
         </div>
       </div>
@@ -1039,7 +1087,7 @@
 
       let perDay = 0;
       const rows = [];
-      if (seasonActive) rows.push({ name: 'Wynajem parceli na cały sezon', qty: 1, price: 6000, sub: 6000, fixed: true });
+      if (seasonActive) rows.push({ name: 'Wynajem parceli na cały sezon', qty: 1, price: 4000, sub: 4000, fixed: true });
       document.querySelectorAll('#cennik [data-price]').forEach(li => {
         const price = parseInt(li.dataset.price) || 0;
         const name = li.dataset.name;
@@ -1069,7 +1117,7 @@
 
       const gross = perDay * calcDays;
       const discountAmt = hasDiscount ? Math.round(gross * 0.05) : 0;
-      const total = (seasonActive ? 6000 : 0) + gross - discountAmt;
+      const total = (seasonActive ? 4000 : 0) + gross - discountAmt;
 
       if (calcDays > 1 && perDay > 0) {
         let txt = perDay + ' zł/dobę × ' + calcDays + ' dni = ' + gross + ' zł';
@@ -1083,17 +1131,13 @@
       }
 
       totalEl.textContent = total + ' zł';
-
-      // Show/hide send button
-      const sendBtn = document.getElementById('cpSendBtn');
-      sendBtn.style.display = (rows.length > 0) ? 'flex' : 'none';
     }
 
     // ─── Inquiry message ──────────────────────────────────────────────────
     function generateMessage() {
       let perDay = 0;
       const rows = [];
-      if (seasonActive) rows.push({ name: 'Wynajem parceli na cały sezon', qty: 1, price: 6000, sub: 6000, fixed: true });
+      if (seasonActive) rows.push({ name: 'Wynajem parceli na cały sezon', qty: 1, price: 4000, sub: 4000, fixed: true });
       document.querySelectorAll('#cennik [data-price]').forEach(li => {
         const price = parseInt(li.dataset.price) || 0;
         const name = li.dataset.name;
@@ -1104,11 +1148,11 @@
       const hasDiscount = calcDays >= 7;
       const gross = perDay * calcDays;
       const discountAmt = hasDiscount ? Math.round(gross * 0.05) : 0;
-      const total = (seasonActive ? 6000 : 0) + gross - discountAmt;
+      const total = (seasonActive ? 4000 : 0) + gross - discountAmt;
 
       let msg = 'Dzień dobry,\n\nChciałbym/Chciałabym zarezerwować miejsce kempingowe w Ośrodku Plaża Kownatki.\n\n';
       msg += 'Kosztorys pobytu:\n';
-      if (seasonActive) msg += '• Wynajem parceli na cały sezon: 6000 zł\n';
+      if (seasonActive) msg += '• Wynajem parceli na cały sezon: 4000 zł\n';
       if (!seasonActive) msg += '• Liczba dni: ' + calcDays + '\n';
       rows.filter(r => !r.fixed).forEach(r => {
         if (r.price === 0) {
