@@ -226,6 +226,9 @@
   /* liczby przy nazwie miesiąca */
   tr.msep .mz{color:#ffb3ab}
   tr.msep .mw{color:#a8e0bf}
+  tr.msep .cnt.poza{opacity:.4}            /* miesiąc spoza podsumowania */
+
+  .kolmenu .dwie-kol{display:grid;grid-template-columns:1fr 1fr;gap:0 4px}
 
   /* stan połączenia z bazą */
   .netbar{
@@ -589,7 +592,10 @@
     <span class="st wol"><b id="stWol">–</b> wolnych</span>
     <span class="st obl">obłożenie <b id="stObl">–</b></span>
     <button type="button" class="st-btn" id="btnKol" aria-haspopup="true">
-      ⚙ Liczone: <b id="btnKolTxt">…</b>
+      ⚙ Domki: <b id="btnKolTxt">…</b>
+    </button>
+    <button type="button" class="st-btn" id="btnMies" aria-haspopup="true">
+      🗓 Miesiące: <b id="btnMiesTxt">…</b>
     </button>
     <span class="st osobno" id="stOsobno" title="Nowy domek — liczony osobno">
       <span class="mini">Domek 7 (nowy):</span> <b id="st7Zaj">–</b> zaj. / <b id="st7Wol">–</b> woln.
@@ -604,6 +610,16 @@
     <div class="szybkie">
       <button type="button" data-akcja="wszystkie">Wszystkie</button>
       <button type="button" data-akcja="domyslne">Domyślne</button>
+    </div>
+  </div>
+
+  <!-- wybór miesięcy liczonych w podsumowaniu -->
+  <div class="kolmenu" id="miesMenu" role="dialog" aria-label="Miesiące liczone w podsumowaniu">
+    <p class="tt">Licz miesiące</p>
+    <div id="miesLista" class="dwie-kol"></div>
+    <div class="szybkie">
+      <button type="button" data-akcja="wszystkie">Cały rok</button>
+      <button type="button" data-akcja="sezon">Sezon V–IX</button>
     </div>
   </div>
 
@@ -1074,6 +1090,27 @@
     return kol.charAt(0) === 'd' ? kol.slice(1) : 'Dod. ' + kol.slice(1);
   }
 
+  /* Które miesiące wchodzą do podsumowania (domyślnie cały rok). */
+  var MIES_KEY  = 'pk.panel.statmies';
+  var MIES_SKR  = ['sty','lut','mar','kwi','maj','cze','lip','sie','wrz','paź','lis','gru'];
+  var SEZON     = [4,5,6,7,8];                 // maj–wrzesień
+  var wybraneMies = (function(){
+    try {
+      var z = JSON.parse(localStorage.getItem(MIES_KEY));
+      if (Array.isArray(z)) return z.filter(function(m){ return m >= 0 && m < 12; });
+    } catch(e){}
+    return [0,1,2,3,4,5,6,7,8,9,10,11];
+  })();
+
+  function opisMiesiecy(){
+    if (wybraneMies.length === 12) return 'cały rok';
+    if (!wybraneMies.length) return 'brak';
+    var s = wybraneMies.slice().sort(function(a,b){ return a - b; });
+    var ciagly = s.every(function(m, i){ return i === 0 || m === s[i-1] + 1; });
+    if (ciagly && s.length > 1) return MIES_SKR[s[0]] + '–' + MIES_SKR[s[s.length-1]];
+    return s.map(function(m){ return MIES_SKR[m]; }).join(', ');
+  }
+
   function odswiezStatystyki(){
     // zajęte w rozbiciu na miesiąc: osobno wybrane kolumny, osobno Domek 7
     var wgMies = {}, wgMies7 = {};
@@ -1091,9 +1128,13 @@
       var mKlucz = ROK + '-' + pad(m + 1);
       var wszystkie = dniWM * wybraneKol.length;
       var zajete    = wgMies[mKlucz] || 0;
-      zajRok += zajete; wszRok += wszystkie;
-      zaj7   += wgMies7[mKlucz] || 0;
-      wsz7   += dniWM;
+      var wliczony  = wybraneMies.indexOf(m) >= 0;
+
+      if (wliczony){                          // do sum rocznych tylko wybrane miesiące
+        zajRok += zajete; wszRok += wszystkie;
+        zaj7   += wgMies7[mKlucz] || 0;
+        wsz7   += dniWM;
+      }
 
       var el = document.getElementById('cnt' + m);
       if (el){
@@ -1101,6 +1142,8 @@
           ? dniWM + ' dni &nbsp;&middot;&nbsp; zaj&#281;te <span class="mz">' + liczbaPL(zajete) +
             '</span> &nbsp;&middot;&nbsp; wolne <span class="mw">' + liczbaPL(wszystkie - zajete) + '</span>'
           : dniWM + ' dni';
+        el.classList.toggle('poza', !wliczony);
+        el.title = wliczony ? '' : 'Ten miesiąc nie jest wliczany do podsumowania u góry';
       }
     }
 
@@ -1121,6 +1164,9 @@
              : KOLUMNY.filter(function(k){ return wybraneKol.indexOf(k) >= 0; })
                       .map(krotkaNazwa).join(', ');
     document.getElementById('btnKolTxt').textContent = opis;
+    document.getElementById('btnMiesTxt').textContent = opisMiesiecy();
+    document.querySelector('.stats .etyk').textContent =
+      wybraneMies.length === 12 ? 'Cały 2026:' : 'Wybrane miesiące:';
   }
 
   /* — okienko wyboru domków — */
@@ -1142,6 +1188,7 @@
   }
   btnKol.addEventListener('click', function(){
     if (kolMenu.classList.contains('on')){ kolMenu.classList.remove('on'); return; }
+    document.getElementById('miesMenu').classList.remove('on');
     budujListeKol();
     kolMenu.classList.add('on');
     var r = btnKol.getBoundingClientRect(), m = kolMenu.getBoundingClientRect();
@@ -1165,6 +1212,46 @@
   document.addEventListener('mousedown', function(e){
     if (kolMenu.classList.contains('on') && !e.target.closest('#kolMenu') && !e.target.closest('#btnKol'))
       kolMenu.classList.remove('on');
+    if (miesMenu.classList.contains('on') && !e.target.closest('#miesMenu') && !e.target.closest('#btnMies'))
+      miesMenu.classList.remove('on');
+  });
+
+  /* — okienko wyboru miesięcy — */
+  var miesMenu = document.getElementById('miesMenu');
+  var btnMies  = document.getElementById('btnMies');
+
+  function budujListeMies(){
+    document.getElementById('miesLista').innerHTML = MIESIACE.map(function(nazwa, m){
+      return '<label><input type="checkbox" value="' + m + '"' +
+             (wybraneMies.indexOf(m) >= 0 ? ' checked' : '') + '>' + nazwa + '</label>';
+    }).join('');
+  }
+  function zapiszMies(){
+    try { localStorage.setItem(MIES_KEY, JSON.stringify(wybraneMies)); } catch(e){}
+    odswiezStatystyki();
+  }
+  btnMies.addEventListener('click', function(){
+    if (miesMenu.classList.contains('on')){ miesMenu.classList.remove('on'); return; }
+    kolMenu.classList.remove('on');
+    budujListeMies();
+    miesMenu.classList.add('on');
+    var r = btnMies.getBoundingClientRect(), m = miesMenu.getBoundingClientRect();
+    miesMenu.style.left = Math.max(8, Math.min(r.left, window.innerWidth - m.width - 8)) + 'px';
+    miesMenu.style.top  = (r.bottom + 6) + 'px';
+  });
+  miesMenu.addEventListener('change', function(e){
+    if (e.target.type !== 'checkbox') return;
+    var v = Number(e.target.value), i = wybraneMies.indexOf(v);
+    if (e.target.checked && i < 0) wybraneMies.push(v);
+    else if (!e.target.checked && i >= 0) wybraneMies.splice(i, 1);
+    zapiszMies();
+  });
+  miesMenu.addEventListener('click', function(e){
+    var b = e.target.closest('button[data-akcja]');
+    if (!b) return;
+    wybraneMies = b.dataset.akcja === 'sezon' ? SEZON.slice() : [0,1,2,3,4,5,6,7,8,9,10,11];
+    budujListeMies();
+    zapiszMies();
   });
 
   var timerStat = null;
