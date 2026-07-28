@@ -177,6 +177,45 @@
   }
   .stats .skala i{display:block;height:100%;background:var(--busy);opacity:.75}
   .stats .etyk{font-size:.74rem;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;font-weight:600}
+
+  /* osobne podsumowanie dla nowego domku */
+  .st.osobno{background:#fff;border-style:dashed;border-color:var(--gold);color:#7a5510}
+  .st.osobno b{color:#8a6224}
+  .st.osobno .mini{font-size:.72rem;opacity:.8}
+
+  /* wybór domków liczonych w podsumowaniu */
+  .st-btn{
+    display:inline-flex;align-items:center;gap:6px;cursor:pointer;
+    padding:5px 11px;border-radius:9px;font-size:.8rem;
+    background:#fff;border:1px solid var(--line);color:var(--muted);
+    transition:background .15s var(--ease),border-color .15s var(--ease);
+  }
+  .st-btn:hover{background:var(--paper);border-color:#c8cfda}
+  .st-btn:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+  .st-btn b{color:var(--navy);font-family:'DM Sans',sans-serif;font-weight:600;font-size:.8rem}
+
+  .kolmenu{
+    position:fixed;z-index:75;display:none;min-width:210px;
+    background:#fff;border:1px solid var(--line);border-radius:13px;
+    box-shadow:var(--shadow-2);padding:8px;
+    animation:pop .14s var(--ease) both;
+  }
+  .kolmenu.on{display:block}
+  .kolmenu .tt{padding:5px 8px 8px;font-size:.72rem;letter-spacing:.06em;
+               text-transform:uppercase;color:var(--muted);font-weight:600}
+  .kolmenu label{
+    display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:8px;
+    cursor:pointer;font-size:.86rem;transition:background .13s var(--ease);
+  }
+  .kolmenu label:hover{background:var(--paper)}
+  .kolmenu input{width:16px;height:16px;accent-color:var(--navy);cursor:pointer}
+  .kolmenu label .ozn{margin-left:auto;font-size:.7rem;color:var(--gold);font-weight:600}
+  .kolmenu .szybkie{display:flex;gap:6px;padding:8px 8px 4px;border-top:1px solid var(--line);margin-top:5px}
+  .kolmenu .szybkie button{
+    flex:1;font-size:.78rem;padding:6px 8px;border-radius:8px;cursor:pointer;
+    border:1px solid var(--line);background:#fff;transition:background .13s var(--ease);
+  }
+  .kolmenu .szybkie button:hover{background:var(--paper)}
   @media(max-width:640px){
     .stats{padding:8px 14px;gap:6px}
     .st{font-size:.75rem;padding:4px 9px}
@@ -549,7 +588,23 @@
     <span class="st zaj"><b id="stZaj">–</b> zajętych</span>
     <span class="st wol"><b id="stWol">–</b> wolnych</span>
     <span class="st obl">obłożenie <b id="stObl">–</b></span>
+    <button type="button" class="st-btn" id="btnKol" aria-haspopup="true">
+      ⚙ Liczone: <b id="btnKolTxt">…</b>
+    </button>
+    <span class="st osobno" id="stOsobno" title="Nowy domek — liczony osobno">
+      <span class="mini">Domek 7 (nowy):</span> <b id="st7Zaj">–</b> zaj. / <b id="st7Wol">–</b> woln.
+    </span>
     <span class="skala" title="Udział zajętych"><i id="stPasek" style="width:0"></i></span>
+  </div>
+
+  <!-- wybór domków liczonych w podsumowaniu -->
+  <div class="kolmenu" id="kolMenu" role="dialog" aria-label="Domki liczone w podsumowaniu">
+    <p class="tt">Licz w podsumowaniu</p>
+    <div id="kolLista"></div>
+    <div class="szybkie">
+      <button type="button" data-akcja="wszystkie">Wszystkie</button>
+      <button type="button" data-akcja="domyslne">Domyślne</button>
+    </div>
   </div>
 
   <p class="hint">
@@ -1002,26 +1057,50 @@
      oraz dni oznaczone własnym kolorem). Wolne = reszta. */
   function liczbaPL(n){ return n.toLocaleString('pl-PL').replace(/ /g, ' '); }
 
+  /* Które kolumny wchodzą do podsumowania. Domek 6 i 8 pominięte na życzenie,
+     Domek 7 (nowy) liczony osobno — dlatego domyślnie nie ma go na tej liście. */
+  var OSOBNO   = 'd7';
+  var KOL_KEY  = 'pk.panel.statkol';
+  var DOMYSLNE = ['d1','d2','d3','d4','d5'];
+  var wybraneKol = (function(){
+    try {
+      var z = JSON.parse(localStorage.getItem(KOL_KEY));
+      if (Array.isArray(z)) return z.filter(function(k){ return KOLUMNY.indexOf(k) >= 0; });
+    } catch(e){}
+    return DOMYSLNE.slice();
+  })();
+
+  function krotkaNazwa(kol){
+    return kol.charAt(0) === 'd' ? kol.slice(1) : 'Dod. ' + kol.slice(1);
+  }
+
   function odswiezStatystyki(){
-    var wgMies = {};
+    // zajęte w rozbiciu na miesiąc: osobno wybrane kolumny, osobno Domek 7
+    var wgMies = {}, wgMies7 = {};
     Object.keys(dane).forEach(function(k){
-      if (k.indexOf('|') < 0) return;               // pomijamy wiersz-znacznik
-      var m = k.slice(0, 7);
-      wgMies[m] = (wgMies[m] || 0) + 1;
+      var i = k.indexOf('|');
+      if (i < 0) return;                          // wiersz-znacznik
+      var mies = k.slice(0, 7), kol = k.slice(i + 1);
+      if (kol === OSOBNO) wgMies7[mies] = (wgMies7[mies] || 0) + 1;
+      if (wybraneKol.indexOf(kol) >= 0) wgMies[mies] = (wgMies[mies] || 0) + 1;
     });
 
-    var zajRok = 0, wszRok = 0;
+    var zajRok = 0, wszRok = 0, zaj7 = 0, wsz7 = 0;
     for (var m = 0; m < 12; m++){
-      var dniWM = new Date(ROK, m + 1, 0).getDate();
-      var wszystkie = dniWM * KOLUMNY.length;
-      var zajete = wgMies[ROK + '-' + pad(m + 1)] || 0;
-      zajRok += zajete;
-      wszRok += wszystkie;
+      var dniWM  = new Date(ROK, m + 1, 0).getDate();
+      var mKlucz = ROK + '-' + pad(m + 1);
+      var wszystkie = dniWM * wybraneKol.length;
+      var zajete    = wgMies[mKlucz] || 0;
+      zajRok += zajete; wszRok += wszystkie;
+      zaj7   += wgMies7[mKlucz] || 0;
+      wsz7   += dniWM;
 
       var el = document.getElementById('cnt' + m);
       if (el){
-        el.innerHTML = dniWM + ' dni &nbsp;·&nbsp; zajęte <span class="mz">' + liczbaPL(zajete) +
-                       '</span> &nbsp;·&nbsp; wolne <span class="mw">' + liczbaPL(wszystkie - zajete) + '</span>';
+        el.innerHTML = wybraneKol.length
+          ? dniWM + ' dni &nbsp;&middot;&nbsp; zaj&#281;te <span class="mz">' + liczbaPL(zajete) +
+            '</span> &nbsp;&middot;&nbsp; wolne <span class="mw">' + liczbaPL(wszystkie - zajete) + '</span>'
+          : dniWM + ' dni';
       }
     }
 
@@ -1031,8 +1110,62 @@
     document.getElementById('stObl').textContent = proc + '%';
     document.getElementById('stPasek').style.width = proc + '%';
     document.getElementById('stats').title =
-      'Zajęte ' + liczbaPL(zajRok) + ' z ' + liczbaPL(wszRok) + ' domko-dni (10 pozycji × 365 dni)';
+      'Zajęte ' + liczbaPL(zajRok) + ' z ' + liczbaPL(wszRok) + ' domko-dni (' +
+      wybraneKol.length + ' poz. × 365 dni)';
+
+    document.getElementById('st7Zaj').textContent = liczbaPL(zaj7);
+    document.getElementById('st7Wol').textContent = liczbaPL(wsz7 - zaj7);
+
+    var opis = wybraneKol.length === KOLUMNY.length ? 'wszystkie'
+             : !wybraneKol.length ? 'brak'
+             : KOLUMNY.filter(function(k){ return wybraneKol.indexOf(k) >= 0; })
+                      .map(krotkaNazwa).join(', ');
+    document.getElementById('btnKolTxt').textContent = opis;
   }
+
+  /* — okienko wyboru domków — */
+  var kolMenu = document.getElementById('kolMenu');
+  var btnKol  = document.getElementById('btnKol');
+
+  function budujListeKol(){
+    var naglowki = document.querySelectorAll('thead th');
+    document.getElementById('kolLista').innerHTML = KOLUMNY.map(function(kol, i){
+      var etyk = naglowki[i + 2] ? naglowki[i + 2].textContent.trim() : kol;
+      return '<label><input type="checkbox" value="' + kol + '"' +
+             (wybraneKol.indexOf(kol) >= 0 ? ' checked' : '') + '>' + etyk +
+             (kol === OSOBNO ? '<span class="ozn">liczony osobno</span>' : '') + '</label>';
+    }).join('');
+  }
+  function zapiszWybor(){
+    try { localStorage.setItem(KOL_KEY, JSON.stringify(wybraneKol)); } catch(e){}
+    odswiezStatystyki();
+  }
+  btnKol.addEventListener('click', function(){
+    if (kolMenu.classList.contains('on')){ kolMenu.classList.remove('on'); return; }
+    budujListeKol();
+    kolMenu.classList.add('on');
+    var r = btnKol.getBoundingClientRect(), m = kolMenu.getBoundingClientRect();
+    kolMenu.style.left = Math.max(8, Math.min(r.left, window.innerWidth - m.width - 8)) + 'px';
+    kolMenu.style.top  = (r.bottom + 6) + 'px';
+  });
+  kolMenu.addEventListener('change', function(e){
+    if (e.target.type !== 'checkbox') return;
+    var v = e.target.value, i = wybraneKol.indexOf(v);
+    if (e.target.checked && i < 0) wybraneKol.push(v);
+    else if (!e.target.checked && i >= 0) wybraneKol.splice(i, 1);
+    zapiszWybor();
+  });
+  kolMenu.addEventListener('click', function(e){
+    var b = e.target.closest('button[data-akcja]');
+    if (!b) return;
+    wybraneKol = b.dataset.akcja === 'wszystkie' ? KOLUMNY.slice() : DOMYSLNE.slice();
+    budujListeKol();
+    zapiszWybor();
+  });
+  document.addEventListener('mousedown', function(e){
+    if (kolMenu.classList.contains('on') && !e.target.closest('#kolMenu') && !e.target.closest('#btnKol'))
+      kolMenu.classList.remove('on');
+  });
 
   var timerStat = null;
   function przeliczPozniej(){
