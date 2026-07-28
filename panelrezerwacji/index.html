@@ -155,6 +155,79 @@
   }
   .hint b{color:var(--text);font-weight:600}
 
+  /* ── ZAKŁADKI ────────────────────────────────────────────────────── */
+  .taby{
+    flex-shrink:0;display:flex;gap:2px;padding:0 20px;
+    background:var(--navy-lt);border-bottom:1px solid rgba(255,255,255,.12);
+  }
+  .tab{
+    background:none;border:none;cursor:pointer;color:rgba(255,255,255,.62);
+    padding:10px 16px;font-size:.86rem;font-weight:500;
+    border-bottom:2.5px solid transparent;
+    transition:color .16s var(--ease),border-color .16s var(--ease),background .16s var(--ease);
+  }
+  .tab:hover{color:#fff;background:rgba(255,255,255,.06)}
+  .tab.on{color:#fff;border-bottom-color:var(--gold);font-weight:600}
+  .tab:focus-visible{outline:2px solid var(--gold-lt);outline-offset:-3px}
+  @media(max-width:640px){ .taby{padding:0 10px} .tab{padding:9px 12px;font-size:.8rem} }
+
+  .widok{display:none;flex:1;min-height:0;flex-direction:column}
+  .widok.on{display:flex}
+
+  /* ── WIDOK WYLICZEŃ ──────────────────────────────────────────────── */
+  .wyl-scroll{flex:1;overflow:auto;background:var(--paper)}
+  .wyl{max-width:960px;margin:0 auto;padding:24px 20px 60px}
+
+  .wyl-hero{
+    background:var(--navy);color:#fff;border-radius:16px;padding:22px 24px;
+    box-shadow:var(--shadow-2);margin-bottom:26px;
+  }
+  .wyl-hero .etyk2{
+    font-size:.73rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-lt);font-weight:600;
+  }
+  .wyl-hero .kwota{
+    font-family:'Marcellus',serif;font-size:2.5rem;line-height:1.15;margin-top:5px;letter-spacing:-.01em;
+  }
+  .wyl-hero .pod{color:rgba(255,255,255,.66);font-size:.85rem;margin-top:5px}
+  @media(max-width:640px){ .wyl-hero .kwota{font-size:1.9rem} .wyl{padding:18px 14px 50px} }
+
+  .wyl-tt{
+    font-family:'Marcellus',serif;font-weight:400;font-size:1.08rem;color:var(--navy);
+    margin:0 0 10px 2px;
+  }
+  .tabela-box{
+    background:#fff;border:1px solid var(--line);border-radius:14px;
+    overflow:hidden auto;box-shadow:var(--shadow-1);margin-bottom:26px;
+  }
+  .wyl-tab{width:100%;border-collapse:collapse;font-size:.88rem;min-width:520px}
+  .wyl-tab th{
+    background:var(--paper);color:var(--muted);font-size:.72rem;letter-spacing:.06em;
+    text-transform:uppercase;font-weight:600;text-align:right;padding:10px 14px;
+    border-bottom:1px solid var(--line);white-space:nowrap;
+  }
+  .wyl-tab th:first-child{text-align:left}
+  .wyl-tab td{padding:10px 14px;border-bottom:1px solid var(--line);text-align:right;
+              font-variant-numeric:tabular-nums;white-space:nowrap}
+  .wyl-tab td:first-child{text-align:left;font-weight:500}
+  .wyl-tab tr:last-child td{border-bottom:none}
+  .wyl-tab tbody tr:hover td{background:#fafbfc}
+  .wyl-tab .kw{font-weight:600;color:var(--navy)}
+  .wyl-tab .stawka{color:var(--muted)}
+  .wyl-tab .brak td{color:#9aa2b1}
+  .wyl-tab .brak .kw{color:#9aa2b1;font-weight:400}
+  .wyl-tab tr.suma td{
+    background:var(--navy);color:#fff;font-weight:600;border-bottom:none;
+  }
+  .wyl-tab tr.suma .kw{color:var(--gold-lt);font-family:'Marcellus',serif;font-size:1.05rem}
+  .wyl-tab tr.pusty td{color:#9aa2b1;font-style:italic}
+  .wyl-tab .mini{display:block;font-size:.72rem;color:var(--muted);font-weight:400}
+
+  .wyl-info{
+    font-size:.83rem;color:var(--muted);line-height:1.7;
+    background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;
+  }
+  .wyl-info b{color:var(--text)}
+
   /* ── PODSUMOWANIE: ZAJĘTE / WOLNE ────────────────────────────────── */
   .stats{
     flex-shrink:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap;
@@ -586,6 +659,13 @@
 
   <p class="netbar" id="netbar"></p>
 
+  <nav class="taby">
+    <button type="button" class="tab on" data-widok="grafik">📅 Grafik</button>
+    <button type="button" class="tab" data-widok="wyliczenia">💰 Wyliczenia</button>
+  </nav>
+
+  <div class="widok on" id="widokGrafik">
+
   <div class="stats" id="stats">
     <span class="etyk">Cały 2026:</span>
     <span class="st zaj"><b id="stZaj">–</b> zajętych</span>
@@ -644,6 +724,40 @@
       </thead>
       <tbody id="tbody"></tbody>
     </table>
+  </div>
+
+  </div><!-- /widokGrafik -->
+
+  <!-- ── WIDOK: WYLICZENIA ──────────────────────────────────────── -->
+  <div class="widok" id="widokWyliczenia">
+    <div class="wyl-scroll">
+      <div class="wyl">
+
+        <div class="wyl-hero">
+          <span class="etyk2">Szacowany przychód · cały 2026</span>
+          <div class="kwota" id="wylSuma">–</div>
+          <p class="pod" id="wylPod">–</p>
+        </div>
+
+        <h3 class="wyl-tt">Według domków</h3>
+        <div class="tabela-box">
+          <table class="wyl-tab" id="tabDomki"></table>
+        </div>
+
+        <h3 class="wyl-tt">Według miesięcy</h3>
+        <div class="tabela-box">
+          <table class="wyl-tab" id="tabMiesiace"></table>
+        </div>
+
+        <p class="wyl-info">
+          <b>Jak liczę:</b> jedna doba = jedna komórka oznaczona jako <b>zarezerwowane</b> lub
+          <b>wyjazd/przyjazd</b> (tego dnia ktoś nocuje). Dni oznaczone <b>własnym kolorem</b>
+          nie są wliczane do przychodu — traktuję je jako oznaczenia robocze (remont, grupa, blokada).
+          Domki bez ustalonej stawki (6, 8 i pozycje dodatkowe) są pominięte.
+        </p>
+
+      </div>
+    </div>
   </div>
 </div>
 
@@ -1254,10 +1368,94 @@
     zapiszMies();
   });
 
+  /* ── WYLICZENIA PRZYCHODU ────────────────────────────────────── */
+  /* Stawka za dobę. Domki bez stawki nie wchodzą do wyliczeń. */
+  var STAWKI = { d1:1000, d2:1000, d3:1000, d4:1000, d5:1400, d7:1400 };
+
+  function zl(n){ return liczbaPL(n) + ' zł'; }
+
+  function odswiezWyliczenia(){
+    // doby płatne = 'z' (zarezerwowane) + 'p' (wyjazd/przyjazd); kolory własne pomijamy
+    var doby = {}, dobyMies = {}, innych = 0;
+    Object.keys(dane).forEach(function(k){
+      var i = k.indexOf('|');
+      if (i < 0) return;
+      var st = dane[k] && dane[k].s;
+      var kol = k.slice(i + 1);
+      if (st === 'z' || st === 'p'){
+        doby[kol] = (doby[kol] || 0) + 1;
+        if (STAWKI[kol]){
+          var m = Number(k.slice(5, 7)) - 1;
+          dobyMies[m] = dobyMies[m] || { doby: 0, kwota: 0 };
+          dobyMies[m].doby  += 1;
+          dobyMies[m].kwota += STAWKI[kol];
+        }
+      } else if (st === 'c'){
+        innych++;
+      }
+    });
+
+    // ── tabela wg domków ──
+    var naglowki = document.querySelectorAll('thead th');
+    var sumaDoby = 0, sumaKwota = 0;
+    var wiersze = KOLUMNY.map(function(kol, i){
+      var nazwa  = naglowki[i + 2] ? naglowki[i + 2].textContent.trim() : kol;
+      var stawka = STAWKI[kol];
+      var d      = doby[kol] || 0;
+      if (!stawka){
+        return '<tr class="brak"><td>' + nazwa + '</td><td class="stawka">—</td><td>' +
+               (d ? liczbaPL(d) : '0') + '</td><td class="kw">nie liczone</td></tr>';
+      }
+      sumaDoby += d; sumaKwota += d * stawka;
+      return '<tr><td>' + nazwa + '</td><td class="stawka">' + zl(stawka) + '</td><td>' +
+             liczbaPL(d) + '</td><td class="kw">' + zl(d * stawka) + '</td></tr>';
+    }).join('');
+
+    document.getElementById('tabDomki').innerHTML =
+      '<thead><tr><th>Domek</th><th>Stawka / doba</th><th>Doby</th><th>Przychód</th></tr></thead>' +
+      '<tbody>' + wiersze +
+      '<tr class="suma"><td>Razem</td><td></td><td>' + liczbaPL(sumaDoby) +
+      '</td><td class="kw">' + zl(sumaKwota) + '</td></tr></tbody>';
+
+    // ── tabela wg miesięcy ──
+    var wierszeM = '';
+    for (var m = 0; m < 12; m++){
+      var w = dobyMies[m];
+      wierszeM += w
+        ? '<tr><td>' + MIESIACE[m] + '</td><td>' + liczbaPL(w.doby) + '</td><td class="kw">' + zl(w.kwota) + '</td></tr>'
+        : '<tr class="pusty"><td>' + MIESIACE[m] + '</td><td>0</td><td>—</td></tr>';
+    }
+    document.getElementById('tabMiesiace').innerHTML =
+      '<thead><tr><th>Miesiąc</th><th>Doby</th><th>Przychód</th></tr></thead>' +
+      '<tbody>' + wierszeM +
+      '<tr class="suma"><td>Razem</td><td>' + liczbaPL(sumaDoby) +
+      '</td><td class="kw">' + zl(sumaKwota) + '</td></tr></tbody>';
+
+    // ── nagłówek ──
+    document.getElementById('wylSuma').textContent = zl(sumaKwota);
+    document.getElementById('wylPod').textContent =
+      liczbaPL(sumaDoby) + ' płatnych dób w 6 domkach ze stawką' +
+      (innych ? ' · ' + liczbaPL(innych) + ' dni z własnym kolorem pominięto' : '');
+  }
+
+  /* — przełączanie zakładek — */
+  document.querySelector('.taby').addEventListener('click', function(e){
+    var b = e.target.closest('.tab');
+    if (!b) return;
+    document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('on', t === b); });
+    var cel = b.dataset.widok;
+    document.getElementById('widokGrafik').classList.toggle('on', cel === 'grafik');
+    document.getElementById('widokWyliczenia').classList.toggle('on', cel === 'wyliczenia');
+    if (cel === 'wyliczenia') odswiezWyliczenia();
+  });
+
   var timerStat = null;
   function przeliczPozniej(){
     clearTimeout(timerStat);
-    timerStat = setTimeout(odswiezStatystyki, 120);
+    timerStat = setTimeout(function(){
+      odswiezStatystyki();
+      if (document.getElementById('widokWyliczenia').classList.contains('on')) odswiezWyliczenia();
+    }, 120);
   }
 
   function odswiezWszystko(){
