@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+<meta name="googlebot" content="noindex, nofollow">
+<title>Panel rezerwacji — Plaża Kownatki</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%97%93%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Marcellus&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0e2444;
+    --navy-lt:#1b3860;
+    --gold:#bc9675;
+    --gold-lt:#d4b08f;
+    --off-white:#ececec;
+    --paper:#f6f7f9;
+    --white:#fff;
+    --text:#1a1a1a;
+    --muted:#6b7280;
+    --line:#dfe3ea;
+    --free:#2f9e5f;
+    --free-bg:#e7f6ec;
+    --free-bg-2:#d6efe0;
+    --busy:#c1443c;
+    --busy-bg:#fbe6e4;
+    --busy-bg-2:#f6d3d0;
+    --chg:#cb852a;
+    --chg-line:#e0a457;
+    --wknd:#f2f4f8;
+    --today:#fff8e8;
+    --radius:12px;
+    --shadow-1:0 1px 2px rgba(14,36,68,.06), 0 4px 12px rgba(14,36,68,.06);
+    --shadow-2:0 10px 34px rgba(14,36,68,.16), 0 2px 8px rgba(14,36,68,.10);
+    --ease:cubic-bezier(.2,.7,.3,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    font-family:'DM Sans','Helvetica Neue',Arial,sans-serif;
+    color:var(--text);
+    background:var(--paper);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  button,input{font:inherit;color:inherit}
+
+  /* ── EKRAN LOGOWANIA ─────────────────────────────────────────────── */
+  .gate{
+    position:fixed;inset:0;z-index:100;display:grid;place-items:center;padding:24px;
+    background:
+      radial-gradient(900px 520px at 18% 12%, rgba(188,150,117,.20), transparent 62%),
+      radial-gradient(760px 480px at 84% 84%, rgba(27,56,96,.55), transparent 60%),
+      var(--navy);
+  }
+  .gate::after{ /* subtelne ziarno */
+    content:'';position:absolute;inset:0;pointer-events:none;opacity:.35;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+  }
+  .gate-box{
+    position:relative;z-index:1;width:100%;max-width:396px;
+    background:rgba(255,255,255,.055);
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:18px;padding:38px 32px 32px;
+    box-shadow:0 26px 70px rgba(0,0,0,.42);
+    backdrop-filter:blur(9px);
+    text-align:center;
+    animation:pop .5s var(--ease) both;
+  }
+  @keyframes pop{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
+  .gate-mark{
+    width:54px;height:54px;margin:0 auto 18px;border-radius:50%;
+    display:grid;place-items:center;
+    background:linear-gradient(145deg,var(--gold-lt),var(--gold));
+    box-shadow:0 8px 22px rgba(188,150,117,.42);
+    font-size:1.45rem;
+  }
+  .gate-box h1{
+    font-family:'Marcellus',serif;font-weight:400;letter-spacing:-.01em;
+    font-size:1.5rem;color:#fff;line-height:1.2;
+  }
+  .gate-box .sub{
+    color:rgba(255,255,255,.62);font-size:.86rem;margin-top:7px;letter-spacing:.01em;
+  }
+  .gate-form{margin-top:24px;display:flex;flex-direction:column;gap:11px}
+  .gate-form input{
+    width:100%;padding:13px 15px;border-radius:11px;
+    background:rgba(255,255,255,.09);
+    border:1.5px solid rgba(255,255,255,.20);
+    color:#fff;font-size:.97rem;letter-spacing:.02em;
+    transition:border-color .18s var(--ease), background .18s var(--ease);
+  }
+  .gate-form input::placeholder{color:rgba(255,255,255,.42)}
+  .gate-form input:hover{border-color:rgba(255,255,255,.32)}
+  .gate-form input:focus{outline:none;border-color:var(--gold);background:rgba(255,255,255,.14)}
+  .gate-form button{
+    width:100%;padding:13px 15px;border:none;border-radius:11px;cursor:pointer;
+    background:linear-gradient(145deg,var(--gold-lt),var(--gold));
+    color:#3a2a1c;font-weight:600;letter-spacing:.01em;
+    box-shadow:0 8px 20px rgba(188,150,117,.34);
+    transition:transform .16s var(--ease), box-shadow .16s var(--ease);
+  }
+  .gate-form button:hover{transform:translateY(-1px);box-shadow:0 12px 26px rgba(188,150,117,.44)}
+  .gate-form button:active{transform:translateY(0)}
+  .gate-form button:focus-visible,.gate-form input:focus-visible{outline:2px solid var(--gold-lt);outline-offset:2px}
+  .gate-err{
+    color:#ffb4ac;font-size:.84rem;min-height:1.1em;margin-top:2px;
+  }
+  .gate.shake .gate-box{animation:shake .4s var(--ease)}
+  @keyframes shake{10%,90%{transform:translateX(-2px)}30%,70%{transform:translateX(5px)}50%{transform:translateX(-7px)}}
+
+  /* ── APLIKACJA ───────────────────────────────────────────────────── */
+  .app{display:none;flex-direction:column;height:100vh;height:100dvh}
+  .app.on{display:flex}
+
+  .topbar{
+    background:var(--navy);color:#fff;flex-shrink:0;
+    box-shadow:0 2px 14px rgba(14,36,68,.22);z-index:30;
+  }
+  .topbar-in{
+    max-width:100%;padding:13px 20px;
+    display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  }
+  .brand{display:flex;flex-direction:column;line-height:1.15;margin-right:auto}
+  .brand strong{font-family:'Marcellus',serif;font-weight:400;font-size:1.16rem;letter-spacing:-.01em}
+  .brand span{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-lt)}
+
+  .legend{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .lg{display:inline-flex;align-items:center;gap:7px;font-size:.8rem;color:rgba(255,255,255,.86)}
+  .lg i{width:15px;height:15px;border-radius:4px;display:block;border:1.5px solid rgba(255,255,255,.28)}
+  .lg i.free{background:var(--free)}
+  .lg i.busy{background:var(--busy)}
+  .lg i.chg{background:linear-gradient(135deg,var(--busy) 0 50%,var(--free) 50% 100%)}
+
+  .tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .tools select,.tools button{
+    background:rgba(255,255,255,.10);color:#fff;
+    border:1px solid rgba(255,255,255,.20);
+    border-radius:9px;padding:7px 11px;font-size:.82rem;cursor:pointer;
+    transition:background .16s var(--ease),border-color .16s var(--ease),transform .16s var(--ease);
+  }
+  .tools select option{background:var(--navy);color:#fff}
+  .tools select:hover,.tools button:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.34)}
+  .tools button:active{transform:translateY(1px)}
+  .tools select:focus-visible,.tools button:focus-visible{outline:2px solid var(--gold-lt);outline-offset:2px}
+  .tools .lock{background:rgba(255,255,255,.04)}
+
+  .hint{
+    flex-shrink:0;background:#fff;border-bottom:1px solid var(--line);
+    padding:8px 20px;font-size:.79rem;color:var(--muted);
+  }
+  .hint b{color:var(--text);font-weight:600}
+
+  /* ── TABELA ──────────────────────────────────────────────────────── */
+  .scroll{flex:1;overflow:auto;background:#fff;overscroll-behavior:contain}
+  table{border-collapse:separate;border-spacing:0;width:100%;min-width:920px}
+
+  thead th{
+    position:sticky;top:0;z-index:20;
+    background:var(--navy);color:#fff;
+    font-size:.72rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase;
+    padding:11px 6px;text-align:center;white-space:nowrap;
+    border-right:1px solid rgba(255,255,255,.10);
+    box-shadow:inset 0 -1px 0 rgba(255,255,255,.16);
+  }
+  /* uwaga: .c-wk/.c-dt niżej ustawiają białe tło (klasa > element),
+     więc nagłówki muszą jawnie odzyskać kolor granatowy */
+  thead th.c-wk{width:46px;left:0;z-index:22;background:var(--navy);color:#fff}
+  thead th.c-dt{width:104px;left:var(--wkw,46px);z-index:22;text-align:left;padding-left:11px;
+                background:var(--navy);color:#fff}
+  thead th.extra{background:var(--navy-lt)}
+
+  td{
+    border-bottom:1px solid var(--line);
+    border-right:1px solid var(--line);
+    padding:0;height:34px;
+  }
+  /* przyklejone kolumny */
+  .c-wk,.c-dt{position:sticky;z-index:10;background:#fff}
+  .c-wk{left:0;width:46px;text-align:center;color:var(--muted);font-size:.74rem;font-variant-numeric:tabular-nums}
+  .c-dt{left:var(--wkw,46px);width:104px;padding:0 11px;font-size:.82rem;white-space:nowrap;font-variant-numeric:tabular-nums}
+  .c-dt .dow{color:var(--muted);text-transform:none}
+  tr.wknd .c-wk,tr.wknd .c-dt{background:var(--wknd)}
+  tr.wknd .c-dt{font-weight:600}
+  tr.wknd .c-dt .dow{color:#8b93a3}
+  tr.today .c-wk,tr.today .c-dt{background:var(--today)}
+  tr.today .c-dt{font-weight:700;color:var(--navy);box-shadow:inset 3px 0 0 var(--gold)}
+  tr.today td{border-bottom-color:var(--gold-lt)}
+  tr:hover .c-dt{color:var(--navy)}
+
+  /* separator miesiąca */
+  tr.msep td{
+    position:sticky;top:var(--headh,38px);z-index:15;
+    background:linear-gradient(90deg,var(--navy) 0%,var(--navy-lt) 100%);
+    color:#fff;padding:7px 14px;height:auto;
+    font-family:'Marcellus',serif;font-size:.94rem;letter-spacing:.05em;
+    border-bottom:1px solid rgba(255,255,255,.16);
+  }
+  tr.msep .cnt{
+    float:right;font-family:'DM Sans',sans-serif;font-size:.72rem;
+    color:var(--gold-lt);letter-spacing:.06em;text-transform:uppercase;font-weight:500;
+  }
+
+  /* komórki domków — 3 stany: dostępne / zarezerwowane / wyjazd-przyjazd */
+  .cell{
+    position:relative;cursor:pointer;
+    background:var(--free-bg);
+    transition:background .14s var(--ease), box-shadow .14s var(--ease);
+    user-select:none;-webkit-tap-highlight-color:transparent;
+  }
+  .cell::before{                        /* kropka statusu (gdy brak notatki) */
+    content:'';position:absolute;left:50%;top:50%;
+    width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;
+    background:var(--free);opacity:.5;
+  }
+  .cell:hover{background:var(--free-bg-2);box-shadow:inset 0 0 0 2px rgba(47,158,95,.42)}
+  .cell:focus-visible{outline:none;box-shadow:inset 0 0 0 2.5px var(--navy);z-index:5}
+
+  /* zarezerwowane */
+  .cell.occ{background:var(--busy-bg)}
+  .cell.occ::before{background:var(--busy);opacity:.62}
+  .cell.occ:hover{background:var(--busy-bg-2);box-shadow:inset 0 0 0 2px rgba(193,68,60,.42)}
+
+  /* wyjazd/przyjazd — przekątna: pierwsza połowa dnia zajęta, druga wolna */
+  .cell.chg{
+    background:linear-gradient(135deg,
+      var(--busy-bg) 0 calc(50% - 1px),
+      var(--chg-line) calc(50% - 1px) calc(50% + 1px),
+      var(--free-bg) calc(50% + 1px) 100%);
+  }
+  .cell.chg::before{background:var(--chg);opacity:.72}
+  .cell.chg:hover{
+    background:linear-gradient(135deg,
+      var(--busy-bg-2) 0 calc(50% - 1px),
+      var(--chg-line) calc(50% - 1px) calc(50% + 1px),
+      var(--free-bg-2) calc(50% + 1px) 100%);
+    box-shadow:inset 0 0 0 2px rgba(203,133,42,.5);
+  }
+
+  /* kolor własny z palety */
+  .cell.cust{background:var(--ccbg)}
+  .cell.cust::before{background:var(--cc);opacity:.85}
+  .cell.cust:hover{box-shadow:inset 0 0 0 2px var(--cc)}
+  .cell.cust .nt{color:var(--cctxt,#333)}
+
+  .cell.has-note::before{display:none}
+  .cell .nt{
+    display:none;position:absolute;inset:0;
+    align-items:center;justify-content:center;
+    padding:0 6px;font-size:.73rem;font-weight:600;color:#7d2b25;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .cell.has-note .nt{display:flex}
+  .cell.chg .nt{color:#7a4a12}
+  .cell .pen{
+    display:none;position:absolute;top:1px;right:2px;
+    font-size:.6rem;line-height:1;color:rgba(125,43,37,.55);
+    padding:2px;border-radius:4px;
+  }
+  .cell.occ:hover .pen,.cell.chg:hover .pen{display:block}
+  .cell .pen:hover{color:#7d2b25;background:rgba(255,255,255,.7)}
+  .cell.open{box-shadow:inset 0 0 0 2.5px var(--navy);z-index:6}
+
+  /* zaznaczenie wielu komórek */
+  .cell.sel{box-shadow:inset 0 0 0 2px var(--navy);z-index:4}
+  .cell.sel::after{
+    content:'';position:absolute;inset:0;pointer-events:none;
+    background:rgba(14,36,68,.13);
+  }
+  body.zaznaczanie{cursor:crosshair}
+  body.zaznaczanie .cell:hover{box-shadow:none}
+
+  /* ── PASEK AKCJI ZBIORCZYCH ──────────────────────────────────────── */
+  .bulk{
+    position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(120%);
+    z-index:65;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+    background:var(--navy);color:#fff;
+    border:1px solid rgba(255,255,255,.16);border-radius:14px;
+    padding:10px 12px;box-shadow:0 18px 46px rgba(14,36,68,.42);
+    transition:transform .22s var(--ease), opacity .22s var(--ease);
+    opacity:0;pointer-events:none;max-width:calc(100vw - 24px);
+  }
+  .bulk.on{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto}
+  .bulk .cnt{font-size:.85rem;font-weight:600;padding:0 6px 0 4px;white-space:nowrap}
+  .bulk .cnt b{font-family:'Marcellus',serif;font-size:1.05rem;color:var(--gold-lt)}
+  .bulk .sep-v{width:1px;align-self:stretch;background:rgba(255,255,255,.18)}
+  .bulk button{
+    display:inline-flex;align-items:center;gap:7px;
+    background:rgba(255,255,255,.10);color:#fff;
+    border:1px solid rgba(255,255,255,.20);border-radius:10px;
+    padding:8px 11px;font-size:.83rem;cursor:pointer;white-space:nowrap;
+    transition:background .15s var(--ease),border-color .15s var(--ease),transform .15s var(--ease);
+  }
+  .bulk button:hover{background:rgba(255,255,255,.19);border-color:rgba(255,255,255,.34)}
+  .bulk button:active{transform:translateY(1px)}
+  .bulk button:focus-visible{outline:2px solid var(--gold-lt);outline-offset:2px}
+  .bulk button i{width:14px;height:14px;border-radius:4px;border:1.5px solid rgba(255,255,255,.25)}
+  .bulk button i.i-free{background:var(--free)}
+  .bulk button i.i-busy{background:var(--busy)}
+  .bulk button i.i-chg{background:linear-gradient(135deg,var(--busy) 0 50%,var(--free) 50% 100%)}
+  .bulk .close{background:none;border-color:transparent;color:rgba(255,255,255,.62);padding:8px}
+  .bulk .close:hover{color:#fff;background:rgba(255,255,255,.10)}
+  @media(max-width:640px){
+    /* na wąskim ekranie: licznik u góry, trzy przyciski w jednym rzędzie */
+    .bulk{
+      left:10px;right:10px;bottom:10px;max-width:none;
+      transform:translateY(140%);gap:6px;padding:8px 10px 9px;justify-content:center;
+    }
+    .bulk.on{transform:translateY(0)}
+    .bulk .sep-v{display:none}
+    .bulk .cnt{order:-1;width:100%;text-align:center;padding:0 0 3px;font-size:.76rem}
+    .bulk button[data-s]{flex:1 1 0;justify-content:center;font-size:.72rem;padding:8px 4px;gap:5px}
+    .bulk button i{width:12px;height:12px}
+    .bulk .close{position:absolute;top:4px;right:6px;padding:3px 7px;font-size:.9rem}
+  }
+  /* przycisk trybu zaznaczania w pasku narzędzi */
+  .tools button.on{background:var(--gold);border-color:var(--gold);color:#3a2a1c;font-weight:600}
+
+  /* ── MENU WYBORU STATUSU ─────────────────────────────────────────── */
+  .menu{
+    position:fixed;z-index:70;display:none;min-width:212px;
+    background:#fff;border:1px solid var(--line);border-radius:13px;
+    box-shadow:var(--shadow-2);padding:6px;
+    animation:pop .14s var(--ease) both;
+  }
+  .menu.on{display:block}
+  .menu-hd{
+    padding:7px 10px 8px;border-bottom:1px solid var(--line);margin-bottom:5px;
+  }
+  .menu-hd strong{display:block;font-size:.84rem;color:var(--navy);font-weight:600}
+  .menu-hd span{display:block;font-size:.75rem;color:var(--muted);margin-top:1px}
+  .menu button{
+    width:100%;display:flex;align-items:center;gap:10px;
+    padding:9px 10px;border:none;background:none;border-radius:9px;
+    cursor:pointer;text-align:left;font-size:.87rem;
+    transition:background .13s var(--ease);
+  }
+  .menu button:hover{background:var(--paper)}
+  .menu button:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}
+  .menu button i{
+    width:16px;height:16px;border-radius:5px;flex-shrink:0;
+    border:1.5px solid rgba(0,0,0,.10);
+  }
+  .menu button i.i-free{background:var(--free)}
+  .menu button i.i-busy{background:var(--busy)}
+  .menu button i.i-chg{background:linear-gradient(135deg,var(--busy) 0 50%,var(--free) 50% 100%)}
+  .menu button .tick{margin-left:auto;color:var(--navy);font-weight:700;opacity:0}
+  .menu button.sel .tick{opacity:1}
+  .menu button.sel{background:var(--paper);font-weight:600}
+  .menu .sep{height:1px;background:var(--line);margin:5px 2px}
+  .menu button.note-btn{font-size:.83rem;color:var(--muted)}
+  .menu button.note-btn:hover{color:var(--text)}
+
+  /* ── PALETA KOLORÓW WŁASNYCH ─────────────────────────────────────── */
+  .pal-tt{
+    padding:4px 10px 6px;font-size:.72rem;letter-spacing:.06em;
+    text-transform:uppercase;color:var(--muted);font-weight:600;
+  }
+  .pal{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;padding:0 8px 7px}
+  .pal .sw{
+    width:100%;aspect-ratio:1;border-radius:7px;cursor:pointer;padding:0;
+    border:1.5px solid rgba(0,0,0,.12);position:relative;
+    transition:transform .14s var(--ease), box-shadow .14s var(--ease);
+  }
+  .pal .sw:hover{transform:scale(1.14);box-shadow:0 3px 10px rgba(14,36,68,.28)}
+  .pal .sw:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+  .pal .sw.sel::after{
+    content:'✓';position:absolute;inset:0;display:grid;place-items:center;
+    color:#fff;font-size:.8rem;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.45);
+  }
+
+  /* paleta w pasku zbiorczym */
+  .bulk .pal{
+    display:flex;gap:5px;padding:0;
+  }
+  .bulk .pal .sw{width:24px;height:24px;aspect-ratio:auto;border-color:rgba(255,255,255,.28)}
+  .bulk .pal .sw:hover{transform:scale(1.12)}
+
+  /* ── MODAL NOTATKI ───────────────────────────────────────────────── */
+  .modal{
+    position:fixed;inset:0;z-index:60;display:none;
+    align-items:center;justify-content:center;padding:20px;
+    background:rgba(14,36,68,.55);backdrop-filter:blur(3px);
+  }
+  .modal.on{display:flex;animation:fade .16s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .modal-box{
+    width:100%;max-width:380px;background:#fff;border-radius:16px;
+    padding:24px;box-shadow:var(--shadow-2);
+    animation:pop .22s var(--ease) both;
+  }
+  .modal-box h2{font-family:'Marcellus',serif;font-weight:400;font-size:1.14rem;color:var(--navy)}
+  .modal-box .when{font-size:.82rem;color:var(--muted);margin-top:3px}
+  .modal-box input{
+    width:100%;margin-top:16px;padding:11px 13px;
+    border:1.5px solid var(--line);border-radius:10px;font-size:.94rem;
+    transition:border-color .16s var(--ease);
+  }
+  .modal-box input:focus{outline:none;border-color:var(--gold)}
+  .modal-acts{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+  .modal-acts button{
+    flex:1;min-width:96px;padding:10px 12px;border-radius:10px;cursor:pointer;
+    border:1.5px solid var(--line);background:#fff;font-size:.87rem;font-weight:500;
+    transition:background .16s var(--ease),border-color .16s var(--ease),transform .16s var(--ease);
+  }
+  .modal-acts button:hover{background:var(--paper);border-color:#c8cfda}
+  .modal-acts button:active{transform:translateY(1px)}
+  .modal-acts .ok{background:var(--navy);border-color:var(--navy);color:#fff}
+  .modal-acts .ok:hover{background:var(--navy-lt);border-color:var(--navy-lt)}
+  .modal-acts .del{color:var(--busy);border-color:#f0cdca}
+  .modal-acts .del:hover{background:var(--busy-bg)}
+  .modal-acts button:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+  /* ── RESPONSYWNOŚĆ ───────────────────────────────────────────────── */
+  @media(max-width:900px){
+    .topbar-in{padding:11px 14px;gap:11px}
+    .brand strong{font-size:1.04rem}
+    .legend{order:3;width:100%;gap:12px}
+    .hint{padding:7px 14px;font-size:.75rem}
+  }
+  @media(max-width:640px){
+    table{min-width:780px}
+    thead th{font-size:.66rem;padding:9px 4px}
+    thead th.c-wk,.c-wk{width:34px}
+    thead th.c-dt,.c-dt{width:88px}
+    thead th.c-dt{padding-left:8px}
+    .c-dt{padding:0 8px;font-size:.76rem}
+    td{height:32px}
+    tr.msep td{font-size:.86rem;padding:6px 10px}
+    .brand span{display:none}
+  }
+  @media(prefers-reduced-motion:reduce){
+    *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+  }
+</style>
+</head>
+<body>
+
+<!-- ── EKRAN LOGOWANIA ───────────────────────────────────────────── -->
+<div class="gate" id="gate">
+  <div class="gate-box">
+    <div class="gate-mark">🗓</div>
+    <h1>Panel rezerwacji</h1>
+    <p class="sub">Plaża Kownatki — dostęp prywatny</p>
+    <form class="gate-form" id="gateForm" autocomplete="off">
+      <input type="password" id="pw" placeholder="Hasło" aria-label="Hasło" autocomplete="current-password" autofocus>
+      <p class="gate-err" id="gateErr" role="alert"></p>
+      <button type="submit">Wejdź</button>
+    </form>
+  </div>
+</div>
+
+<!-- ── PANEL ─────────────────────────────────────────────────────── -->
+<div class="app" id="app">
+  <header class="topbar">
+    <div class="topbar-in">
+      <div class="brand">
+        <strong>Panel rezerwacji — Plaża Kownatki</strong>
+        <span>Grafik 2026</span>
+      </div>
+      <div class="legend">
+        <span class="lg"><i class="free"></i> dostępne</span>
+        <span class="lg"><i class="busy"></i> zarezerwowane</span>
+        <span class="lg"><i class="chg"></i> wyjazd/przyjazd</span>
+      </div>
+      <div class="tools">
+        <select id="jump" aria-label="Przejdź do miesiąca">
+          <option value="">Przejdź do…</option>
+        </select>
+        <button type="button" id="btnToday">Dziś</button>
+        <button type="button" id="btnSelMode" aria-pressed="false" title="Zaznaczaj kolejne komórki kliknięciem (wygodne na telefonie)">☑ Zaznaczanie</button>
+        <button type="button" id="btnLock" class="lock">Zablokuj</button>
+      </div>
+    </div>
+  </header>
+
+  <p class="hint">
+    <b>Kliknij komórkę</b>, aby wybrać status: <b>dostępne</b>, <b>zarezerwowane</b> lub
+    <b>wyjazd/przyjazd</b> (tego dnia ktoś wyjeżdża i ktoś przyjeżdża). Notatkę dodasz w tym samym menu.
+    &nbsp;•&nbsp; <b>Kilka naraz:</b> przeciągnij myszą, użyj <b>Shift</b> (zakres) lub <b>Ctrl</b> (pojedyncze),
+    albo włącz przycisk <b>☑ Zaznaczanie</b> — potem zmień kolor wszystkich jednym kliknięciem.
+    &nbsp;•&nbsp; Poza trzema statusami masz <b>8 własnych kolorów</b> (grupa, remont, rezerwacja wstępna…).
+  </p>
+
+  <div class="scroll" id="scroll">
+    <table id="grid">
+      <thead>
+        <tr>
+          <th class="c-wk" title="Numer tygodnia">Tydz.</th>
+          <th class="c-dt">Data</th>
+          <th>Domek 1</th><th>Domek 2</th><th>Domek 3</th><th>Domek 4</th>
+          <th>Domek 5</th><th>Domek 6</th><th>Domek 7</th><th>Domek 8</th>
+          <th class="extra">Dodatkowe 1</th><th class="extra">Dodatkowe 2</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ── PASEK AKCJI DLA ZAZNACZONYCH ──────────────────────────────── -->
+<div class="bulk" id="bulk" role="toolbar" aria-label="Zmień status zaznaczonych">
+  <span class="cnt">Zaznaczono <b id="bulkCnt">0</b></span>
+  <span class="sep-v"></span>
+  <button type="button" data-s="w"><i class="i-free"></i> Dostępne</button>
+  <button type="button" data-s="z"><i class="i-busy"></i> Zarezerwowane</button>
+  <button type="button" data-s="p"><i class="i-chg"></i> Wyjazd/przyjazd</button>
+  <span class="sep-v"></span>
+  <div class="pal" id="palBulk"></div>
+  <span class="sep-v"></span>
+  <button type="button" class="close" id="bulkClear" title="Odznacz (Esc)">✕</button>
+</div>
+
+<!-- ── MENU WYBORU STATUSU ───────────────────────────────────────── -->
+<div class="menu" id="menu" role="menu" aria-hidden="true">
+  <div class="menu-hd">
+    <strong id="menuTyt">Domek 1</strong>
+    <span id="menuData">1 stycznia 2026</span>
+  </div>
+  <button type="button" role="menuitem" data-s="w"><i class="i-free"></i> Dostępne <span class="tick">✓</span></button>
+  <button type="button" role="menuitem" data-s="z"><i class="i-busy"></i> Zarezerwowane <span class="tick">✓</span></button>
+  <button type="button" role="menuitem" data-s="p"><i class="i-chg"></i> Wyjazd/przyjazd <span class="tick">✓</span></button>
+  <div class="sep"></div>
+  <p class="pal-tt">Własny kolor</p>
+  <div class="pal" id="palMenu"></div>
+  <div class="sep"></div>
+  <button type="button" role="menuitem" class="note-btn" id="menuNote">✎ Notatka / imię gościa…</button>
+</div>
+
+<!-- ── MODAL NOTATKI ─────────────────────────────────────────────── -->
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+  <div class="modal-box">
+    <h2 id="mTitle">Notatka</h2>
+    <p class="when" id="mWhen"></p>
+    <input type="text" id="mInput" maxlength="40" placeholder="np. Kowalski, 4 os." aria-label="Treść notatki">
+    <div class="modal-acts">
+      <button type="button" id="mCancel">Anuluj</button>
+      <button type="button" class="del" id="mDel">Usuń</button>
+      <button type="button" class="ok" id="mSave">Zapisz</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  'use strict';
+
+  /* ── KONFIGURACJA ────────────────────────────────────────────── */
+  var HASLO     = 'fado';
+  var ROK       = 2026;
+  var AUTH_KEY  = 'pk.panel.auth';           // sessionStorage — na czas sesji
+  var DATA_KEY  = 'pk.panelrezerwacji.2026'; // localStorage  — dane trwałe
+  var KOLUMNY   = ['d1','d2','d3','d4','d5','d6','d7','d8','x1','x2'];
+  var DNI       = ['ndz','pon','wt','śr','czw','pt','sob'];
+
+  /* Paleta kolorów własnych — do oznaczania czego tylko chcesz
+     (grupa, remont, rezerwacja wstępna, pobyt właściciela…).
+     id trafia do zapisu, więc kolory można później zmienić bez utraty danych. */
+  var PALETA = [
+    { id:'nb', nazwa:'Niebieski',    kolor:'#2f6fb0', tlo:'#e3eef8' },
+    { id:'tk', nazwa:'Turkusowy',    kolor:'#1f9c94', tlo:'#e0f4f2' },
+    { id:'li', nazwa:'Limonkowy',    kolor:'#6f9c2f', tlo:'#eef5e1' },
+    { id:'zo', nazwa:'Żółty',        kolor:'#d9a406', tlo:'#fdf3d9' },
+    { id:'po', nazwa:'Pomarańczowy', kolor:'#dd7327', tlo:'#fceadd' },
+    { id:'ro', nazwa:'Różowy',       kolor:'#c2528f', tlo:'#fae4f0' },
+    { id:'fi', nazwa:'Fioletowy',    kolor:'#7a5cc4', tlo:'#ece7f8' },
+    { id:'sz', nazwa:'Szary',        kolor:'#6b7280', tlo:'#eceef1' }
+  ];
+  var PAL_MAP = {};
+  PALETA.forEach(function(p){ PAL_MAP[p.id] = p; });
+  var MIESIACE  = ['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec',
+                   'Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień'];
+  var MIES_DOP  = ['stycznia','lutego','marca','kwietnia','maja','czerwca',
+                   'lipca','sierpnia','września','października','listopada','grudnia'];
+
+  /* ── GRAFIK STARTOWY 2026 ────────────────────────────────────── */
+  /* Zakresy „DD.MM-DD.MM” obejmują OBIE daty włącznie.
+     Pojedynczy dzień zapisujemy jako „DD.MM”.
+     Żeby dopisać/zmienić terminy — edytuj listy poniżej i podnieś SEED_VER. */
+  var SEED_KEY = 'pk.panelrezerwacji.2026.seed';
+  var SEED_VER = 'v2';
+  var GRAFIK = {
+    d1: ['01.01','30.04-03.05','08.05-10.05','22.05-24.05','29.05-01.06','19.06-21.06',
+         '26.06-04.07','13.07-25.07','27.07-06.08','08.08-20.08','28.08-30.08',
+         '04.09-06.09','11.09-13.09'],
+    d2: ['30.04-03.05','08.05-10.05','28.05-31.05','19.06-21.06','26.06-04.07',
+         '10.07-22.08','28.08-30.08','04.09-06.09','11.09-13.09'],
+    d3: ['30.04-01.05','29.05-31.05','19.06-21.06','26.06-03.07','06.07-15.08',
+         '28.08-30.08','04.09-06.09','11.09-13.09'],
+    d4: ['30.04-03.05','29.05-31.05','03.06-06.06','12.06-14.06','19.06-21.06',
+         '26.06-04.07','17.07-16.08','28.08-30.08','04.09-06.09'],
+    d5: ['14.05-17.05','29.05-31.05','03.06-07.06','12.06-14.06','19.06-21.06',
+         '26.06-28.06','04.07-22.07','29.07-11.08','28.08-30.08','04.09-06.09'],
+    d6: [],
+    d7: ['12.06-14.06','01.08-08.08','10.08-16.08','28.08-30.08','04.09-06.09','25.09-27.09'],
+    d8: [],
+    x1: [],
+    x2: []
+  };
+
+  /* Dni z wymianą gości: ktoś wyjeżdża i tego samego dnia ktoś przyjeżdża.
+     Nadpisują status „zarezerwowane” z listy powyżej. */
+  var WYJAZD_PRZYJAZD = {
+    d1: ['18.07'],
+    d2: ['28.06','25.07','29.07','10.08','15.08'],
+    d3: ['28.06','16.07','20.07','24.07','01.08','05.08'],
+    d4: ['11.08'],
+    d5: ['13.07','18.07','02.08','07.08'],
+    d6: [], d7: [], d8: [], x1: [], x2: []
+  };
+
+  /* ── DANE (localStorage) ─────────────────────────────────────── */
+  // Format: { "2026-06-15|d1": { o:1, n:"Kowalski" } }
+  // s: 'z' = zarezerwowane, 'p' = wyjazd/przyjazd. Brak wpisu = dostępne.
+  var dane = {};
+  try { dane = JSON.parse(localStorage.getItem(DATA_KEY)) || {}; } catch(e){ dane = {}; }
+  // zgodność ze starszym zapisem { o:1 }
+  Object.keys(dane).forEach(function(k){
+    if (dane[k] && !dane[k].s && dane[k].o) dane[k].s = 'z';
+  });
+
+  var zapisTimer = null;
+  function zapisz(){
+    clearTimeout(zapisTimer);
+    zapisTimer = setTimeout(function(){
+      try { localStorage.setItem(DATA_KEY, JSON.stringify(dane)); }
+      catch(e){ console.error('Nie udało się zapisać danych', e); }
+    }, 120);
+  }
+
+  /* ── POMOCNICZE ──────────────────────────────────────────────── */
+  function pad(n){ return n < 10 ? '0' + n : '' + n; }
+  function iso(d){ return d.getFullYear() + '-' + pad(d.getMonth()+1) + '-' + pad(d.getDate()); }
+
+  // numer tygodnia wg ISO 8601
+  function tydzien(d){
+    var t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+    t.setUTCDate(t.getUTCDate() + 4 - (t.getUTCDay() || 7));
+    var start = new Date(Date.UTC(t.getUTCFullYear(), 0, 1));
+    return Math.ceil(((t - start) / 86400000 + 1) / 7);
+  }
+
+  /* ── WCZYTANIE GRAFIKU STARTOWEGO ────────────────────────────── */
+  function parsujDate(s){                    // „30.04” → 30 kwietnia 2026
+    var cz = s.trim().split('.');
+    return new Date(ROK, Number(cz[1]) - 1, Number(cz[0]));
+  }
+  function zasiej(){
+    var juz = null;
+    try { juz = localStorage.getItem(SEED_KEY); } catch(e){}
+    if (juz === SEED_VER) return;            // grafik wgrany już wcześniej
+
+    Object.keys(GRAFIK).forEach(function(kol){
+      GRAFIK[kol].forEach(function(zakres){
+        var cz  = zakres.split('-');
+        var od  = parsujDate(cz[0]);
+        var doo = parsujDate(cz[1] || cz[0]);
+        for (var d = new Date(od); d <= doo; d.setDate(d.getDate() + 1)){
+          var k = iso(d) + '|' + kol;
+          if (!dane[k]) dane[k] = { s: 'z', n: '' };  // nie nadpisuj ręcznych wpisów
+        }
+      });
+    });
+    // dni wymiany gości — ustawiane po zakresach, bo je nadpisują
+    Object.keys(WYJAZD_PRZYJAZD).forEach(function(kol){
+      WYJAZD_PRZYJAZD[kol].forEach(function(dzien){
+        var k = iso(parsujDate(dzien)) + '|' + kol;
+        var notatka = dane[k] && dane[k].n ? dane[k].n : '';
+        dane[k] = { s: 'p', n: notatka };
+      });
+    });
+
+    try { localStorage.setItem(SEED_KEY, SEED_VER); } catch(e){}
+    zapisz();
+  }
+  zasiej();
+
+  /* ── BUDOWA TABELI ───────────────────────────────────────────── */
+  var tbody = document.getElementById('tbody');
+  var jump  = document.getElementById('jump');
+  var dzisIso = iso(new Date());
+
+  function buduj(){
+    var html = '';
+    var opcje = '<option value="">Przejdź do…</option>';
+    var d = new Date(ROK, 0, 1);
+    var mAkt = -1;
+    var nrDnia = 0;                          // indeks wiersza (do zaznaczania prostokątem)
+
+    while (d.getFullYear() === ROK){
+      var m = d.getMonth();
+      if (m !== mAkt){
+        mAkt = m;
+        var dniWM = new Date(ROK, m + 1, 0).getDate();
+        html += '<tr class="msep" id="m' + m + '"><td colspan="12">' + MIESIACE[m] +
+                ' <span class="cnt">' + dniWM + ' dni</span></td></tr>';
+        opcje += '<option value="m' + m + '">' + MIESIACE[m] + '</option>';
+      }
+
+      var k = iso(d);
+      var dow = d.getDay();
+      var klasy = [];
+      if (dow === 0 || dow === 6) klasy.push('wknd');
+      if (k === dzisIso) klasy.push('today');
+
+      html += '<tr' + (klasy.length ? ' class="' + klasy.join(' ') + '"' : '') + '>' +
+              '<td class="c-wk">' + tydzien(d) + '</td>' +
+              '<td class="c-dt"><span class="dow">' + DNI[dow] + '</span> ' +
+                d.getDate() + '.' + pad(d.getMonth()+1) + '</td>';
+
+      for (var i = 0; i < KOLUMNY.length; i++){
+        html += '<td class="cell" tabindex="0" role="button" aria-haspopup="menu" ' +
+                'data-k="' + k + '|' + KOLUMNY[i] + '" data-r="' + nrDnia + '" data-c="' + i + '">' +
+                '<span class="nt"></span><span class="pen" title="Notatka">✎</span></td>';
+      }
+      html += '</tr>';
+      nrDnia++;
+      d.setDate(d.getDate() + 1);
+    }
+
+    tbody.innerHTML = html;
+    jump.innerHTML = opcje;
+    dopasujSticky();
+  }
+
+  // kolumna „Data” musi kleić się dokładnie za kolumną tygodnia,
+  // której realna szerokość zależy od czcionki i rozmiaru ekranu
+  var grid = document.getElementById('grid');
+  function dopasujSticky(){
+    var th = document.querySelector('thead th.c-wk');
+    if (!th) return;
+    grid.style.setProperty('--wkw', th.getBoundingClientRect().width + 'px');
+    var hdr = document.querySelector('thead tr');
+    if (hdr) grid.style.setProperty('--headh', hdr.getBoundingClientRect().height + 'px');
+  }
+  window.addEventListener('resize', dopasujSticky);
+
+  // łączna wysokość elementów przyklejonych u góry (nagłówek + pasek miesiąca)
+  function wysokoscSticky(){
+    var hdr  = document.querySelector('thead tr');
+    var msep = tbody.querySelector('tr.msep td');
+    return (hdr ? hdr.getBoundingClientRect().height : 38) +
+           (msep ? msep.getBoundingClientRect().height : 34);
+  }
+
+  /* ── RENDER STANU KOMÓREK ────────────────────────────────────── */
+  var NAZWA_ST = { w: 'Dostępne', z: 'Zarezerwowane', p: 'Wyjazd/przyjazd' };
+
+  function statusOf(k){
+    var rec = dane[k];
+    return rec && rec.s ? rec.s : 'w';
+  }
+  function kolorOf(k){                     // id koloru własnego albo null
+    var rec = dane[k];
+    return rec && rec.s === 'c' && PAL_MAP[rec.c] ? rec.c : null;
+  }
+
+  function odswiez(td){
+    var k = td.dataset.k;
+    var rec = dane[k];
+    var st = statusOf(k);
+    var notatka = rec && rec.n ? rec.n : '';
+    var pal = kolorOf(k);
+
+    td.classList.toggle('occ', st === 'z');
+    td.classList.toggle('chg', st === 'p');
+    td.classList.toggle('cust', !!pal);
+    if (pal){
+      td.style.setProperty('--cc', PAL_MAP[pal].kolor);
+      td.style.setProperty('--ccbg', PAL_MAP[pal].tlo);
+      td.style.setProperty('--cctxt', PAL_MAP[pal].kolor);
+    } else {
+      td.style.removeProperty('--cc');
+      td.style.removeProperty('--ccbg');
+      td.style.removeProperty('--cctxt');
+    }
+    td.classList.toggle('has-note', st !== 'w' && !!notatka);
+    td.querySelector('.nt').textContent = notatka;
+    td.title = (pal ? PAL_MAP[pal].nazwa : NAZWA_ST[st]) + (notatka ? ' — ' + notatka : '');
+  }
+
+  function odswiezWszystko(){
+    var cele = tbody.querySelectorAll('.cell');
+    for (var i = 0; i < cele.length; i++){
+      if (dane[cele[i].dataset.k]) odswiez(cele[i]);
+    }
+  }
+
+  function ustawStatus(td, st){
+    var k = td.dataset.k;
+    var rec = dane[k];
+    if (st === 'w'){
+      delete dane[k];                       // dostępne = brak wpisu (czyści notatkę)
+    } else {
+      dane[k] = { s: st, n: (rec && rec.n) || '' };
+    }
+    odswiez(td);
+    zapisz();
+  }
+  function ustawKolor(td, palId){
+    var k = td.dataset.k;
+    var rec = dane[k];
+    dane[k] = { s: 'c', c: palId, n: (rec && rec.n) || '' };
+    odswiez(td);
+    zapisz();
+  }
+
+  /* ── MODAL NOTATKI ───────────────────────────────────────────── */
+  var modal  = document.getElementById('modal');
+  var mInput = document.getElementById('mInput');
+  var mWhen  = document.getElementById('mWhen');
+  var celTd  = null;
+
+  var ETYKIETY = { d1:'Domek 1', d2:'Domek 2', d3:'Domek 3', d4:'Domek 4',
+                   d5:'Domek 5', d6:'Domek 6', d7:'Domek 7', d8:'Domek 8',
+                   x1:'Dodatkowe 1', x2:'Dodatkowe 2' };
+
+  function opisDaty(isoData){                 // „2026-07-27” → „27 lipca 2026”
+    var d = isoData.split('-');
+    return Number(d[2]) + ' ' + MIES_DOP[Number(d[1]) - 1] + ' ' + d[0];
+  }
+  function opisKlucza(k){
+    var czesci = k.split('|');
+    return ETYKIETY[czesci[1]] + ' — ' + opisDaty(czesci[0]);
+  }
+
+  function otworzModal(td){
+    celTd = td;
+    var rec = dane[td.dataset.k];
+    mWhen.textContent = opisKlucza(td.dataset.k);
+    mInput.value = rec && rec.n ? rec.n : '';
+    modal.classList.add('on');
+    setTimeout(function(){ mInput.focus(); mInput.select(); }, 30);
+  }
+  function zamknijModal(){ modal.classList.remove('on'); celTd = null; }
+
+  document.getElementById('mSave').addEventListener('click', function(){
+    if (!celTd) return;
+    var k = celTd.dataset.k;
+    var tekst = mInput.value.trim();
+    var st = statusOf(k);
+    var pal = kolorOf(k);
+    if (st === 'w') st = 'z';               // notatka na wolnym dniu → zarezerwowane
+    dane[k] = pal ? { s: 'c', c: pal, n: tekst } : { s: st, n: tekst };
+    odswiez(celTd);
+    zapisz();
+    zamknijModal();
+  });
+  document.getElementById('mDel').addEventListener('click', function(){
+    if (!celTd) return;
+    var rec = dane[celTd.dataset.k];
+    if (rec) { rec.n = ''; }
+    odswiez(celTd);
+    zapisz();
+    zamknijModal();
+  });
+  document.getElementById('mCancel').addEventListener('click', zamknijModal);
+  modal.addEventListener('click', function(e){ if (e.target === modal) zamknijModal(); });
+  mInput.addEventListener('keydown', function(e){
+    if (e.key === 'Enter') document.getElementById('mSave').click();
+  });
+
+  /* ── MENU WYBORU STATUSU ─────────────────────────────────────── */
+  var menu     = document.getElementById('menu');
+  var menuTyt  = document.getElementById('menuTyt');
+  var menuData = document.getElementById('menuData');
+  var menuTd   = null;
+
+  function opcjeMenu(){ return menu.querySelectorAll('button[data-s]'); }
+
+  // wypełnij obie palety próbkami kolorów
+  function budujPalety(){
+    var html = PALETA.map(function(p){
+      return '<button type="button" class="sw" data-pal="' + p.id + '" title="' + p.nazwa +
+             '" aria-label="Kolor: ' + p.nazwa + '" style="background:' + p.kolor + '"></button>';
+    }).join('');
+    document.getElementById('palMenu').innerHTML = html;
+    document.getElementById('palBulk').innerHTML = html;
+  }
+  budujPalety();
+
+  function otworzMenu(td){
+    menuTd = td;
+    var czesci = td.dataset.k.split('|');
+    menuTyt.textContent  = ETYKIETY[czesci[1]];
+    menuData.textContent = opisDaty(czesci[0]);
+
+    var st  = statusOf(td.dataset.k);
+    var pal = kolorOf(td.dataset.k);
+    opcjeMenu().forEach(function(b){ b.classList.toggle('sel', !pal && b.dataset.s === st); });
+    menu.querySelectorAll('#palMenu .sw').forEach(function(s){
+      s.classList.toggle('sel', s.dataset.pal === pal);
+    });
+
+    td.classList.add('open');
+    menu.classList.add('on');
+    menu.setAttribute('aria-hidden', 'false');
+
+    // pozycjonowanie przy komórce, z pilnowaniem krawędzi ekranu
+    var r = td.getBoundingClientRect();
+    var m = menu.getBoundingClientRect();
+    var x = r.left;
+    var y = r.bottom + 4;
+    if (x + m.width > window.innerWidth - 8)  x = window.innerWidth - m.width - 8;
+    if (y + m.height > window.innerHeight - 8) y = r.top - m.height - 4;
+    if (y < 8) y = 8;
+    menu.style.left = Math.max(8, x) + 'px';
+    menu.style.top  = y + 'px';
+
+    var wybrany = menu.querySelector('button[data-s].sel') || opcjeMenu()[0];
+    setTimeout(function(){ wybrany.focus(); }, 20);
+  }
+
+  function zamknijMenu(wrocFokus){
+    if (!menu.classList.contains('on')) return;
+    menu.classList.remove('on');
+    menu.setAttribute('aria-hidden', 'true');
+    if (menuTd){
+      menuTd.classList.remove('open');
+      if (wrocFokus) menuTd.focus();
+    }
+    menuTd = null;
+  }
+
+  menu.addEventListener('click', function(e){
+    var b = e.target.closest('button');
+    if (!b || !menuTd) return;
+    if (b.dataset.pal){
+      ustawKolor(menuTd, b.dataset.pal);
+      zamknijMenu(true);
+    } else if (b.dataset.s){
+      ustawStatus(menuTd, b.dataset.s);
+      zamknijMenu(true);
+    } else if (b.id === 'menuNote'){
+      var td = menuTd;
+      zamknijMenu(false);
+      otworzModal(td);
+    }
+  });
+
+  // nawigacja klawiaturą w menu
+  menu.addEventListener('keydown', function(e){
+    var poz = [].slice.call(menu.querySelectorAll('button'));
+    var i = poz.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown'){ e.preventDefault(); poz[(i + 1) % poz.length].focus(); }
+    else if (e.key === 'ArrowUp'){ e.preventDefault(); poz[(i - 1 + poz.length) % poz.length].focus(); }
+    else if (e.key === 'Escape'){ e.preventDefault(); zamknijMenu(true); }
+  });
+
+  /* ── ZAZNACZANIE WIELU KOMÓREK ───────────────────────────────── */
+  var bulk     = document.getElementById('bulk');
+  var bulkCnt  = document.getElementById('bulkCnt');
+  var btnSel   = document.getElementById('btnSelMode');
+  var zazn     = [];        // zaznaczone elementy <td>
+  var kotwica  = null;      // punkt startowy dla Shift / przeciągania
+  var trybZazn = false;     // tryb „klikaj i zaznaczaj” (wygodny na telefonie)
+  var ciagnie  = false, bylDrag = false;
+
+  function odswiezPasek(){
+    bulkCnt.textContent = zazn.length;
+    bulk.classList.toggle('on', zazn.length > 0);
+  }
+  function wyczyscZazn(){
+    zazn.forEach(function(td){ td.classList.remove('sel'); });
+    zazn = [];
+    odswiezPasek();
+  }
+  function ustawZazn(lista){
+    zazn.forEach(function(td){ td.classList.remove('sel'); });
+    zazn = lista;
+    zazn.forEach(function(td){ td.classList.add('sel'); });
+    odswiezPasek();
+  }
+  function przelaczZazn(td){
+    var i = zazn.indexOf(td);
+    if (i >= 0){ zazn.splice(i, 1); td.classList.remove('sel'); }
+    else { zazn.push(td); td.classList.add('sel'); }
+    odswiezPasek();
+  }
+  // prostokąt od kotwicy do wskazanej komórki
+  function prostokat(od, doo){
+    var r1 = Math.min(+od.dataset.r, +doo.dataset.r), r2 = Math.max(+od.dataset.r, +doo.dataset.r);
+    var c1 = Math.min(+od.dataset.c, +doo.dataset.c), c2 = Math.max(+od.dataset.c, +doo.dataset.c);
+    var out = [];
+    for (var r = r1; r <= r2; r++)
+      for (var c = c1; c <= c2; c++){
+        var td = tbody.querySelector('.cell[data-r="' + r + '"][data-c="' + c + '"]');
+        if (td) out.push(td);
+      }
+    return out;
+  }
+
+  btnSel.addEventListener('click', function(){
+    trybZazn = !trybZazn;
+    btnSel.classList.toggle('on', trybZazn);
+    btnSel.setAttribute('aria-pressed', trybZazn ? 'true' : 'false');
+    document.body.classList.toggle('zaznaczanie', trybZazn);
+    if (!trybZazn) wyczyscZazn();
+  });
+
+  // zbiorcza zmiana statusu
+  bulk.addEventListener('click', function(e){
+    var b = e.target.closest('button');
+    if (!b) return;
+    if (b.id === 'bulkClear'){ wyczyscZazn(); return; }
+    if (!zazn.length) return;
+    if (b.dataset.pal){
+      zazn.forEach(function(td){ ustawKolor(td, b.dataset.pal); });
+    } else if (b.dataset.s){
+      zazn.forEach(function(td){ ustawStatus(td, b.dataset.s); });
+    } else return;
+    wyczyscZazn();
+  });
+  document.getElementById('bulkClear').title = 'Odznacz (Esc)';
+
+  /* ── INTERAKCJE TABELI ───────────────────────────────────────── */
+  tbody.addEventListener('mousedown', function(e){
+    if (e.button !== 0) return;
+    var td = e.target.closest('.cell');
+    if (!td || e.target.closest('.pen')) return;
+
+    if (e.shiftKey && kotwica){                 // Shift = zakres od kotwicy
+      e.preventDefault();
+      zamknijMenu(false);
+      ustawZazn(prostokat(kotwica, td));
+      bylDrag = true;
+      return;
+    }
+    if (e.ctrlKey || e.metaKey){                // Ctrl = dokładanie pojedynczych
+      e.preventDefault();
+      zamknijMenu(false);
+      przelaczZazn(td);
+      kotwica = td;
+      bylDrag = true;
+      return;
+    }
+    kotwica = td;
+    ciagnie = true;
+    bylDrag = false;
+  });
+
+  tbody.addEventListener('mouseover', function(e){
+    if (!ciagnie || !kotwica) return;
+    var td = e.target.closest('.cell');
+    if (!td || td === kotwica) return;
+    if (!bylDrag){ bylDrag = true; zamknijMenu(false); }
+    ustawZazn(prostokat(kotwica, td));          // przeciąganie = prostokąt
+  });
+
+  document.addEventListener('mouseup', function(){ ciagnie = false; });
+
+  tbody.addEventListener('click', function(e){
+    var pen = e.target.closest('.pen');
+    var td  = e.target.closest('.cell');
+    if (!td) return;
+    if (pen){ e.stopPropagation(); zamknijMenu(false); otworzModal(td); return; }
+    if (bylDrag){ bylDrag = false; return; }    // zakończone przeciąganie/modyfikator
+    if (trybZazn){ przelaczZazn(td); kotwica = td; return; }
+    if (zazn.length) wyczyscZazn();
+    if (menuTd === td){ zamknijMenu(true); return; }   // ponowny klik zamyka
+    zamknijMenu(false);
+    otworzMenu(td);
+  });
+
+  tbody.addEventListener('contextmenu', function(e){
+    var td = e.target.closest('.cell');
+    if (!td) return;
+    e.preventDefault();
+    zamknijMenu(false);
+    otworzModal(td);
+  });
+
+  tbody.addEventListener('keydown', function(e){
+    var td = e.target.closest('.cell');
+    if (!td) return;
+    if (e.key === 'Enter' || e.key === ' '){
+      e.preventDefault();
+      if (trybZazn || e.shiftKey || e.ctrlKey || e.metaKey){ przelaczZazn(td); kotwica = td; }
+      else otworzMenu(td);
+    }
+    else if (e.key.toLowerCase() === 'n'){ e.preventDefault(); otworzModal(td); }
+  });
+
+  // klik poza menu / przewijanie zamyka listę
+  document.addEventListener('mousedown', function(e){
+    if (menu.classList.contains('on') && !e.target.closest('.menu') && !e.target.closest('.cell')){
+      zamknijMenu(false);
+    }
+  });
+  document.getElementById('scroll').addEventListener('scroll', function(){ zamknijMenu(false); }, { passive: true });
+
+  document.addEventListener('keydown', function(e){
+    if (e.key !== 'Escape') return;
+    if (modal.classList.contains('on')) zamknijModal();
+    else if (menu.classList.contains('on')) zamknijMenu(true);
+    else if (zazn.length) wyczyscZazn();
+  });
+
+  /* ── NAWIGACJA ───────────────────────────────────────────────── */
+  var scroll = document.getElementById('scroll');
+  function skocz(el, odstep){
+    if (!el) return;
+    var delta = el.getBoundingClientRect().top - scroll.getBoundingClientRect().top;
+    scroll.scrollTop += delta - (odstep || 0);
+  }
+  function wysNaglowka(){
+    var hdr = document.querySelector('thead tr');
+    return hdr ? hdr.getBoundingClientRect().height : 38;
+  }
+  // pasek miesiąca ma wylądować tuż pod nagłówkiem kolumn
+  jump.addEventListener('change', function(){
+    if (jump.value) skocz(document.getElementById(jump.value), wysNaglowka());
+    jump.value = '';
+  });
+  // wiersz „dziś” musi być widoczny POD nagłówkiem i paskiem miesiąca
+  document.getElementById('btnToday').addEventListener('click', function(){
+    var t = tbody.querySelector('tr.today');
+    if (t) skocz(t, wysokoscSticky() + 4);
+    else skocz(document.getElementById('m0'), wysNaglowka());
+  });
+
+  /* ── LOGOWANIE ───────────────────────────────────────────────── */
+  var gate = document.getElementById('gate');
+  var app  = document.getElementById('app');
+  var zbudowane = false;
+
+  function wejdz(){
+    gate.style.display = 'none';
+    app.classList.add('on');
+    if (!zbudowane){
+      buduj();
+      odswiezWszystko();
+      zbudowane = true;
+      // start na bieżącym miesiącu, jeśli to rok grafiku
+      var t = tbody.querySelector('tr.today');
+      if (t) setTimeout(function(){ skocz(t, wysokoscSticky() + 4); }, 40);
+    }
+  }
+
+  document.getElementById('gateForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    var pole = document.getElementById('pw');
+    var err  = document.getElementById('gateErr');
+    if (pole.value === HASLO){
+      try { sessionStorage.setItem(AUTH_KEY, 'ok'); } catch(err2){}
+      err.textContent = '';
+      wejdz();
+    } else {
+      err.textContent = 'Nieprawidłowe hasło.';
+      pole.value = '';
+      pole.focus();
+      gate.classList.add('shake');
+      setTimeout(function(){ gate.classList.remove('shake'); }, 420);
+    }
+  });
+
+  document.getElementById('btnLock').addEventListener('click', function(){
+    try { sessionStorage.removeItem(AUTH_KEY); } catch(e){}
+    app.classList.remove('on');
+    gate.style.display = 'grid';
+    document.getElementById('pw').value = '';
+    document.getElementById('pw').focus();
+  });
+
+  // zapamiętane logowanie (przetrwa odświeżenie strony)
+  var zapamietane = false;
+  try { zapamietane = sessionStorage.getItem(AUTH_KEY) === 'ok'; } catch(e){}
+  if (zapamietane) wejdz();
+
+  // synchronizacja między kartami tej samej przeglądarki
+  window.addEventListener('storage', function(e){
+    if (e.key !== DATA_KEY) return;
+    try { dane = JSON.parse(e.newValue) || {}; } catch(err){ return; }
+    if (zbudowane){
+      var cele = tbody.querySelectorAll('.cell');
+      for (var i = 0; i < cele.length; i++) odswiez(cele[i]);
+    }
+  });
+})();
+</script>
+</body>
+</html>
