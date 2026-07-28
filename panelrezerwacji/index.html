@@ -222,6 +222,33 @@
   .wyl-tab tr.pusty td{color:#9aa2b1;font-style:italic}
   .wyl-tab .mini{display:block;font-size:.72rem;color:var(--muted);font-weight:400}
 
+  /* nagłówek sekcji z przyciskami */
+  .wyl-naglowek{
+    display:flex;align-items:baseline;justify-content:space-between;
+    gap:12px;flex-wrap:wrap;margin-bottom:10px;
+  }
+  .wyl-naglowek .wyl-tt{margin:0 0 0 2px}
+  .wyl-akcje{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .wyl-hint{font-size:.76rem;color:var(--muted);margin-right:2px}
+  .wyl-btn{
+    font:inherit;font-size:.78rem;cursor:pointer;padding:5px 11px;border-radius:8px;
+    background:#fff;border:1px solid var(--line);color:var(--navy);
+    transition:background .15s var(--ease),border-color .15s var(--ease);
+  }
+  .wyl-btn:hover{background:var(--paper);border-color:#c8cfda}
+  .wyl-btn:focus-visible{outline:2px solid var(--navy);outline-offset:2px}
+
+  /* kolumna z zaznaczeniem miesięcy */
+  .wyl-tab th.chk,.wyl-tab td.chk{width:40px;text-align:center;padding-right:0}
+  /* gdy jest kolumna z zaznaczeniem, nazwa miesiąca zostaje kolumną „pierwszą” */
+  .wyl-tab th.chk + th{text-align:left}
+  .wyl-tab td.chk + td{text-align:left;font-weight:500}
+  .wyl-tab td.chk input,.wyl-tab th.chk input{
+    width:16px;height:16px;accent-color:var(--navy);cursor:pointer;vertical-align:middle;
+  }
+  .wyl-tab tr.odzn td:not(.chk){opacity:.38}
+  .wyl-tab tbody tr:not(.suma){cursor:pointer}
+
   .wyl-info{
     font-size:.83rem;color:var(--muted);line-height:1.7;
     background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;
@@ -744,7 +771,15 @@
           <table class="wyl-tab" id="tabDomki"></table>
         </div>
 
-        <h3 class="wyl-tt">Według miesięcy</h3>
+        <div class="wyl-naglowek">
+          <h3 class="wyl-tt">Według miesięcy</h3>
+          <div class="wyl-akcje">
+            <span class="wyl-hint">zaznacz miesiące, by policzyć razem</span>
+            <button type="button" class="wyl-btn" data-mies="wszystkie">Wszystkie</button>
+            <button type="button" class="wyl-btn" data-mies="sezon">Sezon V–IX</button>
+            <button type="button" class="wyl-btn" data-mies="zaden">Odznacz</button>
+          </div>
+        </div>
         <div class="tabela-box">
           <table class="wyl-tab" id="tabMiesiace"></table>
         </div>
@@ -1374,6 +1409,48 @@
 
   function zl(n){ return liczbaPL(n) + ' zł'; }
 
+  /* Miesiące zaznaczone w tabeli wyliczeń (osobne od filtra w grafiku). */
+  var WYL_KEY = 'pk.panel.wylmies';
+  var ostatnieMies = {};
+  var wylMies = (function(){
+    try {
+      var z = JSON.parse(localStorage.getItem(WYL_KEY));
+      if (Array.isArray(z)) return z.filter(function(m){ return m >= 0 && m < 12; });
+    } catch(e){}
+    return [0,1,2,3,4,5,6,7,8,9,10,11];
+  })();
+
+  function aktualizujSumeMies(){
+    var doby = 0, kwota = 0;
+    wylMies.forEach(function(m){
+      var w = ostatnieMies[m];
+      if (w){ doby += w.doby; kwota += w.kwota; }
+    });
+    var etyk = wylMies.length === 12 ? 'Razem (cały rok)'
+             : !wylMies.length ? 'Razem (nic nie zaznaczono)'
+             : 'Razem (' + wylMies.length + ' ' + (wylMies.length === 1 ? 'miesiąc' :
+                (wylMies.length < 5 ? 'miesiące' : 'miesięcy')) + ')';
+    var e1 = document.getElementById('mSumaEtyk');
+    if (!e1) return;
+    e1.textContent = etyk;
+    document.getElementById('mSumaDoby').textContent = liczbaPL(doby);
+    document.getElementById('mSumaKwota').textContent = zl(kwota);
+
+    // wyszarzenie niezaznaczonych wierszy
+    document.querySelectorAll('#tabMiesiace tbody tr[data-m]').forEach(function(tr){
+      tr.classList.toggle('odzn', wylMies.indexOf(Number(tr.dataset.m)) < 0);
+    });
+    var all = document.getElementById('miesAll');
+    if (all){
+      all.checked = wylMies.length === 12;
+      all.indeterminate = wylMies.length > 0 && wylMies.length < 12;
+    }
+  }
+  function zapiszWylMies(){
+    try { localStorage.setItem(WYL_KEY, JSON.stringify(wylMies)); } catch(e){}
+    aktualizujSumeMies();
+  }
+
   function odswiezWyliczenia(){
     // doby płatne = 'z' (zarezerwowane) + 'p' (wyjazd/przyjazd); kolory własne pomijamy
     var doby = {}, dobyMies = {}, innych = 0;
@@ -1417,19 +1494,27 @@
       '<tr class="suma"><td>Razem</td><td></td><td>' + liczbaPL(sumaDoby) +
       '</td><td class="kw">' + zl(sumaKwota) + '</td></tr></tbody>';
 
-    // ── tabela wg miesięcy ──
+    // ── tabela wg miesięcy (z zaznaczaniem) ──
+    ostatnieMies = dobyMies;
     var wierszeM = '';
     for (var m = 0; m < 12; m++){
       var w = dobyMies[m];
-      wierszeM += w
-        ? '<tr><td>' + MIESIACE[m] + '</td><td>' + liczbaPL(w.doby) + '</td><td class="kw">' + zl(w.kwota) + '</td></tr>'
-        : '<tr class="pusty"><td>' + MIESIACE[m] + '</td><td>0</td><td>—</td></tr>';
+      var zazn = wylMies.indexOf(m) >= 0;
+      wierszeM += '<tr' + (w ? '' : ' class="pusty"') + (zazn ? '' : ' data-odzn="1"') + ' data-m="' + m + '">' +
+        '<td class="chk"><input type="checkbox" data-m="' + m + '"' + (zazn ? ' checked' : '') +
+        ' aria-label="Licz ' + MIESIACE[m] + '"></td>' +
+        '<td>' + MIESIACE[m] + '</td>' +
+        '<td>' + (w ? liczbaPL(w.doby) : '0') + '</td>' +
+        '<td class="kw">' + (w ? zl(w.kwota) : '—') + '</td></tr>';
     }
     document.getElementById('tabMiesiace').innerHTML =
-      '<thead><tr><th>Miesiąc</th><th>Doby</th><th>Przychód</th></tr></thead>' +
+      '<thead><tr><th class="chk"><input type="checkbox" id="miesAll" aria-label="Zaznacz wszystkie"></th>' +
+      '<th>Miesiąc</th><th>Doby</th><th>Przychód</th></tr></thead>' +
       '<tbody>' + wierszeM +
-      '<tr class="suma"><td>Razem</td><td>' + liczbaPL(sumaDoby) +
-      '</td><td class="kw">' + zl(sumaKwota) + '</td></tr></tbody>';
+      '<tr class="suma"><td class="chk"></td><td id="mSumaEtyk">Razem</td>' +
+      '<td id="mSumaDoby">0</td><td class="kw" id="mSumaKwota">0 zł</td></tr></tbody>';
+
+    aktualizujSumeMies();
 
     // ── nagłówek ──
     document.getElementById('wylSuma').textContent = zl(sumaKwota);
@@ -1437,6 +1522,44 @@
       liczbaPL(sumaDoby) + ' płatnych dób w 6 domkach ze stawką' +
       (innych ? ' · ' + liczbaPL(innych) + ' dni z własnym kolorem pominięto' : '');
   }
+
+  /* — zaznaczanie miesięcy w tabeli wyliczeń — */
+  document.getElementById('tabMiesiace').addEventListener('change', function(e){
+    var chk = e.target;
+    if (chk.type !== 'checkbox') return;
+    if (chk.id === 'miesAll'){
+      wylMies = chk.checked ? [0,1,2,3,4,5,6,7,8,9,10,11] : [];
+      document.querySelectorAll('#tabMiesiace tbody input[type=checkbox]').forEach(function(c){
+        c.checked = chk.checked;
+      });
+    } else {
+      var m = Number(chk.dataset.m), i = wylMies.indexOf(m);
+      if (chk.checked && i < 0) wylMies.push(m);
+      else if (!chk.checked && i >= 0) wylMies.splice(i, 1);
+    }
+    zapiszWylMies();
+  });
+  // klik w dowolne miejsce wiersza też przełącza zaznaczenie
+  document.getElementById('tabMiesiace').addEventListener('click', function(e){
+    if (e.target.type === 'checkbox') return;
+    var tr = e.target.closest('tr[data-m]');
+    if (!tr) return;
+    var chk = tr.querySelector('input[type=checkbox]');
+    chk.checked = !chk.checked;
+    chk.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+  // skróty nad tabelą
+  document.querySelector('.wyl-akcje').addEventListener('click', function(e){
+    var b = e.target.closest('button[data-mies]');
+    if (!b) return;
+    wylMies = b.dataset.mies === 'wszystkie' ? [0,1,2,3,4,5,6,7,8,9,10,11]
+            : b.dataset.mies === 'sezon'     ? SEZON.slice()
+            : [];
+    document.querySelectorAll('#tabMiesiace tbody input[type=checkbox]').forEach(function(c){
+      c.checked = wylMies.indexOf(Number(c.dataset.m)) >= 0;
+    });
+    zapiszWylMies();
+  });
 
   /* — przełączanie zakładek — */
   document.querySelector('.taby').addEventListener('click', function(e){
