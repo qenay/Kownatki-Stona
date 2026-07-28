@@ -10,6 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=Marcellus&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.58.0/dist/umd/supabase.min.js"></script>
 <style>
   :root{
     --navy:#0e2444;
@@ -153,6 +154,36 @@
     padding:8px 20px;font-size:.79rem;color:var(--muted);
   }
   .hint b{color:var(--text);font-weight:600}
+
+  /* stan połączenia z bazą */
+  .netbar{
+    display:none;flex-shrink:0;padding:8px 20px;font-size:.8rem;
+    background:#fdf3d9;color:#7a5510;border-bottom:1px solid #eddcae;
+  }
+  .netbar.on{display:block}
+  .netbar b{font-weight:600}
+  .sync{
+    display:inline-flex;align-items:center;gap:6px;font-size:.74rem;
+    color:rgba(255,255,255,.55);white-space:nowrap;
+  }
+  .sync i{width:7px;height:7px;border-radius:50%;background:var(--free);display:block}
+  .sync.zapis i{background:var(--gold-lt);animation:pulse 1s ease-in-out infinite}
+  .sync.blad i{background:var(--live)}
+
+  /* ekran ładowania danych */
+  .loading{
+    position:fixed;inset:0;z-index:90;display:none;
+    flex-direction:column;align-items:center;justify-content:center;gap:14px;
+    background:var(--navy);color:#fff;
+  }
+  .loading.on{display:flex}
+  .loading .spin{
+    width:38px;height:38px;border-radius:50%;
+    border:3px solid rgba(255,255,255,.18);border-top-color:var(--gold);
+    animation:obrot .8s linear infinite;
+  }
+  @keyframes obrot{to{transform:rotate(360deg)}}
+  .loading p{color:rgba(255,255,255,.72);font-size:.88rem}
 
   /* ── TABELA ──────────────────────────────────────────────────────── */
   .scroll{flex:1;overflow:auto;background:#fff;overscroll-behavior:contain}
@@ -473,9 +504,12 @@
         <button type="button" id="btnToday">Dziś</button>
         <button type="button" id="btnSelMode" aria-pressed="false" title="Zaznaczaj kolejne komórki kliknięciem (wygodne na telefonie)">☑ Zaznaczanie</button>
         <button type="button" id="btnLock" class="lock">Zablokuj</button>
+        <span class="sync" id="sync" title="Połączenie ze wspólną bazą"><i></i><span id="syncTxt">zapisano</span></span>
       </div>
     </div>
   </header>
+
+  <p class="netbar" id="netbar"></p>
 
   <p class="hint">
     <b>Kliknij komórkę</b>, aby wybrać status: <b>dostępne</b>, <b>zarezerwowane</b> lub
@@ -499,6 +533,12 @@
       <tbody id="tbody"></tbody>
     </table>
   </div>
+</div>
+
+<!-- ── ŁADOWANIE DANYCH ──────────────────────────────────────────── -->
+<div class="loading" id="loading">
+  <div class="spin"></div>
+  <p>Wczytywanie grafiku…</p>
 </div>
 
 <!-- ── PASEK AKCJI DLA ZAZNACZONYCH ──────────────────────────────── -->
@@ -580,8 +620,7 @@
   /* Zakresy „DD.MM-DD.MM” obejmują OBIE daty włącznie.
      Pojedynczy dzień zapisujemy jako „DD.MM”.
      Żeby dopisać/zmienić terminy — edytuj listy poniżej i podnieś SEED_VER. */
-  var SEED_KEY = 'pk.panelrezerwacji.2026.seed';
-  var SEED_VER = 'v2';
+  var SEED_VER = 'v2';                      // podbij, gdy zmienisz listy poniżej
   var GRAFIK = {
     d1: ['01.01','30.04-03.05','08.05-10.05','22.05-24.05','29.05-01.06','19.06-21.06',
          '26.06-04.07','13.07-25.07','27.07-06.08','08.08-20.08','28.08-30.08',
@@ -612,23 +651,91 @@
     d6: [], d7: [], d8: [], x1: [], x2: []
   };
 
-  /* ── DANE (localStorage) ─────────────────────────────────────── */
-  // Format: { "2026-06-15|d1": { o:1, n:"Kowalski" } }
-  // s: 'z' = zarezerwowane, 'p' = wyjazd/przyjazd. Brak wpisu = dostępne.
-  var dane = {};
-  try { dane = JSON.parse(localStorage.getItem(DATA_KEY)) || {}; } catch(e){ dane = {}; }
-  // zgodność ze starszym zapisem { o:1 }
-  Object.keys(dane).forEach(function(k){
-    if (dane[k] && !dane[k].s && dane[k].o) dane[k].s = 'z';
-  });
+  /* ── DANE — WSPÓLNA BAZA SUPABASE ────────────────────────────── */
+  /* Wszyscy widzą ten sam grafik: dane leżą w chmurze, a w przeglądarce
+     działa cache w pamięci (klikanie jest natychmiastowe, zapis w tle).
+     localStorage to już tylko kopia awaryjna na wypadek braku sieci.
+     Format wpisu: { "2026-06-15|d1": { s:'z', c:'fi', n:'Kowalski' } } */
+  var SB_URL  = 'https://htcrleqelgkosxetvbcf.supabase.co';
+  var SB_KEY  = 'sb_publishable_rtWHswMe6ueuuhuO2GEVwA_KA62S7hd';
+  var TABELA  = 'kownatki_rezerwacje';
+  var SEED_ID = '__seed__';                 // wiersz-znacznik: czy grafik już wgrany
 
-  var zapisTimer = null;
-  function zapisz(){
-    clearTimeout(zapisTimer);
-    zapisTimer = setTimeout(function(){
-      try { localStorage.setItem(DATA_KEY, JSON.stringify(dane)); }
-      catch(e){ console.error('Nie udało się zapisać danych', e); }
-    }, 120);
+  var sb = null;
+  try { sb = window.supabase.createClient(SB_URL, SB_KEY, { realtime: { params: { eventsPerSecond: 5 } } }); }
+  catch(e){ console.error('Brak klienta Supabase', e); }
+
+  var dane = {};
+  var online = false;
+
+  function kopiaLokalna(){
+    try { localStorage.setItem(DATA_KEY, JSON.stringify(dane)); } catch(e){}
+  }
+  function wczytajKopie(){
+    try {
+      var d = JSON.parse(localStorage.getItem(DATA_KEY)) || {};
+      Object.keys(d).forEach(function(k){        // zgodność ze starszym zapisem { o:1 }
+        if (d[k] && !d[k].s && d[k].o) d[k].s = 'z';
+      });
+      return d;
+    } catch(e){ return {}; }
+  }
+
+  /* — wskaźnik stanu w pasku górnym — */
+  var syncEl = document.getElementById('sync');
+  var syncTx = document.getElementById('syncTxt');
+  function stanSync(tryb, tekst){
+    syncEl.className = 'sync' + (tryb ? ' ' + tryb : '');
+    syncTx.textContent = tekst;
+  }
+  function ostrzezenie(tekst){
+    var el = document.getElementById('netbar');
+    el.innerHTML = tekst || '';
+    el.classList.toggle('on', !!tekst);
+  }
+
+  /* — kolejka zapisu (grupuje zmiany, np. zaznaczenie 50 komórek naraz) — */
+  var doZapisu = {}, timerZapisu = null;
+  function zapisz(k){
+    kopiaLokalna();
+    if (!k || !sb || !online) return;
+    doZapisu[k] = true;
+    stanSync('zapis', 'zapisywanie…');
+    clearTimeout(timerZapisu);
+    timerZapisu = setTimeout(wyslij, 350);
+  }
+  function wyslij(){
+    var klucze = Object.keys(doZapisu);
+    if (!klucze.length) return;
+    doZapisu = {};
+
+    var upserty = [], kasowane = [];
+    klucze.forEach(function(k){
+      var r = dane[k];
+      if (r) upserty.push({ id: k, s: r.s, c: r.c || null, n: r.n || '', updated_at: new Date().toISOString() });
+      else kasowane.push(k);
+    });
+
+    var zadania = [];
+    for (var i = 0; i < upserty.length; i += 200)
+      zadania.push(sb.from(TABELA).upsert(upserty.slice(i, i + 200)));
+    for (var j = 0; j < kasowane.length; j += 200)
+      zadania.push(sb.from(TABELA).delete().in('id', kasowane.slice(j, j + 200)));
+
+    Promise.all(zadania).then(function(wyniki){
+      var zly = wyniki.filter(function(w){ return w && w.error; })[0];
+      if (zly){
+        console.error('Zapis do bazy:', zly.error);
+        stanSync('blad', 'błąd zapisu');
+        ostrzezenie('⚠️ <b>Nie udało się zapisać zmian w bazie.</b> Sprawdź połączenie — zmiany są na razie tylko na tym urządzeniu.');
+      } else {
+        stanSync('', 'zapisano');
+        ostrzezenie('');
+      }
+    }).catch(function(e){
+      console.error(e);
+      stanSync('blad', 'błąd zapisu');
+    });
   }
 
   /* ── POMOCNICZE ──────────────────────────────────────────────── */
@@ -648,10 +755,10 @@
     var cz = s.trim().split('.');
     return new Date(ROK, Number(cz[1]) - 1, Number(cz[0]));
   }
-  function zasiej(){
-    var juz = null;
-    try { juz = localStorage.getItem(SEED_KEY); } catch(e){}
-    if (juz === SEED_VER) return;            // grafik wgrany już wcześniej
+  // zwraca listę kluczy, które grafik startowy ustawia (albo [] gdy już wgrany)
+  function zasiej(wersjaWBazie){
+    if (wersjaWBazie === SEED_VER) return [];   // grafik wgrany już wcześniej
+    var dodane = {};
 
     Object.keys(GRAFIK).forEach(function(kol){
       GRAFIK[kol].forEach(function(zakres){
@@ -660,7 +767,7 @@
         var doo = parsujDate(cz[1] || cz[0]);
         for (var d = new Date(od); d <= doo; d.setDate(d.getDate() + 1)){
           var k = iso(d) + '|' + kol;
-          if (!dane[k]) dane[k] = { s: 'z', n: '' };  // nie nadpisuj ręcznych wpisów
+          if (!dane[k]){ dane[k] = { s: 'z', n: '' }; dodane[k] = true; }  // nie nadpisuj ręcznych wpisów
         }
       });
     });
@@ -670,13 +777,65 @@
         var k = iso(parsujDate(dzien)) + '|' + kol;
         var notatka = dane[k] && dane[k].n ? dane[k].n : '';
         dane[k] = { s: 'p', n: notatka };
+        dodane[k] = true;
       });
     });
-
-    try { localStorage.setItem(SEED_KEY, SEED_VER); } catch(e){}
-    zapisz();
+    return Object.keys(dodane);
   }
-  zasiej();
+
+  /* ── POŁĄCZENIE Z BAZĄ ───────────────────────────────────────── */
+  function wierszDoWpisu(r){
+    return { s: r.s, c: r.c || undefined, n: r.n || '' };
+  }
+
+  async function polaczZBaza(){
+    if (!sb) throw new Error('Brak biblioteki Supabase');
+
+    // 1) pobierz cały grafik (stronicowo, gdyby wierszy było dużo)
+    var wszystkie = [], od = 0, paczka = 1000;
+    while (true){
+      var res = await sb.from(TABELA).select('id,s,c,n').range(od, od + paczka - 1);
+      if (res.error) throw res.error;
+      wszystkie = wszystkie.concat(res.data || []);
+      if (!res.data || res.data.length < paczka) break;
+      od += paczka;
+    }
+
+    var wersja = null;
+    dane = {};
+    wszystkie.forEach(function(r){
+      if (r.id === SEED_ID){ wersja = r.n; return; }
+      dane[r.id] = wierszDoWpisu(r);
+    });
+    online = true;
+
+    // 2) pierwsze uruchomienie — wgraj grafik startowy do wspólnej bazy
+    var nowe = zasiej(wersja);
+    if (nowe.length){
+      var rzedy = nowe.map(function(k){
+        return { id: k, s: dane[k].s, c: dane[k].c || null, n: dane[k].n || '', updated_at: new Date().toISOString() };
+      });
+      rzedy.push({ id: SEED_ID, s: null, c: null, n: SEED_VER, updated_at: new Date().toISOString() });
+      for (var i = 0; i < rzedy.length; i += 200){
+        var w = await sb.from(TABELA).upsert(rzedy.slice(i, i + 200));
+        if (w.error) throw w.error;
+      }
+    }
+    kopiaLokalna();
+
+    // 3) nasłuch zmian od innych osób
+    sb.channel('kownatki-panel')
+      .on('postgres_changes', { event: '*', schema: 'public', table: TABELA }, function(p){
+        var wiersz = (p.new && p.new.id) ? p.new : p.old;
+        if (!wiersz || !wiersz.id || wiersz.id === SEED_ID) return;
+        if (p.eventType === 'DELETE') delete dane[wiersz.id];
+        else dane[wiersz.id] = wierszDoWpisu(wiersz);
+        kopiaLokalna();
+        var td = tbody && tbody.querySelector('.cell[data-k="' + wiersz.id + '"]');
+        if (td) odswiez(td);
+      })
+      .subscribe();
+  }
 
   /* ── BUDOWA TABELI ───────────────────────────────────────────── */
   var tbody = document.getElementById('tbody');
@@ -798,14 +957,14 @@
       dane[k] = { s: st, n: (rec && rec.n) || '' };
     }
     odswiez(td);
-    zapisz();
+    zapisz(k);
   }
   function ustawKolor(td, palId){
     var k = td.dataset.k;
     var rec = dane[k];
     dane[k] = { s: 'c', c: palId, n: (rec && rec.n) || '' };
     odswiez(td);
-    zapisz();
+    zapisz(k);
   }
 
   /* ── MODAL NOTATKI ───────────────────────────────────────────── */
@@ -846,15 +1005,16 @@
     if (st === 'w') st = 'z';               // notatka na wolnym dniu → zarezerwowane
     dane[k] = pal ? { s: 'c', c: pal, n: tekst } : { s: st, n: tekst };
     odswiez(celTd);
-    zapisz();
+    zapisz(k);
     zamknijModal();
   });
   document.getElementById('mDel').addEventListener('click', function(){
     if (!celTd) return;
-    var rec = dane[celTd.dataset.k];
+    var k = celTd.dataset.k;
+    var rec = dane[k];
     if (rec) { rec.n = ''; }
     odswiez(celTd);
-    zapisz();
+    zapisz(k);
     zamknijModal();
   });
   document.getElementById('mCancel').addEventListener('click', zamknijModal);
@@ -1127,17 +1287,39 @@
   var app  = document.getElementById('app');
   var zbudowane = false;
 
+  var ladowanie = document.getElementById('loading');
+
+  function pokazGrafik(){
+    buduj();
+    odswiezWszystko();
+    zbudowane = true;
+    // start na bieżącym dniu, jeśli mieści się w roku grafiku
+    var t = tbody.querySelector('tr.today');
+    if (t) setTimeout(function(){ skocz(t, wysokoscSticky() + 4); }, 40);
+  }
+
   function wejdz(){
     gate.style.display = 'none';
     app.classList.add('on');
-    if (!zbudowane){
-      buduj();
-      odswiezWszystko();
-      zbudowane = true;
-      // start na bieżącym miesiącu, jeśli to rok grafiku
-      var t = tbody.querySelector('tr.today');
-      if (t) setTimeout(function(){ skocz(t, wysokoscSticky() + 4); }, 40);
-    }
+    if (zbudowane) return;
+
+    ladowanie.classList.add('on');
+    stanSync('zapis', 'łączenie…');
+
+    polaczZBaza().then(function(){
+      ladowanie.classList.remove('on');
+      stanSync('', 'zapisano');
+      ostrzezenie('');
+      pokazGrafik();
+    }).catch(function(e){
+      console.error('Połączenie z bazą:', e);
+      online = false;
+      dane = wczytajKopie();               // awaryjnie: ostatnia kopia z tej przeglądarki
+      ladowanie.classList.remove('on');
+      stanSync('blad', 'brak połączenia');
+      ostrzezenie('⚠️ <b>Brak połączenia ze wspólną bazą.</b> Widzisz ostatnią kopię z tego urządzenia, a zmiany <b>nie zapiszą się dla innych</b>. Odśwież stronę, gdy wróci internet.');
+      pokazGrafik();
+    });
   }
 
   document.getElementById('gateForm').addEventListener('submit', function(e){
@@ -1170,15 +1352,8 @@
   try { zapamietane = sessionStorage.getItem(AUTH_KEY) === 'ok'; } catch(e){}
   if (zapamietane) wejdz();
 
-  // synchronizacja między kartami tej samej przeglądarki
-  window.addEventListener('storage', function(e){
-    if (e.key !== DATA_KEY) return;
-    try { dane = JSON.parse(e.newValue) || {}; } catch(err){ return; }
-    if (zbudowane){
-      var cele = tbody.querySelectorAll('.cell');
-      for (var i = 0; i < cele.length; i++) odswiez(cele[i]);
-    }
-  });
+  // Synchronizacja między urządzeniami idzie przez Supabase Realtime
+  // (patrz polaczZBaza) — nasłuch localStorage nie jest już potrzebny.
 })();
 </script>
 </body>
