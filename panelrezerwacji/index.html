@@ -155,6 +155,39 @@
   }
   .hint b{color:var(--text);font-weight:600}
 
+  /* ── PODSUMOWANIE: ZAJĘTE / WOLNE ────────────────────────────────── */
+  .stats{
+    flex-shrink:0;display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+    padding:9px 20px;background:#fff;border-bottom:1px solid var(--line);
+  }
+  .st{
+    display:inline-flex;align-items:baseline;gap:6px;
+    padding:5px 11px;border-radius:9px;font-size:.8rem;color:var(--muted);
+    background:var(--paper);border:1px solid var(--line);
+  }
+  .st b{font-family:'Marcellus',serif;font-size:1.05rem;color:var(--navy);letter-spacing:-.01em}
+  .st.zaj{background:var(--busy-bg);border-color:#f0c9c5;color:#8f3129}
+  .st.zaj b{color:#a53a31}
+  .st.wol{background:var(--free-bg);border-color:#bfe4cd;color:#1f6b42}
+  .st.wol b{color:#1c7a47}
+  .st.obl b{color:var(--navy)}
+  .stats .skala{
+    flex:1;min-width:120px;height:8px;border-radius:99px;overflow:hidden;
+    background:var(--free-bg-2);border:1px solid var(--line);
+  }
+  .stats .skala i{display:block;height:100%;background:var(--busy);opacity:.75}
+  .stats .etyk{font-size:.74rem;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;font-weight:600}
+  @media(max-width:640px){
+    .stats{padding:8px 14px;gap:6px}
+    .st{font-size:.75rem;padding:4px 9px}
+    .st b{font-size:.95rem}
+    .stats .skala{order:9;flex-basis:100%}
+  }
+
+  /* liczby przy nazwie miesiąca */
+  tr.msep .mz{color:#ffb3ab}
+  tr.msep .mw{color:#a8e0bf}
+
   /* stan połączenia z bazą */
   .netbar{
     display:none;flex-shrink:0;padding:8px 20px;font-size:.8rem;
@@ -511,6 +544,14 @@
 
   <p class="netbar" id="netbar"></p>
 
+  <div class="stats" id="stats">
+    <span class="etyk">Cały 2026:</span>
+    <span class="st zaj"><b id="stZaj">–</b> zajętych</span>
+    <span class="st wol"><b id="stWol">–</b> wolnych</span>
+    <span class="st obl">obłożenie <b id="stObl">–</b></span>
+    <span class="skala" title="Udział zajętych"><i id="stPasek" style="width:0"></i></span>
+  </div>
+
   <p class="hint">
     <b>Kliknij komórkę</b>, aby wybrać status: <b>dostępne</b>, <b>zarezerwowane</b> lub
     <b>wyjazd/przyjazd</b> (tego dnia ktoś wyjeżdża i ktoś przyjeżdża). Notatkę dodasz w tym samym menu.
@@ -668,6 +709,18 @@
   var dane = {};
   var online = false;
 
+  var BACKUP_KEY = DATA_KEY + '.przed-chmura';
+
+  // Jednorazowo chowamy kopię sprzed przejścia na wspólną bazę, żeby
+  // wczytanie danych z chmury nie skasowało ręcznych zmian z tej przeglądarki.
+  (function zabezpieczKopie(){
+    try {
+      if (localStorage.getItem(BACKUP_KEY)) return;
+      var stare = localStorage.getItem(DATA_KEY);
+      if (stare && stare.length > 2) localStorage.setItem(BACKUP_KEY, stare);
+    } catch(e){}
+  })();
+
   function kopiaLokalna(){
     try { localStorage.setItem(DATA_KEY, JSON.stringify(dane)); } catch(e){}
   }
@@ -698,6 +751,7 @@
   var doZapisu = {}, timerZapisu = null;
   function zapisz(k){
     kopiaLokalna();
+    przeliczPozniej();                      // licznik zajęte/wolne na bieżąco
     if (!k || !sb || !online) return;
     doZapisu[k] = true;
     stanSync('zapis', 'zapisywanie…');
@@ -833,6 +887,7 @@
         kopiaLokalna();
         var td = tbody && tbody.querySelector('.cell[data-k="' + wiersz.id + '"]');
         if (td) odswiez(td);
+        przeliczPozniej();                  // zmiana od innej osoby też zmienia licznik
       })
       .subscribe();
   }
@@ -855,7 +910,7 @@
         mAkt = m;
         var dniWM = new Date(ROK, m + 1, 0).getDate();
         html += '<tr class="msep" id="m' + m + '"><td colspan="12">' + MIESIACE[m] +
-                ' <span class="cnt">' + dniWM + ' dni</span></td></tr>';
+                ' <span class="cnt" id="cnt' + m + '" data-dni="' + dniWM + '">' + dniWM + ' dni</span></td></tr>';
         opcje += '<option value="m' + m + '">' + MIESIACE[m] + '</option>';
       }
 
@@ -939,6 +994,50 @@
     td.classList.toggle('has-note', st !== 'w' && !!notatka);
     td.querySelector('.nt').textContent = notatka;
     td.title = (pal ? PAL_MAP[pal].nazwa : NAZWA_ST[st]) + (notatka ? ' — ' + notatka : '');
+  }
+
+  /* ── PODSUMOWANIE ZAJĘTE / WOLNE ─────────────────────────────── */
+  /* Liczymy „domko-dni”: jedna komórka = jeden domek przez jeden dzień.
+     Zajęte = wszystko, co nie jest zielone (zarezerwowane, wyjazd/przyjazd
+     oraz dni oznaczone własnym kolorem). Wolne = reszta. */
+  function liczbaPL(n){ return n.toLocaleString('pl-PL').replace(/ /g, ' '); }
+
+  function odswiezStatystyki(){
+    var wgMies = {};
+    Object.keys(dane).forEach(function(k){
+      if (k.indexOf('|') < 0) return;               // pomijamy wiersz-znacznik
+      var m = k.slice(0, 7);
+      wgMies[m] = (wgMies[m] || 0) + 1;
+    });
+
+    var zajRok = 0, wszRok = 0;
+    for (var m = 0; m < 12; m++){
+      var dniWM = new Date(ROK, m + 1, 0).getDate();
+      var wszystkie = dniWM * KOLUMNY.length;
+      var zajete = wgMies[ROK + '-' + pad(m + 1)] || 0;
+      zajRok += zajete;
+      wszRok += wszystkie;
+
+      var el = document.getElementById('cnt' + m);
+      if (el){
+        el.innerHTML = dniWM + ' dni &nbsp;·&nbsp; zajęte <span class="mz">' + liczbaPL(zajete) +
+                       '</span> &nbsp;·&nbsp; wolne <span class="mw">' + liczbaPL(wszystkie - zajete) + '</span>';
+      }
+    }
+
+    var proc = wszRok ? Math.round(zajRok / wszRok * 100) : 0;
+    document.getElementById('stZaj').textContent = liczbaPL(zajRok);
+    document.getElementById('stWol').textContent = liczbaPL(wszRok - zajRok);
+    document.getElementById('stObl').textContent = proc + '%';
+    document.getElementById('stPasek').style.width = proc + '%';
+    document.getElementById('stats').title =
+      'Zajęte ' + liczbaPL(zajRok) + ' z ' + liczbaPL(wszRok) + ' domko-dni (10 pozycji × 365 dni)';
+  }
+
+  var timerStat = null;
+  function przeliczPozniej(){
+    clearTimeout(timerStat);
+    timerStat = setTimeout(odswiezStatystyki, 120);
   }
 
   function odswiezWszystko(){
@@ -1292,6 +1391,7 @@
   function pokazGrafik(){
     buduj();
     odswiezWszystko();
+    odswiezStatystyki();
     zbudowane = true;
     // start na bieżącym dniu, jeśli mieści się w roku grafiku
     var t = tbody.querySelector('tr.today');
