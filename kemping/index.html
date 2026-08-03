@@ -213,6 +213,91 @@
     }
     .cennik-sub strong { color: var(--navy); }
 
+    /* ─── Komunikat dla Gości ─────────────────────────────────────────── */
+    .komunikat {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 40px 44px 36px;
+      margin-bottom: 72px;
+      box-shadow: 0 2px 20px rgba(14,36,68,0.07), 0 12px 40px rgba(14,36,68,0.05);
+      position: relative;
+      overflow: hidden;
+    }
+    .komunikat::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(to right, #d99a2b, var(--gold-lt));
+    }
+    .komunikat-top {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 24px;
+    }
+    .komunikat-ikona {
+      width: 46px; height: 46px; border-radius: 13px;
+      background: linear-gradient(135deg, rgba(217,154,43,0.16), rgba(217,154,43,0.07));
+      border: 1.5px solid rgba(217,154,43,0.28);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; color: #c07f16;
+    }
+    .komunikat-naglowek { min-width: 0; }
+    .komunikat-label {
+      display: block;
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 0.2em;
+      text-transform: uppercase; color: #c07f16;
+      margin-bottom: 4px;
+    }
+    .komunikat-tytul {
+      font-family: 'Marcellus', serif;
+      font-size: 1.35rem; color: var(--navy); line-height: 1.2;
+    }
+    .komunikat-tresc p {
+      font-size: 0.95rem; line-height: 1.8; color: var(--text);
+      margin-bottom: 16px;
+    }
+    .komunikat-tresc p:last-child { margin-bottom: 0; }
+    .komunikat-tresc .powitanie {
+      font-family: 'Marcellus', serif;
+      font-size: 1.05rem; color: var(--navy);
+      margin-bottom: 12px;
+    }
+    .komunikat-tresc strong { color: var(--navy); font-weight: 600; }
+
+    .komunikat-dobra {
+      background: linear-gradient(135deg, rgba(21,128,61,0.06), rgba(21,128,61,0.02));
+      border-left: 3px solid #15803d;
+      border-radius: 0 12px 12px 0;
+      padding: 20px 24px;
+      margin: 24px 0;
+    }
+    .komunikat-dobra-tt {
+      display: flex; align-items: center; gap: 9px;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em;
+      text-transform: uppercase; color: #15803d;
+      margin-bottom: 10px;
+    }
+    .komunikat-dobra p { margin-bottom: 0; }
+
+    .komunikat-podpis {
+      margin-top: 28px; padding-top: 22px;
+      border-top: 1px solid rgba(14,36,68,0.08);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .komunikat-podpis-kreska {
+      width: 30px; height: 1px; background: var(--gold); flex-shrink: 0;
+    }
+    .komunikat-podpis span {
+      font-family: 'Marcellus', serif;
+      font-size: 1rem; color: var(--navy);
+    }
+
+    @media (max-width: 700px) {
+      .komunikat { padding: 28px 22px 26px; margin-bottom: 52px; border-radius: 16px; }
+      .komunikat-top { gap: 13px; margin-bottom: 20px; }
+      .komunikat-tytul { font-size: 1.15rem; }
+      .komunikat-tresc p { font-size: 0.9rem; line-height: 1.75; }
+      .komunikat-dobra { padding: 16px 18px; }
+    }
+
     .cennik-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -759,6 +844,63 @@
   <!-- ─── CENNIK ────────────────────────────────────────────────────────── -->
   <section id="cennik">
     <div class="container">
+
+      <!-- Komunikat dla Gości -->
+      <div class="komunikat">
+        <div class="komunikat-top">
+          <div class="komunikat-ikona">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2.7s5.5 6 5.5 10.3a5.5 5.5 0 0 1-11 0C6.5 8.7 12 2.7 12 2.7Z"/>
+              <line x1="12" y1="10" x2="12" y2="14"/>
+              <line x1="12" y1="17" x2="12" y2="17"/>
+            </svg>
+          </div>
+          <div class="komunikat-naglowek">
+            <span class="komunikat-label">Ważna informacja</span>
+            <h3 class="komunikat-tytul">Utrudnienia w działaniu sanitariatów</h3>
+          </div>
+        </div>
+
+        <div class="komunikat-tresc">
+          <p class="powitanie">Szanowni Goście,</p>
+
+          <p>Chcielibyśmy poinformować o problemach technicznych związanych z funkcjonowaniem
+            sanitariatów w naszym Ośrodku. Obecnie zmagamy się z <strong>bardzo niskim ciśnieniem wody</strong>.
+            Nadal ustalamy dokładną przyczynę problemu i pozostajemy w stałym kontakcie z hydraulikami.
+            Robimy wszystko, aby jak najszybciej go usunąć.</p>
+
+          <p>Nasz Ośrodek znajduje się na końcu sieci wodociągowej. Dodatkowo obecna pogoda oraz
+            bardzo duża liczba osób wypoczywających w okolicy spowodowały znacznie większe niż zwykle
+            zużycie wody, co przekłada się na spadki ciśnienia. Na ten moment nie wiemy jeszcze,
+            czy problem wynika wyłącznie z dużego poboru wody, czy jego przyczyną jest również
+            usterka w instalacji. Cały czas to sprawdzamy.</p>
+
+          <p><strong>Sanitariaty są dla naszych Gości dostępne bezpłatnie.</strong> Chcemy jednak uczciwie
+            poinformować o zaistniałej sytuacji wszystkie osoby planujące przyjazd do naszego Ośrodka.
+            Zapewniamy, że dokładamy wszelkich starań, aby jak najszybciej rozwiązać ten problem.</p>
+
+          <div class="komunikat-dobra">
+            <div class="komunikat-dobra-tt">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              Dobra wiadomość
+            </div>
+            <p>Chcielibyśmy również przekazać dobrą wiadomość. Już w przyszłym roku planujemy znaczną
+              rozbudowę zaplecza sanitarnego. Powstanie <strong>dwa razy więcej pryszniców</strong>,
+              więcej stanowisk do mycia naczyń oraz dodatkowe toalety na dolnym campingu.
+              Naszym celem jest zapewnienie Państwu jeszcze większego komfortu podczas pobytu.</p>
+          </div>
+
+          <p>Raz jeszcze serdecznie przepraszamy za wszelkie niedogodności i dziękujemy
+            za wyrozumiałość oraz cierpliwość.</p>
+        </div>
+
+        <div class="komunikat-podpis">
+          <span class="komunikat-podpis-kreska"></span>
+          <span>Zespół Ośrodka Plaża Kownatki</span>
+        </div>
+      </div>
 
       <!-- Header -->
       <div class="cennik-header">
